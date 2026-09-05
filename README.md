@@ -18,12 +18,22 @@ manual MMK payment verification. Admins manage records, files, payments, and acc
   scoring, ranked 0–100 %, with EXACT (duplicate-risk) vs SIMILAR banding. Runs on `pg_trgm` in
   production and a portable engine in dev.
 - **Duplicate-risk checker** — paste a proposed title → `LIKELY_UNIQUE / SIMILAR_EXISTS / DUPLICATE_RISK`.
-- **Faceted browse** — filter by university → department, year, academic level, keyword.
+- **Faceted + advanced browse** — filter by university → department, year, academic level, keyword,
+  plus a price range, free-only / has-file toggles, and sort (newest, oldest, price, title).
+- **Project media** — public image galleries with a zoom lightbox and a drag-to-rotate **360°
+  turntable viewer**. Images are stored as DB binary so they survive ephemeral-host redeploys.
+- **Bookmarks** — signed-in users can save projects to *My Library*.
 - **Manual MMK purchase flow** — create order → upload payment proof → admin verifies → access granted.
 - **Protected paid files** — streamed only after a server-side `PurchaseAccess` check; never a public URL.
 - **Consent gate** — a project can't be published unless author consent is recorded.
-- **Admin dashboard** — stats, project CRUD + file upload, payment moderation, user roles,
-  audit log, and **search analytics** (SEARCH/CHECK volume + duplicate-risk counts).
+- **Password reset** — single-use, hashed, 30-minute tokens (emailed in prod; returned in dev where
+  no SMTP is configured).
+- **Admin dashboard** — KPI cards + a 14-day activity chart (page views / searches / checks),
+  projects-by-university and top-pages distributions, project CRUD + file & image upload, payment
+  moderation, user roles, audit log, **search analytics**, and **CSV report exports**
+  (search logs, duplicate-risk report, projects) that open directly in Excel/Sheets.
+- **Privacy-light visitor analytics** — cookie-free page-view beacon with route normalization.
+- **Dark / light theme** — user-toggleable, persisted, applied before first paint (no flash).
 - **Security** — JWT in HttpOnly cookies (HS256 pinned + live role re-check), bcrypt(12), RBAC,
   Zod validation (strict schemas), Helmet, CORS allowlist, tiered rate limiting, and
   **magic-byte-validated uploads** (not just extension/MIME). `npm audit`: **0 vulnerabilities**.

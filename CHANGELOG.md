@@ -3,6 +3,43 @@
 All notable changes to **TU Project Archive & Title Similarity Checker**. Grouped by build wave;
 newest first. Dates are the project timeline (Asia/Yangon).
 
+## [Unreleased] — Feature expansion: media, analytics, UX (2026-09-06)
+
+### Added — Project media
+- **`ProjectImage` model** (DB-binary storage) for public gallery photos + ordered 360° frames,
+  surviving ephemeral-host redeploys without external object storage.
+- **Images API** — public list (`/api/images/project/:id`) + cache-immutable single-image serve
+  (`/api/images/:id`); admin upload (multi-file, magic-byte validated JPEG/PNG/WebP) & delete.
+- **Frontend viewers** — `Gallery` (thumbnails + zoom lightbox), `SpinViewer` (drag / touch /
+  arrow-key 360° turntable, frame preloading), `ProjectMedia` (Photos ⇄ 360° tabs). Cover
+  thumbnails + `360°`/image-count badges on project cards. Admin `ProjectImageManager` in the
+  project form. Flagship demo project seeded with 2 gallery photos + a 24-frame turntable.
+
+### Added — Analytics & reporting
+- **Rich admin dashboard** (`/api/admin/dashboard`): KPI totals, 14-day activity time series
+  (views/searches/checks + unique estimates), projects-by-university and top-pages distributions.
+  Dependency-free inline-SVG charts (render even in the sandboxed preview).
+- **Privacy-light page-view tracking** — cookie-free beacon (`/api/analytics/pageview`) with
+  dynamic-route normalization (`/projects/:id`); `PageViewTracker` fires on navigation.
+- **CSV report exports** (UTF-8 BOM, Excel/Sheets-ready): search logs, duplicate-risk report, projects.
+
+### Added — User experience
+- **Bookmarks** — `Bookmark` model + `/api/bookmarks` CRUD, app-wide `BookmarksContext`, heart
+  toggle on cards & detail, "Saved projects" section in *My Library*.
+- **Password reset** — single-use SHA-256-hashed, 30-minute tokens; `/auth/forgot-password` +
+  `/auth/reset-password` (no user enumeration; dev returns the token, prod would email it);
+  `/forgot-password` page + "Forgot password?" link.
+- **Advanced browse filters** — price range, free-only, has-file, and sort (newest/oldest/price/title).
+- **Dark / light theme toggle** — persisted, pre-paint applied (no FOUC), via a `[data-theme]`
+  CSS override layer; navbar sun/moon button.
+- **UI language switched to English** (was Burmese-first); bilingual label store retained for future.
+- **PWA manifest** refreshed for the dark theme + English shortcuts.
+
+### Tests
+- Backend suite grown to **49 passing** (+10): image set, admin-only image upload guard, pageview
+  beacon, dashboard series, CSV export, bookmark lifecycle, password-reset flow (incl. single-use +
+  no-enumeration), advanced filter ordering.
+
 ## [Unreleased] — Bug-fix, requirement-coverage & thesis-polish wave (2026-09-03)
 
 ### Fixed (bugs & flow gaps found by the adversarial audit)
