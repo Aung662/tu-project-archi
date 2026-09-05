@@ -91,14 +91,23 @@ export default function HomePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.3 }}
-          className="mt-6 flex flex-wrap items-center justify-center gap-4 text-sm text-slate-300"
+          className="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm"
         >
-          <Link href="/browse" className="transition hover:text-white">
-            {t.browseCta.en} →
+          <Link
+            href="/browse"
+            className="group inline-flex items-center gap-2 rounded-full border border-brand-400/40 bg-brand-500/15 px-5 py-2.5 font-semibold text-brand-100 shadow-glow transition hover:border-brand-300 hover:bg-brand-500/30 hover:text-white"
+          >
+            <span aria-hidden>🗂️</span>
+            {t.browseCta.en}
+            <span className="transition-transform group-hover:translate-x-0.5">→</span>
           </Link>
-          <span className="opacity-30">|</span>
-          <Link href="/check" className="transition hover:text-white">
-            {t.checkCta.en} →
+          <Link
+            href="/check"
+            className="group inline-flex items-center gap-2 rounded-full border border-plum-400/40 bg-plum-500/15 px-5 py-2.5 font-semibold text-plum-100 shadow-glow transition hover:border-plum-300 hover:bg-plum-500/30 hover:text-white"
+          >
+            <span aria-hidden>🛡️</span>
+            {t.checkCta.en}
+            <span className="transition-transform group-hover:translate-x-0.5">→</span>
           </Link>
         </motion.div>
       </section>
@@ -185,18 +194,37 @@ export default function HomePage() {
               desc={t.featSearchDesc.en}
               icon="🔎"
               tint="from-brand-500/20 to-brand-500/0"
+              details={[
+                'Type any proposed title and see the closest existing projects ranked instantly.',
+                'Search covers titles, keywords and abstracts across every university.',
+                'Great for a quick idea check before committing to a topic.',
+              ]}
+              cta={{ label: 'Try a search', href: '/' }}
+              onCtaScrollTop
             />
             <Feature
               title={t.featRankTitle.en}
               desc={t.featRankDesc.en}
               icon="📊"
               tint="from-plum-500/20 to-plum-500/0"
+              details={[
+                'Combines three signals: trigram overlap (55%), shared tokens (30%) and edit distance (15%).',
+                'Scores from 0–100%. A match of 85%+ is flagged as a likely duplicate.',
+                'Deterministic and explainable — no black-box guesswork.',
+              ]}
+              cta={{ label: 'Run a full check', href: '/check' }}
             />
             <Feature
               title={t.featBuyTitle.en}
               desc={t.featBuyDesc.en}
               icon="📄"
               tint="from-mint-500/20 to-mint-500/0"
+              details={[
+                'Preview every project free; the full file is paid and protected.',
+                'Pay in MMK via KBZPay/Wave, upload your screenshot, and an admin verifies it.',
+                'Once approved, the file streams only to you — never a public link.',
+              ]}
+              cta={{ label: 'Browse projects', href: '/browse' }}
             />
           </StaggerGrid>
 
@@ -220,23 +248,91 @@ function Feature({
   desc,
   icon,
   tint,
+  details,
+  cta,
+  onCtaScrollTop,
 }: {
   title: string;
   desc: string;
   icon: string;
   tint: string;
+  details: string[];
+  cta: { label: string; href: string };
+  onCtaScrollTop?: boolean;
 }) {
+  const [open, setOpen] = useState(false);
+  const panelId = `feat-${title.replace(/\s+/g, '-').toLowerCase()}`;
+
   return (
     <StaggerItem>
       <TiltCard className="h-full">
-        <div className="card card-interactive h-full p-6">
-          <div
-            className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${tint} text-2xl ring-1 ring-white/10`}
+        <div className="card card-interactive flex h-full flex-col p-6">
+          {/* The whole header is a button that toggles the detail panel. */}
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-controls={panelId}
+            className="group/btn text-left"
           >
-            {icon}
-          </div>
-          <h3 className="text-lg font-semibold text-slate-100">{title}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-slate-400">{desc}</p>
+            <div
+              className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${tint} text-2xl ring-1 ring-white/10 transition group-hover/btn:ring-white/25`}
+            >
+              {icon}
+            </div>
+            <h3 className="flex items-center gap-2 text-lg font-semibold text-slate-100">
+              {title}
+              <span
+                className={`text-sm text-slate-400 transition-transform ${open ? 'rotate-180' : ''}`}
+                aria-hidden
+              >
+                ▾
+              </span>
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-400">{desc}</p>
+            {!open && (
+              <span className="mt-3 inline-block text-xs font-medium text-brand-200/90 transition group-hover/btn:text-brand-100">
+                Tap to learn more →
+              </span>
+            )}
+          </button>
+
+          <motion.div
+            id={panelId}
+            initial={false}
+            animate={{ height: open ? 'auto' : 0, opacity: open ? 1 : 0 }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            <ul className="mt-4 space-y-2 border-t border-white/10 pt-4 text-sm text-slate-300">
+              {details.map((d, i) => (
+                <li key={i} className="flex gap-2">
+                  <span className="mt-0.5 text-brand-300" aria-hidden>
+                    •
+                  </span>
+                  <span>{d}</span>
+                </li>
+              ))}
+            </ul>
+            <Link
+              href={cta.href}
+              onClick={
+                onCtaScrollTop
+                  ? (e) => {
+                      // "Search" lives at the top of THIS page — scroll up instead of navigating.
+                      if (cta.href === '/') {
+                        e.preventDefault();
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }
+                    }
+                  : undefined
+              }
+              className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
+            >
+              {cta.label}
+              <span aria-hidden>→</span>
+            </Link>
+          </motion.div>
         </div>
       </TiltCard>
     </StaggerItem>
