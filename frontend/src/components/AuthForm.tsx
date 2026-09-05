@@ -43,10 +43,10 @@ export function AuthForm({ adminHint = false }: { adminHint?: boolean }) {
     <div className="mx-auto max-w-md">
       <div className="card space-y-4 p-6">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">
+          <h1 className="text-xl font-bold text-slate-100">
             {adminHint ? t.authAdminTitle.my : mode === 'login' ? t.authWelcome.my : t.authCreate.my}
           </h1>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-400">
             {adminHint ? t.authAdminHint.my : t.authStudentHint.my}
           </p>
         </div>
@@ -87,11 +87,11 @@ export function AuthForm({ adminHint = false }: { adminHint?: boolean }) {
         </form>
 
         {!adminHint && (
-          <p className="text-center text-sm text-slate-500">
+          <p className="text-center text-sm text-slate-400">
             {mode === 'login' ? t.noAccount.my : t.haveAccount.my}
             <button
               onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
-              className="font-semibold text-brand-600 hover:underline"
+              className="font-semibold text-brand-300 hover:underline"
             >
               {mode === 'login' ? t.register.my : t.logIn.my}
             </button>

@@ -70,33 +70,33 @@ export default function ProjectDetailPage() {
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
       <article className="space-y-5">
-        <button onClick={() => router.back()} className="text-sm text-slate-500 hover:text-slate-800">
+        <button onClick={() => router.back()} className="text-sm text-slate-400 hover:text-slate-100">
           ← {t.back.my}
         </button>
         <div className="flex flex-wrap items-center gap-2">
           <LevelBadge level={project.level} />
-          <span className="badge bg-slate-100 text-slate-600">{project.year}</span>
-          <span className="badge bg-slate-100 text-slate-600">
+          <span className="badge bg-white/10 text-slate-300">{project.year}</span>
+          <span className="badge bg-white/10 text-slate-300">
             {project.university.shortName} · {project.department.code}
           </span>
         </div>
-        <h1 className="text-2xl font-bold leading-tight text-slate-900">{project.title}</h1>
+        <h1 className="text-2xl font-bold leading-tight text-slate-100">{project.title}</h1>
 
         <section className="card p-5">
-          <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500">
+          <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-400">
             {t.abstract.my}
           </h2>
-          <p className="whitespace-pre-line text-slate-700">{project.abstract}</p>
+          <p className="whitespace-pre-line text-slate-200">{project.abstract}</p>
         </section>
 
         {project.keywords.length > 0 && (
           <section>
-            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500">
+            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-400">
               {t.keywords.my}
             </h2>
             <div className="flex flex-wrap gap-2">
               {project.keywords.map((k) => (
-                <span key={k} className="badge bg-brand-50 text-brand-700">
+                <span key={k} className="badge bg-brand-500/15 text-brand-200 ring-1 ring-brand-400/25">
                   {k}
                 </span>
               ))}
@@ -118,8 +118,8 @@ export default function ProjectDetailPage() {
       <aside className="lg:sticky lg:top-20 lg:self-start">
         <div className="card space-y-4 p-5">
           <div>
-            <p className="text-sm text-slate-500">{t.fullFile.my}</p>
-            <p className="text-2xl font-bold text-slate-900">
+            <p className="text-sm text-slate-400">{t.fullFile.my}</p>
+            <p className="text-2xl font-bold text-slate-100">
               {project.priceMmk > 0 ? formatMMK(project.priceMmk) : t.free.my}
             </p>
           </div>
@@ -157,7 +157,7 @@ function Meta({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <dt className="text-xs uppercase tracking-wide text-slate-400">{label}</dt>
-      <dd className="font-medium text-slate-700">{value}</dd>
+      <dd className="font-medium text-slate-200">{value}</dd>
     </div>
   );
 }

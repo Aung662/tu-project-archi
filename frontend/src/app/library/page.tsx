@@ -51,12 +51,12 @@ export default function LibraryPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">{t.libraryTitle.my}</h1>
-        <p className="text-sm text-slate-500">{t.librarySubtitle.my}</p>
+        <h1 className="text-2xl font-bold text-slate-100">{t.libraryTitle.my}</h1>
+        <p className="text-sm text-slate-400">{t.librarySubtitle.my}</p>
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-800">{t.purchasedProjects.my}</h2>
+        <h2 className="text-lg font-semibold text-slate-100">{t.purchasedProjects.my}</h2>
         {dlError && <Alert kind="error">{dlError}</Alert>}
         {purchases.length === 0 ? (
           <EmptyState title={t.noPurchasesTitle.my} hint={t.noPurchasesHint.my} />
@@ -65,10 +65,10 @@ export default function LibraryPage() {
             {purchases.map((p) => (
               <div key={p.id} className="card flex items-center justify-between gap-3 p-4">
                 <div>
-                  <Link href={`/projects/${p.project.id}`} className="font-medium text-slate-900 hover:text-brand-700">
+                  <Link href={`/projects/${p.project.id}`} className="font-medium text-slate-100 hover:text-brand-300">
                     {p.project.title}
                   </Link>
-                  <p className="text-xs text-slate-500">{p.project.year}</p>
+                  <p className="text-xs text-slate-400">{p.project.year}</p>
                 </div>
                 {p.project.hasFile && (
                   <button onClick={() => download(p.project.id, p.project.title)} className="btn-primary">
@@ -82,13 +82,13 @@ export default function LibraryPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-800">{t.paymentHistory.my}</h2>
+        <h2 className="text-lg font-semibold text-slate-100">{t.paymentHistory.my}</h2>
         {orders.length === 0 ? (
           <Alert kind="info">{t.noOrders.my}</Alert>
         ) : (
           <div className="card overflow-x-auto">
             <table className="w-full min-w-[600px] text-sm">
-              <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
+              <thead className="bg-white/5 text-left text-xs uppercase text-slate-400">
                 <tr>
                   <th className="px-4 py-3">{t.colProject.my}</th>
                   <th className="px-4 py-3">{t.colAmount.my}</th>
@@ -97,7 +97,7 @@ export default function LibraryPage() {
                   <th className="px-4 py-3">{t.colStatus.my}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-white/10">
                 {orders.map((o) => (
                   <tr key={o.id}>
                     <td className="px-4 py-3">{o.project.title}</td>

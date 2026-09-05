@@ -37,8 +37,8 @@ export default function AdminAnalytics() {
   if (!data) return <EmptyState title={t.anEmpty.my} />;
 
   const cards = [
-    { label: t.anTotalSearches.my, value: data.stats.totalSearches, tone: 'text-brand-700' },
-    { label: t.anTotalChecks.my, value: data.stats.totalChecks, tone: 'text-brand-700' },
+    { label: t.anTotalSearches.my, value: data.stats.totalSearches, tone: 'text-brand-300' },
+    { label: t.anTotalChecks.my, value: data.stats.totalChecks, tone: 'text-brand-300' },
     { label: t.anDuplicateRisks.my, value: data.stats.duplicateRisks, tone: 'text-rose-600' },
   ];
 
@@ -47,7 +47,7 @@ export default function AdminAnalytics() {
       <div className="grid gap-4 sm:grid-cols-3">
         {cards.map((c) => (
           <div key={c.label} className="card">
-            <div className="text-sm text-slate-500">{c.label}</div>
+            <div className="text-sm text-slate-400">{c.label}</div>
             <div className={`mt-1 text-3xl font-bold ${c.tone}`}>{c.value}</div>
           </div>
         ))}
@@ -61,7 +61,7 @@ export default function AdminAnalytics() {
             className={`rounded-full px-4 py-1.5 text-sm font-medium ${
               kind === k
                 ? 'bg-brand-600 text-white'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                : 'bg-white/10 text-slate-300 hover:bg-white/10'
             }`}
           >
             {k === 'ALL' ? t.anFilterAll.my : k}
@@ -74,7 +74,7 @@ export default function AdminAnalytics() {
       ) : (
         <div className="card overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
+            <thead className="bg-white/5 text-left text-xs uppercase text-slate-400">
               <tr>
                 <th className="px-4 py-3">{t.anColKind.my}</th>
                 <th className="px-4 py-3">{t.anColQuery.my}</th>
@@ -84,7 +84,7 @@ export default function AdminAnalytics() {
                 <th className="px-4 py-3">{t.anColWhen.my}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-white/10">
               {data.recent.map((r) => (
                 <tr key={r.id}>
                   <td className="px-4 py-3">
@@ -92,21 +92,21 @@ export default function AdminAnalytics() {
                       className={`badge font-mono ${
                         r.kind === 'CHECK'
                           ? 'bg-indigo-100 text-indigo-700'
-                          : 'bg-slate-100 text-slate-700'
+                          : 'bg-white/10 text-slate-200'
                       }`}
                     >
                       {r.kind}
                     </span>
                   </td>
-                  <td className="max-w-xs truncate px-4 py-3 text-slate-700" title={r.rawQuery}>
+                  <td className="max-w-xs truncate px-4 py-3 text-slate-200" title={r.rawQuery}>
                     {r.rawQuery}
                   </td>
-                  <td className="px-4 py-3 text-slate-500">{r.resultCount}</td>
-                  <td className="px-4 py-3 text-slate-500">
+                  <td className="px-4 py-3 text-slate-400">{r.resultCount}</td>
+                  <td className="px-4 py-3 text-slate-400">
                     {typeof r.topScore === 'number' ? r.topScore.toFixed(2) : '—'}
                   </td>
                   <td className="px-4 py-3">{verdictBadge(r.verdict)}</td>
-                  <td className="whitespace-nowrap px-4 py-3 text-slate-500">
+                  <td className="whitespace-nowrap px-4 py-3 text-slate-400">
                     {new Date(r.createdAt).toLocaleString()}
                   </td>
                 </tr>

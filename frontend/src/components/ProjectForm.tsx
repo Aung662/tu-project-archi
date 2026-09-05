@@ -91,10 +91,10 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
   return (
     <form onSubmit={save} className="card space-y-4 p-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-slate-900">
+        <h2 className="text-lg font-semibold text-slate-100">
           {project ? t.fEditProject.my : t.fNewProject.my}
         </h2>
-        <button type="button" onClick={onCancel} className="text-sm text-slate-500 hover:text-slate-800">
+        <button type="button" onClick={onCancel} className="text-sm text-slate-400 hover:text-slate-100">
           ← {t.fCancel.my}
         </button>
       </div>
@@ -203,11 +203,11 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
           className="input"
         />
         {project?.hasFile && !file && (
-          <p className="mt-1 text-xs text-slate-500">{t.fFileAttached.my}</p>
+          <p className="mt-1 text-xs text-slate-400">{t.fFileAttached.my}</p>
         )}
       </div>
 
-      <div className="grid gap-4 rounded-lg bg-slate-50 p-4 sm:grid-cols-2">
+      <div className="grid gap-4 rounded-lg bg-white/5 p-4 sm:grid-cols-2">
         <div>
           <label className="label">{t.fStatus.my}</label>
           <select className="input" value={form.status} onChange={(e) => set({ status: e.target.value as Card['status'] })}>
@@ -216,12 +216,12 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
             <option value="ARCHIVED">{statusLabel.ARCHIVED.my}</option>
           </select>
         </div>
-        <label className="flex items-center gap-2 self-end pb-2 text-sm text-slate-700">
+        <label className="flex items-center gap-2 self-end pb-2 text-sm text-slate-200">
           <input
             type="checkbox"
             checked={form.hasConsent}
             onChange={(e) => set({ hasConsent: e.target.checked })}
-            className="h-4 w-4 rounded border-slate-300"
+            className="h-4 w-4 rounded border-white/15"
           />
           {t.fConsentLabel.my}
         </label>

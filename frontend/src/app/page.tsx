@@ -2,11 +2,13 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { api } from '@/lib/api';
 import type { SearchResult } from '@/lib/types';
 import { SimilarityMeter, Alert, SkeletonList, EmptyState, LevelBadge } from '@/components/ui';
 import { formatMMK } from '@/lib/format';
 import { t } from '@/lib/i18n';
+import { Reveal, StaggerGrid, StaggerItem, TiltCard } from '@/components/motion';
 
 export default function HomePage() {
   const [q, setQ] = useState('');
@@ -32,41 +34,79 @@ export default function HomePage() {
   const exactCount = result?.results.filter((r) => r.kind === 'EXACT').length ?? 0;
 
   return (
-    <div className="space-y-8">
-      {/* Hero */}
-      <section className="rounded-2xl bg-gradient-to-br from-brand-700 to-brand-900 px-6 py-12 text-center text-white shadow-lg sm:px-12">
-        <h1 className="mx-auto max-w-3xl text-3xl font-bold leading-tight sm:text-4xl">
-          {t.heroTitle.my}
-        </h1>
-        <p className="mx-auto mt-1 max-w-3xl text-sm text-brand-200">{t.heroTitle.en}</p>
-        <p className="mx-auto mt-3 max-w-2xl text-brand-100">{t.heroSubtitle.my}</p>
-        <form onSubmit={runSearch} className="mx-auto mt-6 flex max-w-2xl flex-col gap-2 sm:flex-row">
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder={t.searchPlaceholder.my}
-            className="flex-1 rounded-lg border-0 px-4 py-3 text-slate-800 shadow focus:outline-none focus:ring-2 focus:ring-brand-300"
-            aria-label={t.navSearch.my}
-          />
-          <button type="submit" className="btn bg-white px-6 py-3 text-brand-700 hover:bg-brand-50">
+    <div className="space-y-16">
+      {/* ── Hero ─────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden rounded-3xl border border-white/10 px-6 py-16 text-center sm:px-12 sm:py-20">
+        {/* hero inner glow */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10"
+          style={{
+            background:
+              'radial-gradient(600px 300px at 50% 0%, rgba(109,139,255,0.25), transparent 60%), radial-gradient(500px 260px at 80% 100%, rgba(165,107,255,0.2), transparent 60%)',
+          }}
+        />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <span className="eyebrow font-latin">✦ AI Title Similarity</span>
+          <h1 className="mx-auto mt-5 max-w-3xl text-4xl font-extrabold leading-tight tracking-tight sm:text-6xl">
+            <span className="text-gradient">{t.heroTitle.my}</span>
+          </h1>
+          <p className="mx-auto mt-3 max-w-2xl font-latin text-sm text-slate-400">
+            {t.heroTitle.en}
+          </p>
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-300">
+            {t.heroSubtitle.my}
+          </p>
+        </motion.div>
+
+        <motion.form
+          onSubmit={runSearch}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+          className="mx-auto mt-8 flex max-w-2xl flex-col gap-3 sm:flex-row"
+        >
+          <div className="relative flex-1">
+            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-lg">
+              🔍
+            </span>
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder={t.searchPlaceholder.my}
+              className="input py-3.5 pl-11 text-base"
+              aria-label={t.navSearch.my}
+            />
+          </div>
+          <button type="submit" className="btn-primary px-8 py-3.5 text-base animate-shine">
             {t.searchBtn.my}
           </button>
-        </form>
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-3 text-sm text-brand-100">
-          <Link href="/browse" className="underline-offset-2 hover:underline">
+        </motion.form>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7, delay: 0.3 }}
+          className="mt-6 flex flex-wrap items-center justify-center gap-4 text-sm text-slate-300"
+        >
+          <Link href="/browse" className="transition hover:text-white">
             {t.browseCta.my} →
           </Link>
-          <span className="opacity-50">|</span>
-          <Link href="/check" className="underline-offset-2 hover:underline">
+          <span className="opacity-30">|</span>
+          <Link href="/check" className="transition hover:text-white">
             {t.checkCta.my} →
           </Link>
-        </div>
+        </motion.div>
       </section>
 
-      {/* Results */}
+      {/* ── Results ──────────────────────────────────────────── */}
       {loading && (
         <section className="space-y-4" aria-busy="true" aria-live="polite">
-          <div className="h-6 w-48 animate-pulse rounded bg-slate-200" />
+          <div className="h-6 w-48 animate-pulse rounded bg-white/10" />
           <SkeletonList count={4} />
         </section>
       )}
@@ -75,11 +115,13 @@ export default function HomePage() {
       {result && !loading && (
         <section className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 className="text-lg font-semibold text-slate-800">
-              “{result.query}” အတွက် ကိုက်ညီမှု {result.total} ခု
+            <h2 className="text-xl font-bold text-slate-100">
+              “{result.query}” အတွက် ကိုက်ညီမှု{' '}
+              <span className="text-gradient font-latin">{result.total}</span> ခု
             </h2>
-            <span className="text-xs text-slate-500">
-              {t.normalized.my}: <code className="rounded bg-slate-100 px-1">{result.normalizedQuery}</code>
+            <span className="font-latin text-xs text-slate-400">
+              {t.normalized.my}:{' '}
+              <code className="rounded bg-white/10 px-1.5 py-0.5">{result.normalizedQuery}</code>
             </span>
           </div>
 
@@ -93,55 +135,119 @@ export default function HomePage() {
           {result.results.length === 0 ? (
             <EmptyState title={t.noSimilarTitle.my} hint={t.noSimilarHint.my} />
           ) : (
-            <ul className="space-y-3">
+            <StaggerGrid className="space-y-3">
               {result.results.map((r) => (
-                <li key={r.project.id} className="card p-5">
-                  <div className="grid gap-4 sm:grid-cols-[1fr_180px] sm:items-center">
-                    <div>
-                      <div className="mb-1 flex flex-wrap items-center gap-2">
-                        <Link
-                          href={`/projects/${r.project.id}`}
-                          className="font-semibold text-slate-900 hover:text-brand-700"
-                        >
-                          {r.project.title}
-                        </Link>
-                        <LevelBadge level={r.project.level} />
+                <StaggerItem key={r.project.id}>
+                  <div className="card card-interactive p-5">
+                    <div className="grid gap-4 sm:grid-cols-[1fr_180px] sm:items-center">
+                      <div>
+                        <div className="mb-1 flex flex-wrap items-center gap-2">
+                          <Link
+                            href={`/projects/${r.project.id}`}
+                            className="font-semibold text-slate-100 transition hover:text-brand-300"
+                          >
+                            {r.project.title}
+                          </Link>
+                          <LevelBadge level={r.project.level} />
+                        </div>
+                        <p className="font-latin text-xs text-slate-400">
+                          {r.project.university.shortName} · {r.project.department.code} ·{' '}
+                          {r.project.year} ·{' '}
+                          {r.project.priceMmk > 0 ? formatMMK(r.project.priceMmk) : t.free.my}
+                        </p>
+                        <p className="mt-2 line-clamp-2 text-sm text-slate-300">
+                          {r.project.abstract}
+                        </p>
                       </div>
-                      <p className="text-xs text-slate-500">
-                        {r.project.university.shortName} · {r.project.department.code} ·{' '}
-                        {r.project.year} ·{' '}
-                        {r.project.priceMmk > 0 ? formatMMK(r.project.priceMmk) : t.free.my}
-                      </p>
-                      <p className="mt-2 line-clamp-2 text-sm text-slate-600">
-                        {r.project.abstract}
-                      </p>
+                      <SimilarityMeter percent={r.percent} kind={r.kind} />
                     </div>
-                    <SimilarityMeter percent={r.percent} kind={r.kind} />
                   </div>
-                </li>
+                </StaggerItem>
               ))}
-            </ul>
+            </StaggerGrid>
           )}
         </section>
       )}
 
+      {/* ── Feature cards (default landing state) ────────────── */}
       {!result && !loading && (
-        <section className="grid gap-4 sm:grid-cols-3">
-          <Feature title={t.featSearchTitle.my} desc={t.featSearchDesc.my} icon="🔎" />
-          <Feature title={t.featRankTitle.my} desc={t.featRankDesc.my} icon="📊" />
-          <Feature title={t.featBuyTitle.my} desc={t.featBuyDesc.my} icon="📄" />
-        </section>
+        <>
+          <Reveal className="text-center">
+            <span className="eyebrow font-latin">Why TU Archive</span>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-100">
+              ဘာကြောင့် <span className="text-gradient">TU Archive</span> လဲ
+            </h2>
+          </Reveal>
+
+          <StaggerGrid className="grid gap-6 sm:grid-cols-3">
+            <Feature
+              title={t.featSearchTitle.my}
+              desc={t.featSearchDesc.my}
+              icon="🔎"
+              tint="from-brand-500/20 to-brand-500/0"
+            />
+            <Feature
+              title={t.featRankTitle.my}
+              desc={t.featRankDesc.my}
+              icon="📊"
+              tint="from-plum-500/20 to-plum-500/0"
+            />
+            <Feature
+              title={t.featBuyTitle.my}
+              desc={t.featBuyDesc.my}
+              icon="📄"
+              tint="from-mint-500/20 to-mint-500/0"
+            />
+          </StaggerGrid>
+
+          {/* Stats band */}
+          <Reveal>
+            <div className="card grid grid-cols-2 gap-6 p-8 sm:grid-cols-4">
+              <Stat value="3" label="တက္ကသိုလ်" />
+              <Stat value="7" label="ဌာန" />
+              <Stat value="12+" label="စီမံကိန်း" />
+              <Stat value="AI" label="Similarity Engine" />
+            </div>
+          </Reveal>
+        </>
       )}
     </div>
   );
 }
 
-function Feature({ title, desc, icon }: { title: string; desc: string; icon: string }) {
+function Feature({
+  title,
+  desc,
+  icon,
+  tint,
+}: {
+  title: string;
+  desc: string;
+  icon: string;
+  tint: string;
+}) {
   return (
-    <div className="card p-5">
-      <div className="mb-2 text-2xl">{icon}</div>
-      <h3 className="font-semibold text-slate-800">{title}</h3>
-      <p className="mt-1 text-sm text-slate-500">{desc}</p>
+    <StaggerItem>
+      <TiltCard className="h-full">
+        <div className="card card-interactive h-full p-6">
+          <div
+            className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${tint} text-2xl ring-1 ring-white/10`}
+          >
+            {icon}
+          </div>
+          <h3 className="text-lg font-semibold text-slate-100">{title}</h3>
+          <p className="mt-2 text-sm leading-relaxed text-slate-400">{desc}</p>
+        </div>
+      </TiltCard>
+    </StaggerItem>
+  );
+}
+
+function Stat({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="text-center">
+      <div className="font-latin text-3xl font-extrabold text-gradient sm:text-4xl">{value}</div>
+      <div className="mt-1 text-xs text-slate-400">{label}</div>
     </div>
   );
 }

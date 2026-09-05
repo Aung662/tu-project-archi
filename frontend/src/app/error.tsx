@@ -18,9 +18,9 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-4 px-4 py-20 text-center">
       <div className="grid h-16 w-16 place-items-center rounded-full bg-red-50 text-3xl">⚠️</div>
-      <h1 className="text-xl font-bold text-slate-900">{t.errorTitle.my}</h1>
-      <p className="text-sm text-slate-500">{t.errorTitle.en}</p>
-      <p className="text-sm text-slate-600">{t.errorBody.my}</p>
+      <h1 className="text-xl font-bold text-slate-100">{t.errorTitle.my}</h1>
+      <p className="text-sm text-slate-400">{t.errorTitle.en}</p>
+      <p className="text-sm text-slate-300">{t.errorBody.my}</p>
       <div className="mt-2 flex gap-3">
         <button className="btn-primary" onClick={reset}>
           {t.errorRetry.my}

@@ -42,7 +42,7 @@ export default function AdminUsers() {
       {msg && <Alert kind="info">{msg}</Alert>}
       <div className="card overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
+          <thead className="bg-white/5 text-left text-xs uppercase text-slate-400">
             <tr>
               <th className="px-4 py-3">{t.uColName.my}</th>
               <th className="px-4 py-3">{t.uColEmail.my}</th>
@@ -50,12 +50,12 @@ export default function AdminUsers() {
               <th className="px-4 py-3">{t.uColRole.my}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-white/10">
             {users.map((u) => (
               <tr key={u.id}>
-                <td className="px-4 py-3 font-medium text-slate-800">{u.name}</td>
-                <td className="px-4 py-3 text-slate-600">{u.email}</td>
-                <td className="px-4 py-3 text-slate-500">{formatDate(u.createdAt)}</td>
+                <td className="px-4 py-3 font-medium text-slate-100">{u.name}</td>
+                <td className="px-4 py-3 text-slate-300">{u.email}</td>
+                <td className="px-4 py-3 text-slate-400">{formatDate(u.createdAt)}</td>
                 <td className="px-4 py-3">
                   <select
                     className="input max-w-[140px]"

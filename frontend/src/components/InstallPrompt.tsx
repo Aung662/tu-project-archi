@@ -55,13 +55,13 @@ export function InstallPrompt() {
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-2xl p-3 sm:p-4">
-      <div className="card flex items-center gap-3 border-brand-200 bg-white p-3 shadow-lg">
+      <div className="card glass-strong flex items-center gap-3 p-3 shadow-lg">
         <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-brand-600 text-sm font-bold text-white">
           TU
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-slate-800">{t.installApp.my}</p>
-          <p className="truncate text-xs text-slate-500">{t.installApp.en}</p>
+          <p className="truncate text-sm font-semibold text-slate-100">{t.installApp.my}</p>
+          <p className="truncate text-xs text-slate-400">{t.installApp.en}</p>
         </div>
         <button className="btn-secondary px-3 py-1.5 text-xs" onClick={dismiss}>
           {t.installDismiss.my}

@@ -79,7 +79,7 @@ export default function AdminPayments() {
             key={s || 'all'}
             onClick={() => setStatus(s)}
             className={`badge cursor-pointer px-3 py-1 ${
-              status === s ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-600'
+              status === s ? 'bg-brand-600 text-white' : 'bg-white/10 text-slate-300'
             }`}
           >
             {s ? statusLabel[s].my : t.pAll.my}
@@ -96,7 +96,7 @@ export default function AdminPayments() {
       ) : (
         <div className="card overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
+            <thead className="bg-white/5 text-left text-xs uppercase text-slate-400">
               <tr>
                 <th className="px-4 py-3">{t.pColUser.my}</th>
                 <th className="px-4 py-3">{t.colProject.my}</th>
@@ -108,11 +108,11 @@ export default function AdminPayments() {
                 <th className="px-4 py-3">{t.aColActions.my}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-white/10">
               {orders.map((o) => (
                 <tr key={o.id}>
                   <td className="px-4 py-3">
-                    <div className="font-medium text-slate-800">{o.user?.name}</div>
+                    <div className="font-medium text-slate-100">{o.user?.name}</div>
                     <div className="text-xs text-slate-400">{o.user?.email}</div>
                   </td>
                   <td className="px-4 py-3">{o.project.title}</td>
@@ -129,7 +129,7 @@ export default function AdminPayments() {
                         href={`/api/admin/payments/${o.id}/proof`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-brand-600 underline-offset-2 hover:underline"
+                        className="text-brand-300 underline-offset-2 hover:underline"
                       >
                         {t.pViewProof.my}
                       </a>
@@ -177,8 +177,8 @@ export default function AdminPayments() {
       {rejecting && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="card w-full max-w-md space-y-3 p-5">
-            <h2 className="text-lg font-semibold text-slate-900">{t.pRejectTitle.my}</h2>
-            <p className="text-sm text-slate-500">
+            <h2 className="text-lg font-semibold text-slate-100">{t.pRejectTitle.my}</h2>
+            <p className="text-sm text-slate-400">
               {rejecting.user?.name} · {rejecting.project.title}
             </p>
             <textarea

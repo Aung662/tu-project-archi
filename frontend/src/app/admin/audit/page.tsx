@@ -23,7 +23,7 @@ export default function AdminAudit() {
   return (
     <div className="card overflow-x-auto">
       <table className="w-full text-sm">
-        <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
+        <thead className="bg-white/5 text-left text-xs uppercase text-slate-400">
           <tr>
             <th className="px-4 py-3">{t.auColWhen.my}</th>
             <th className="px-4 py-3">{t.auColActor.my}</th>
@@ -32,17 +32,17 @@ export default function AdminAudit() {
             <th className="px-4 py-3">Details</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100">
+        <tbody className="divide-y divide-white/10">
           {logs.map((l) => (
             <tr key={l.id}>
-              <td className="whitespace-nowrap px-4 py-3 text-slate-500">
+              <td className="whitespace-nowrap px-4 py-3 text-slate-400">
                 {new Date(l.createdAt).toLocaleString()}
               </td>
               <td className="px-4 py-3">{l.actor?.name ?? 'system'}</td>
               <td className="px-4 py-3">
-                <span className="badge bg-slate-100 font-mono text-slate-700">{l.action}</span>
+                <span className="badge bg-white/10 font-mono text-slate-200">{l.action}</span>
               </td>
-              <td className="px-4 py-3 text-xs text-slate-500">
+              <td className="px-4 py-3 text-xs text-slate-400">
                 {l.entityType}:{l.entityId.slice(0, 8)}
               </td>
               <td className="max-w-xs truncate px-4 py-3 text-xs text-slate-400">{l.metadata}</td>

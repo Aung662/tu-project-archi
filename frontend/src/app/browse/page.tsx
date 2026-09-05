@@ -57,8 +57,8 @@ export default function BrowsePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">{t.browseTitle.my}</h1>
-        <p className="text-sm text-slate-500">{t.browseSubtitle.my}</p>
+        <h1 className="text-2xl font-bold text-slate-100">{t.browseTitle.my}</h1>
+        <p className="text-sm text-slate-400">{t.browseSubtitle.my}</p>
       </div>
 
       {/* Filters */}
@@ -127,7 +127,7 @@ export default function BrowsePage() {
                 className={`badge cursor-pointer px-3 py-1 ${
                   filters.level === lv
                     ? 'bg-brand-600 text-white'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    : 'bg-white/10 text-slate-300 hover:bg-white/10'
                 }`}
               >
                 {lv ? levelLabel[lv].my : t.fAllLevels.my}
@@ -146,7 +146,7 @@ export default function BrowsePage() {
         </div>
       ) : data && data.items.length > 0 ? (
         <>
-          <p className="text-sm text-slate-500">{t.projectsFound.my} {data.total} ခု</p>
+          <p className="text-sm text-slate-400">{t.projectsFound.my} {data.total} ခု</p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {data.items.map((p) => (
               <ProjectCard key={p.id} p={p} />
@@ -161,7 +161,7 @@ export default function BrowsePage() {
               >
                 {t.prevPage.my}
               </button>
-              <span className="text-sm text-slate-600">
+              <span className="text-sm text-slate-300">
                 {t.pageOf.my} {data.page} / {data.totalPages}
               </span>
               <button

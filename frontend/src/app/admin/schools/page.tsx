@@ -121,8 +121,8 @@ export default function AdminSchools() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h2 className="text-lg font-semibold text-slate-900">{t.scTitle.my}</h2>
-          <p className="text-sm text-slate-500">{t.scSubtitle.my}</p>
+          <h2 className="text-lg font-semibold text-slate-100">{t.scTitle.my}</h2>
+          <p className="text-sm text-slate-400">{t.scSubtitle.my}</p>
         </div>
         <button onClick={startCreateUni} className="btn-primary">
           {t.scNewUni.my}
@@ -164,10 +164,10 @@ export default function AdminSchools() {
             <div key={u.id} className="card p-5">
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
-                  <h3 className="font-semibold text-slate-900">
-                    {u.name} <span className="text-sm font-normal text-slate-500">({u.shortName})</span>
+                  <h3 className="font-semibold text-slate-100">
+                    {u.name} <span className="text-sm font-normal text-slate-400">({u.shortName})</span>
                   </h3>
-                  {u.city && <p className="text-xs text-slate-500">{u.city}</p>}
+                  {u.city && <p className="text-xs text-slate-400">{u.city}</p>}
                 </div>
                 <div className="flex gap-2">
                   <button onClick={() => startEditUni(u)} className="btn-secondary px-3 py-1 text-xs">{t.scEdit.my}</button>
@@ -176,16 +176,16 @@ export default function AdminSchools() {
               </div>
 
               {/* Departments */}
-              <div className="mt-4 border-t border-slate-100 pt-3">
+              <div className="mt-4 border-t border-white/10 pt-3">
                 <div className="mb-2 flex items-center justify-between">
                   <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">{t.scDepartments.my}</span>
-                  <button onClick={() => startCreateDept(u.id)} className="text-xs font-medium text-brand-600 hover:underline">
+                  <button onClick={() => startCreateDept(u.id)} className="text-xs font-medium text-brand-300 hover:underline">
                     {t.scAddDept.my}
                   </button>
                 </div>
 
                 {deptForUni === u.id && (
-                  <form onSubmit={(e) => saveDept(e, u.id)} className="mb-3 flex flex-wrap items-end gap-2 rounded-lg bg-slate-50 p-3">
+                  <form onSubmit={(e) => saveDept(e, u.id)} className="mb-3 flex flex-wrap items-end gap-2 rounded-lg bg-white/5 p-3">
                     <div className="flex-1">
                       <label className="label">{t.scDeptCode.my} *</label>
                       <input className="input" value={deptForm.code} onChange={(e) => setDeptForm({ ...deptForm, code: e.target.value })} required />
@@ -204,11 +204,11 @@ export default function AdminSchools() {
                 {u.departments.length === 0 ? (
                   <p className="text-sm text-slate-400">{t.scNoDepts.my}</p>
                 ) : (
-                  <ul className="divide-y divide-slate-100">
+                  <ul className="divide-y divide-white/10">
                     {u.departments.map((d) => (
                       <li key={d.id} className="flex items-center justify-between py-2 text-sm">
                         <span>
-                          <span className="badge bg-slate-100 text-slate-600">{d.code}</span> {d.name}
+                          <span className="badge bg-white/10 text-slate-300">{d.code}</span> {d.name}
                         </span>
                         <div className="flex gap-2">
                           <button onClick={() => startEditDept(u.id, d)} className="btn-secondary px-3 py-1 text-xs">{t.scEdit.my}</button>

@@ -38,8 +38,8 @@ export default function CheckPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">{t.checkTitle.my}</h1>
-        <p className="text-sm text-slate-500">{t.checkSubtitle.my}</p>
+        <h1 className="text-2xl font-bold text-slate-100">{t.checkTitle.my}</h1>
+        <p className="text-sm text-slate-400">{t.checkSubtitle.my}</p>
       </div>
 
       <form onSubmit={run} className="card space-y-3 p-5">
@@ -75,18 +75,18 @@ export default function CheckPage() {
 
           {all.length > 0 && (
             <div className="space-y-3">
-              <h2 className="text-sm font-semibold text-slate-700">{t.closestTitles.my}</h2>
+              <h2 className="text-sm font-semibold text-slate-200">{t.closestTitles.my}</h2>
               {all.map((r) => (
                 <div key={r.project.id} className="card p-4">
                   <div className="grid gap-3 sm:grid-cols-[1fr_160px] sm:items-center">
                     <div>
                       <Link
                         href={`/projects/${r.project.id}`}
-                        className="font-medium text-slate-900 hover:text-brand-700"
+                        className="font-medium text-slate-100 hover:text-brand-300"
                       >
                         {r.project.title}
                       </Link>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-slate-400">
                         {r.project.university.shortName} · {r.project.year}
                       </p>
                     </div>

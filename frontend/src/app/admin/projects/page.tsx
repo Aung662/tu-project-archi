@@ -98,7 +98,7 @@ export default function AdminProjects() {
         <>
           <div className="card overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
+              <thead className="bg-white/5 text-left text-xs uppercase text-slate-400">
                 <tr>
                   <th className="px-4 py-3">{t.aColTitle.my}</th>
                   <th className="px-4 py-3">{t.aColYear.my}</th>
@@ -109,11 +109,11 @@ export default function AdminProjects() {
                   <th className="px-4 py-3">{t.aColActions.my}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-white/10">
                 {data.items.map((p) => (
                   <tr key={p.id}>
                     <td className="max-w-xs px-4 py-3">
-                      <Link href={`/projects/${p.id}`} className="font-medium text-slate-800 hover:text-brand-700">
+                      <Link href={`/projects/${p.id}`} className="font-medium text-slate-100 hover:text-brand-300">
                         {p.title}
                       </Link>
                     </td>
@@ -152,7 +152,7 @@ export default function AdminProjects() {
               <button className="btn-secondary" disabled={page <= 1} onClick={() => setPage(page - 1)}>
                 {t.aPrev.my}
               </button>
-              <span className="text-sm text-slate-600">
+              <span className="text-sm text-slate-300">
                 {page} / {data.totalPages}
               </span>
               <button
