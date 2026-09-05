@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Builds
+dist/
+.next/
+out/
+build/
+*.tsbuildinfo
+
+# Environment & secrets — NEVER commit real values
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Databases (dev SQLite)
+*.db
+*.db-journal
+backend/prisma/dev.db*
+
+# Uploaded files (private paid content must never be committed)
+backend/storage/private/*
+backend/storage/public/*
+!backend/storage/private/.gitkeep
+!backend/storage/public/.gitkeep
+
+# Logs & OS
+*.log
+.DS_Store
+npm-debug.log*

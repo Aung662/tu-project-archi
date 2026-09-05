@@ -1,0 +1,207 @@
+// ─────────────────────────────────────────────────────────────────────────
+// TU Project Archive — Prisma schema
+//
+// DUAL-PROVIDER NOTE:
+// This file is the ACTIVE schema. It is generated from schema.template.prisma
+// by `npm run db:provider` which injects the correct datasource provider
+// (sqlite for local/dev, postgresql for production). Do not hand-edit the
+// datasource block below — edit schema.template.prisma instead.
+//
+// Enums are stored as strings for SQLite portability; on PostgreSQL they map
+// to native enums via the same Prisma enum declarations.
+// ─────────────────────────────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ── Enums ────────────────────────────────────────────────────────────────
+enum Role {
+  STUDENT
+  STAFF
+  ADMIN
+}
+
+enum AcademicLevel {
+  YEAR_3
+  YEAR_5
+  FINAL_YEAR
+  OTHER
+}
+
+enum ProjectStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// ── Reference data ─────────────────────────────────────────────────────────
+model University {
+  id           String       @id @default(cuid())
+  name         String       @unique
+  shortName    String       @unique
+  city         String?
+  departments  Department[]
+  projects     Project[]
+  createdAt    DateTime     @default(now())
+}
+
+model Department {
+  id           String     @id @default(cuid())
+  name         String
+  code         String
+  university   University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  universityId String
+  projects     Project[]
+  createdAt    DateTime   @default(now())
+
+  @@unique([universityId, code])
+}
+
+// ── Users ──────────────────────────────────────────────────────────────────
+model User {
+  id             String           @id @default(cuid())
+  email          String           @unique
+  passwordHash   String
+  name           String
+  role           Role             @default(STUDENT)
+  // Optional admin scope note (e.g. "Y.T.U EC dept") — pure metadata, not authZ.
+  adminScope     String?
+  createdAt      DateTime         @default(now())
+
+  submittedProjects Project[]      @relation("SubmittedBy")
+  purchases         PurchaseAccess[]
+  paymentOrders     PaymentOrder[]
+  auditLogs         AuditLog[]
+}
+
+// ── Core: Projects ───────────────────────────────────────────────────────────
+model Project {
+  id              String        @id @default(cuid())
+  title           String
+  // Normalized form used for similarity search / duplicate detection.
+  normalizedTitle String
+  abstract        String
+  keywords        String        @default("") // comma-separated
+  year            Int
+  level           AcademicLevel @default(FINAL_YEAR)
+  authorsText     String        @default("") // free text list of student authors
+  supervisorName  String?
+
+  university       University   @relation(fields: [universityId], references: [id])
+  universityId     String
+  department       Department   @relation(fields: [departmentId], references: [id])
+  departmentId     String
+
+  status          ProjectStatus @default(DRAFT)
+  // Consent gate: a project may NOT be PUBLISHED unless hasConsent = true.
+  hasConsent      Boolean       @default(false)
+
+  // Paid full file (stored privately, never static-served).
+  priceMmk        Int           @default(0)
+  fileName        String?       // original filename (for display/download name)
+  fileStorageKey  String?       // opaque key into private storage
+  fileSizeBytes   Int?
+  fileMimeType    String?
+
+  submittedBy      User?        @relation("SubmittedBy", fields: [submittedById], references: [id])
+  submittedById    String?
+
+  purchases        PurchaseAccess[]
+  paymentOrders    PaymentOrder[]
+
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@index([year])
+  @@index([universityId])
+  @@index([departmentId])
+  @@index([level])
+  @@index([status])
+  @@index([normalizedTitle])
+}
+
+// ── Payments (manual MMK verification) ───────────────────────────────────────
+model PaymentOrder {
+  id            String        @id @default(cuid())
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  project       Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId     String
+  amountMmk     Int
+  method        String        // e.g. KBZPay, WavePay, AYA
+  txnRef        String        // transaction reference from the payer
+  proofKey      String?       // private storage key for uploaded screenshot
+  status        PaymentStatus @default(PENDING)
+  reviewNote    String?
+  reviewedById  String?
+  reviewedAt    DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([status])
+  @@index([userId])
+  @@index([projectId])
+  @@index([createdAt])
+  // Composite: the admin payment queue filters by status and sorts by date.
+  @@index([status, createdAt])
+}
+
+// ── Access grants (the ONLY thing that authorizes a paid download) ────────────
+model PurchaseAccess {
+  id             String   @id @default(cuid())
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId      String
+  grantedByOrder String?  // PaymentOrder id that produced this grant (nullable for admin grant)
+  createdAt      DateTime @default(now())
+
+  @@unique([userId, projectId])
+  @@index([projectId])
+}
+
+// ── Audit trail for privileged actions ───────────────────────────────────────
+model AuditLog {
+  id         String   @id @default(cuid())
+  actor      User?    @relation(fields: [actorId], references: [id])
+  actorId    String?
+  action     String   // e.g. PAYMENT_APPROVED, PROJECT_PUBLISHED, PROJECT_DELETED
+  entityType String
+  entityId   String
+  metadata   String?  // JSON string
+  createdAt  DateTime @default(now())
+
+  @@index([action])
+  @@index([entityType, entityId])
+  // The audit view lists most-recent-first, so index the sort column.
+  @@index([createdAt])
+}
+
+// ── Search analytics (best-effort; never blocks a search) ────────────────────
+model SearchLog {
+  id             String   @id @default(cuid())
+  kind           String   // SEARCH | CHECK
+  rawQuery       String
+  normalizedQuery String
+  resultCount    Int
+  topScore       Float?   // best similarity score 0..1, if any
+  verdict        String?  // for CHECK: DUPLICATE_RISK | SIMILAR_EXISTS | LIKELY_UNIQUE
+  actorId        String?  // set when the searcher is logged in
+  ip             String?
+  createdAt      DateTime @default(now())
+
+  @@index([kind])
+  @@index([createdAt])
+}

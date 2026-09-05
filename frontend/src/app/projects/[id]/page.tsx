@@ -1,0 +1,163 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { api, ApiError } from '@/lib/api';
+import type { ProjectCard as Card, Purchase } from '@/lib/types';
+import { useAuth } from '@/context/AuthContext';
+import { Alert, Spinner, LevelBadge } from '@/components/ui';
+import { formatMMK } from '@/lib/format';
+import { downloadProjectFile } from '@/lib/download';
+import { t, levelLabel } from '@/lib/i18n';
+import { PurchasePanel } from '@/components/PurchasePanel';
+
+export default function ProjectDetailPage() {
+  const { id } = useParams<{ id: string }>();
+  const router = useRouter();
+  const { user } = useAuth();
+  const [project, setProject] = useState<Card | null>(null);
+  const [owned, setOwned] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const p = await api.get<Card>(`/projects/${id}`);
+        if (active) setProject(p);
+      } catch (err) {
+        if (active) setError(err instanceof ApiError ? err.message : t.loadProjectFailed.my);
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [id]);
+
+  useEffect(() => {
+    if (!user) {
+      setOwned(false);
+      return;
+    }
+    api
+      .get<Purchase[]>('/payments/purchases/mine')
+      .then((list) => setOwned(list.some((x) => x.project.id === id)))
+      .catch(() => setOwned(false));
+  }, [user, id]);
+
+  async function download() {
+    const result = await downloadProjectFile(id, project?.title || 'project');
+    if (result.ok) {
+      setDownloadError(null);
+      return;
+    }
+    setDownloadError(
+      result.reason === 'forbidden'
+        ? t.dlNotApproved.my
+        : result.reason === 'unauthorized'
+          ? t.dlSessionExpired.my
+          : t.dlFailed.my,
+    );
+  }
+
+  if (loading) return <Spinner label={t.loadingProject.my} />;
+  if (error || !project) return <Alert kind="error">{error || t.notFound.my}</Alert>;
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
+      <article className="space-y-5">
+        <button onClick={() => router.back()} className="text-sm text-slate-500 hover:text-slate-800">
+          ← {t.back.my}
+        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <LevelBadge level={project.level} />
+          <span className="badge bg-slate-100 text-slate-600">{project.year}</span>
+          <span className="badge bg-slate-100 text-slate-600">
+            {project.university.shortName} · {project.department.code}
+          </span>
+        </div>
+        <h1 className="text-2xl font-bold leading-tight text-slate-900">{project.title}</h1>
+
+        <section className="card p-5">
+          <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500">
+            {t.abstract.my}
+          </h2>
+          <p className="whitespace-pre-line text-slate-700">{project.abstract}</p>
+        </section>
+
+        {project.keywords.length > 0 && (
+          <section>
+            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500">
+              {t.keywords.my}
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {project.keywords.map((k) => (
+                <span key={k} className="badge bg-brand-50 text-brand-700">
+                  {k}
+                </span>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <dl className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
+          <Meta label={t.metaUniversity.my} value={project.university.name} />
+          <Meta label={t.metaDepartment.my} value={project.department.name} />
+          <Meta label={t.metaLevel.my} value={levelLabel[project.level]?.my ?? project.level} />
+          <Meta label={t.metaYear.my} value={String(project.year)} />
+          {project.authorsText && <Meta label={t.metaAuthors.my} value={project.authorsText} />}
+          {project.supervisorName && <Meta label={t.metaSupervisor.my} value={project.supervisorName} />}
+        </dl>
+      </article>
+
+      {/* Purchase / access panel */}
+      <aside className="lg:sticky lg:top-20 lg:self-start">
+        <div className="card space-y-4 p-5">
+          <div>
+            <p className="text-sm text-slate-500">{t.fullFile.my}</p>
+            <p className="text-2xl font-bold text-slate-900">
+              {project.priceMmk > 0 ? formatMMK(project.priceMmk) : t.free.my}
+            </p>
+          </div>
+
+          {!project.hasFile ? (
+            <Alert kind="info">{t.fileNotAvailable.my}</Alert>
+          ) : owned || user?.role === 'ADMIN' ? (
+            <>
+              <Alert kind="success">{t.youHaveAccess.my}</Alert>
+              {downloadError && <Alert kind="error">{downloadError}</Alert>}
+              <button onClick={download} className="btn-primary w-full">
+                {t.downloadFile.my}
+              </button>
+            </>
+          ) : !user ? (
+            <>
+              <Alert kind="info">{t.loginToBuyInfo.my}</Alert>
+              <button
+                onClick={() => router.push(`/login?next=/projects/${id}`)}
+                className="btn-primary w-full"
+              >
+                {t.loginToBuyBtn.my}
+              </button>
+            </>
+          ) : (
+            <PurchasePanel projectId={project.id} amountMmk={project.priceMmk} />
+          )}
+        </div>
+      </aside>
+    </div>
+  );
+}
+
+function Meta({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt className="text-xs uppercase tracking-wide text-slate-400">{label}</dt>
+      <dd className="font-medium text-slate-700">{value}</dd>
+    </div>
+  );
+}

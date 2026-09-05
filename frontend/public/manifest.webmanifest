@@ -1,0 +1,25 @@
+{
+  "name": "TU Project Archive & Title Similarity Checker",
+  "short_name": "TU Archive",
+  "description": "Search and browse Myanmar Technological University project titles and detect similar previous titles.",
+  "lang": "my",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f8fafc",
+  "theme_color": "#1a5be0",
+  "categories": ["education", "productivity", "utilities"],
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "ခေါင်းစဉ်ရှာဖွေရန် / Search titles", "short_name": "ရှာဖွေ", "url": "/" },
+    { "name": "ဆင်တူစစ်ဆေးရန် / Similarity check", "short_name": "စစ်ဆေး", "url": "/check" },
+    { "name": "စီမံကိန်းများ လှော်လှန်ရန် / Browse", "short_name": "လှော်လှန်", "url": "/browse" }
+  ]
+}

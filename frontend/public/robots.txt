@@ -1,0 +1,8 @@
+# TU Project Archive — crawler policy.
+# Public archive/search pages are indexable; private/admin surfaces are not.
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /portal-hidden-access
+Disallow: /library
+Disallow: /api/
