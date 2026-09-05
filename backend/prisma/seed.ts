@@ -45,6 +45,26 @@ async function attachDemoImages(projectId: string) {
   }
 }
 
+/** Attach a single topic cover photo (GALLERY kind, first in order) to a project. */
+async function attachCoverImage(projectId: string, fileName: string) {
+  const existing = await prisma.projectImage.count({ where: { projectId } });
+  if (existing > 0) return; // keep idempotent; don't duplicate on re-seed
+  const path = join(ASSETS, 'covers', fileName);
+  if (!existsSync(path)) return;
+  const buf = readFileSync(path);
+  const mimeType = path.endsWith('.png') ? 'image/png' : 'image/jpeg';
+  await prisma.projectImage.create({
+    data: {
+      projectId,
+      data: new Uint8Array(buf),
+      mimeType,
+      kind: 'GALLERY',
+      sortOrder: 0,
+      sizeBytes: buf.length,
+    },
+  });
+}
+
 const SEED_ADMIN_EMAIL = process.env.SEED_ADMIN_EMAIL || 'admin@tu-archive.mm';
 const SEED_ADMIN_PASSWORD = process.env.SEED_ADMIN_PASSWORD || 'ChangeMe_Admin#2026';
 const SEED_ADMIN_NAME = process.env.SEED_ADMIN_NAME || 'Platform Admin';
@@ -72,18 +92,18 @@ const departmentsByUni: Record<string, { name: string; code: string }[]> = {
 
 // Realistic-looking IT/EC project titles across years for meaningful similarity demos.
 const sampleProjects = [
-  { title: 'IoT Based Smart Agriculture Monitoring System', year: 2023, level: 'FINAL_YEAR', dept: 'IT' },
-  { title: 'Smart Agriculture Monitoring System Using IoT and Machine Learning', year: 2024, level: 'FINAL_YEAR', dept: 'IT' },
-  { title: 'Web Based Student Attendance Management System', year: 2022, level: 'YEAR_5', dept: 'IT' },
-  { title: 'Face Recognition Based Attendance System', year: 2023, level: 'FINAL_YEAR', dept: 'EC' },
-  { title: 'Online Library Management System for Technological University', year: 2021, level: 'YEAR_5', dept: 'IT' },
-  { title: 'E-Commerce Website for Local Handicraft Products', year: 2024, level: 'FINAL_YEAR', dept: 'IT' },
-  { title: 'Automatic Street Light Control Using Arduino', year: 2022, level: 'YEAR_3', dept: 'EC' },
-  { title: 'Solar Powered Automatic Irrigation System', year: 2023, level: 'YEAR_5', dept: 'EP' },
-  { title: 'Hospital Appointment Booking Mobile Application', year: 2024, level: 'FINAL_YEAR', dept: 'IT' },
-  { title: 'Deep Learning Based Myanmar License Plate Recognition', year: 2024, level: 'FINAL_YEAR', dept: 'EC' },
-  { title: 'Blockchain Based Academic Certificate Verification System', year: 2023, level: 'FINAL_YEAR', dept: 'IT' },
-  { title: 'Sentiment Analysis of Myanmar Facebook Comments', year: 2024, level: 'FINAL_YEAR', dept: 'IT' },
+  { title: 'IoT Based Smart Agriculture Monitoring System', year: 2023, level: 'FINAL_YEAR', dept: 'IT', cover: 'smart-agri-ml.jpg' },
+  { title: 'Smart Agriculture Monitoring System Using IoT and Machine Learning', year: 2024, level: 'FINAL_YEAR', dept: 'IT', cover: 'smart-agri-ml.jpg' },
+  { title: 'Web Based Student Attendance Management System', year: 2022, level: 'YEAR_5', dept: 'IT', cover: 'student-attendance-web.jpg' },
+  { title: 'Face Recognition Based Attendance System', year: 2023, level: 'FINAL_YEAR', dept: 'EC', cover: 'face-recognition.jpg' },
+  { title: 'Online Library Management System for Technological University', year: 2021, level: 'YEAR_5', dept: 'IT', cover: 'library-management.jpg' },
+  { title: 'E-Commerce Website for Local Handicraft Products', year: 2024, level: 'FINAL_YEAR', dept: 'IT', cover: 'ecommerce-handicraft.jpg' },
+  { title: 'Automatic Street Light Control Using Arduino', year: 2022, level: 'YEAR_3', dept: 'EC', cover: 'street-light-arduino.jpg' },
+  { title: 'Solar Powered Automatic Irrigation System', year: 2023, level: 'YEAR_5', dept: 'EP', cover: 'solar-irrigation.jpg' },
+  { title: 'Hospital Appointment Booking Mobile Application', year: 2024, level: 'FINAL_YEAR', dept: 'IT', cover: 'hospital-appointment.jpg' },
+  { title: 'Deep Learning Based Myanmar License Plate Recognition', year: 2024, level: 'FINAL_YEAR', dept: 'EC', cover: 'license-plate-recognition.jpg' },
+  { title: 'Blockchain Based Academic Certificate Verification System', year: 2023, level: 'FINAL_YEAR', dept: 'IT', cover: 'blockchain-certificate.jpg' },
+  { title: 'Sentiment Analysis of Myanmar Facebook Comments', year: 2024, level: 'FINAL_YEAR', dept: 'IT', cover: 'sentiment-analysis.jpg' },
 ];
 
 async function main() {
@@ -164,9 +184,15 @@ async function main() {
         priceMmk: DEFAULT_PRICE,
       },
     });
-    // Flagship demo: give the first (IoT Smart Agriculture) project a full media
-    // set — gallery photos + a 360° turntable — so reviewers see the feature.
-    if (created === 0) await attachDemoImages(proj.id);
+    // Flagship demo (first project): full media set — gallery photos + a 360°
+    // turntable — so reviewers see the media feature end to end.
+    if (created === 0) {
+      await attachDemoImages(proj.id);
+    } else if (p.cover) {
+      // Every other project gets a single topic-matched cover photo so the grid
+      // never shows the blank document placeholder.
+      await attachCoverImage(proj.id, p.cover);
+    }
     created++;
   }
   console.log(`   ✓ ${created} sample projects created (published)`);
