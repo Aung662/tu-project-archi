@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import type { DashboardData } from '@/lib/types';
 import { Spinner } from '@/components/ui';
-import { t } from '@/lib/i18n';
+import { tr, t } from '@/lib/i18n';
 import { ActivityChart, BarList } from '@/components/charts/Charts';
 
 export default function AdminOverview() {
@@ -18,12 +18,12 @@ export default function AdminOverview() {
 
   const { totals } = data;
   const cards = [
-    { label: t.statTotalProjects.en, value: totals.projects, hint: `${totals.published} ${t.statPublished.en}` },
+    { label: tr(t.statTotalProjects), value: totals.projects, hint: `${totals.published} ${tr(t.statPublished)}` },
     { label: 'Page views', value: totals.totalPageViews, hint: 'All time' },
-    { label: t.statPendingPayments.en, value: totals.pendingPayments, hint: t.statNeedReview.en, warn: totals.pendingPayments > 0 },
-    { label: t.statUsers.en, value: totals.users },
+    { label: tr(t.statPendingPayments), value: totals.pendingPayments, hint: tr(t.statNeedReview), warn: totals.pendingPayments > 0 },
+    { label: tr(t.statUsers), value: totals.users },
     { label: 'Searches', value: totals.totalSearches, hint: `${totals.totalChecks} title checks` },
-    { label: t.statAccessGrants.en, value: totals.purchases, hint: t.statFilesUnlocked.en },
+    { label: tr(t.statAccessGrants), value: totals.purchases, hint: tr(t.statFilesUnlocked) },
   ];
 
   return (

@@ -1,4 +1,6 @@
-import { t } from '@/lib/i18n';
+'use client';
+
+import { tr, t } from '@/lib/i18n';
 
 export function Footer() {
   return (
@@ -7,9 +9,9 @@ export function Footer() {
         <div className="flex items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo.png" alt="Technological University Taunggyi" className="h-8 w-auto" />
-          <p>© {new Date().getFullYear()} {t.footerRights.en}</p>
+          <p>© {new Date().getFullYear()} {tr(t.footerRights)}</p>
         </div>
-        <p className="text-xs">{t.footerNote.en}</p>
+        <p className="text-xs">{tr(t.footerNote)}</p>
       </div>
     </footer>
   );

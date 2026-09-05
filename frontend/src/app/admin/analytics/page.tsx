@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import type { SearchAnalytics } from '@/lib/types';
 import { Spinner, EmptyState } from '@/components/ui';
-import { t } from '@/lib/i18n';
+import { tr, t } from '@/lib/i18n';
 
 type KindFilter = 'ALL' | 'SEARCH' | 'CHECK';
 
@@ -34,12 +34,12 @@ export default function AdminAnalytics() {
   }, [kind]);
 
   if (loading && !data) return <Spinner />;
-  if (!data) return <EmptyState title={t.anEmpty.en} />;
+  if (!data) return <EmptyState title={tr(t.anEmpty)} />;
 
   const cards = [
-    { label: t.anTotalSearches.en, value: data.stats.totalSearches, tone: 'text-brand-300' },
-    { label: t.anTotalChecks.en, value: data.stats.totalChecks, tone: 'text-brand-300' },
-    { label: t.anDuplicateRisks.en, value: data.stats.duplicateRisks, tone: 'text-rose-600' },
+    { label: tr(t.anTotalSearches), value: data.stats.totalSearches, tone: 'text-brand-300' },
+    { label: tr(t.anTotalChecks), value: data.stats.totalChecks, tone: 'text-brand-300' },
+    { label: tr(t.anDuplicateRisks), value: data.stats.duplicateRisks, tone: 'text-rose-600' },
   ];
 
   return (
@@ -78,24 +78,24 @@ export default function AdminAnalytics() {
                 : 'bg-white/10 text-slate-300 hover:bg-white/10'
             }`}
           >
-            {k === 'ALL' ? t.anFilterAll.en : k}
+            {k === 'ALL' ? tr(t.anFilterAll) : k}
           </button>
         ))}
       </div>
 
       {data.recent.length === 0 ? (
-        <EmptyState title={t.anEmpty.en} />
+        <EmptyState title={tr(t.anEmpty)} />
       ) : (
         <div className="card overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-white/5 text-left text-xs uppercase text-slate-400">
               <tr>
-                <th className="px-4 py-3">{t.anColKind.en}</th>
-                <th className="px-4 py-3">{t.anColQuery.en}</th>
-                <th className="px-4 py-3">{t.anColResults.en}</th>
-                <th className="px-4 py-3">{t.anColScore.en}</th>
-                <th className="px-4 py-3">{t.anColVerdict.en}</th>
-                <th className="px-4 py-3">{t.anColWhen.en}</th>
+                <th className="px-4 py-3">{tr(t.anColKind)}</th>
+                <th className="px-4 py-3">{tr(t.anColQuery)}</th>
+                <th className="px-4 py-3">{tr(t.anColResults)}</th>
+                <th className="px-4 py-3">{tr(t.anColScore)}</th>
+                <th className="px-4 py-3">{tr(t.anColVerdict)}</th>
+                <th className="px-4 py-3">{tr(t.anColWhen)}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10">

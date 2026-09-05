@@ -5,16 +5,16 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { Spinner, Alert } from '@/components/ui';
-import { t } from '@/lib/i18n';
+import { tr, t } from '@/lib/i18n';
 
 const TABS = [
-  { href: '/admin', label: t.tabOverview.en },
-  { href: '/admin/projects', label: t.tabProjects.en },
-  { href: '/admin/schools', label: t.tabSchools.en },
-  { href: '/admin/payments', label: t.tabPayments.en },
-  { href: '/admin/users', label: t.tabUsers.en },
-  { href: '/admin/analytics', label: t.tabAnalytics.en },
-  { href: '/admin/audit', label: t.tabAudit.en },
+  { href: '/admin', label: t.tabOverview },
+  { href: '/admin/projects', label: t.tabProjects },
+  { href: '/admin/schools', label: t.tabSchools },
+  { href: '/admin/payments', label: t.tabPayments },
+  { href: '/admin/users', label: t.tabUsers },
+  { href: '/admin/analytics', label: t.tabAnalytics },
+  { href: '/admin/audit', label: t.tabAudit },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -30,17 +30,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   }, [loading, user, router]);
 
-  if (loading) return <Spinner label={t.adminCheckingAccess.en} />;
+  if (loading) return <Spinner label={tr(t.adminCheckingAccess)} />;
   if (!user || user.role !== 'ADMIN') {
-    return <Alert kind="error">{t.adminOnly.en}</Alert>;
+    return <Alert kind="error">{tr(t.adminOnly)}</Alert>;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold text-slate-100">{t.adminDashboard.en}</h1>
+        <h1 className="text-2xl font-bold text-slate-100">{tr(t.adminDashboard)}</h1>
         <span className="text-sm text-slate-400">
-          {t.adminSignedInAs.en} <span className="font-medium text-slate-200">{user.name}</span>
+          {tr(t.adminSignedInAs)} <span className="font-medium text-slate-200">{user.name}</span>
         </span>
       </div>
       <nav className="flex flex-wrap gap-1 border-b border-white/10">
@@ -56,7 +56,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   : 'border-transparent text-slate-400 hover:text-slate-100'
               }`}
             >
-              {tab.label}
+              {tr(tab.label)}
             </Link>
           );
         })}

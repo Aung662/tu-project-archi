@@ -5,7 +5,7 @@ import { api } from '@/lib/api';
 import type { ProjectCard as Card, University } from '@/lib/types';
 import { Alert } from './ui';
 import { ProjectImageManager } from './media/ProjectImageManager';
-import { t, levelLabel, statusLabel } from '@/lib/i18n';
+import { tr, t, levelLabel, statusLabel } from '@/lib/i18n';
 
 interface Props {
   project: Card | null;
@@ -111,7 +111,7 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
     e.preventDefault();
     setError(null);
     if (consentBlocked) {
-      setError(t.fConsentError.en);
+      setError(tr(t.fConsentError));
       return;
     }
     setBusy(true);
@@ -154,7 +154,7 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
       }
       onDone();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t.fSaveFailed.en);
+      setError(err instanceof Error ? err.message : tr(t.fSaveFailed));
     } finally {
       setBusy(false);
     }
@@ -164,21 +164,21 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
     <form onSubmit={save} className="card space-y-4 p-6">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-slate-100">
-          {project ? t.fEditProject.en : t.fNewProject.en}
+          {project ? tr(t.fEditProject) : tr(t.fNewProject)}
         </h2>
         <button type="button" onClick={onCancel} className="text-sm text-slate-400 hover:text-slate-100">
-          ← {t.fCancel.en}
+          ← {tr(t.fCancel)}
         </button>
       </div>
 
       {error && <Alert kind="error">{error}</Alert>}
 
       <div>
-        <label className="label">{t.fTitle.en} *</label>
+        <label className="label">{tr(t.fTitle)} *</label>
         <input className="input" value={form.title} onChange={(e) => set({ title: e.target.value })} required />
       </div>
       <div>
-        <label className="label">{t.fAbstract.en} *</label>
+        <label className="label">{tr(t.fAbstract)} *</label>
         <textarea
           className="input min-h-[120px]"
           value={form.abstract}
@@ -188,11 +188,11 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="label">{t.fKeywordsComma.en}</label>
+          <label className="label">{tr(t.fKeywordsComma)}</label>
           <input className="input" value={form.keywords} onChange={(e) => set({ keywords: e.target.value })} />
         </div>
         <div>
-          <label className="label">{t.metaYear.en} *</label>
+          <label className="label">{tr(t.metaYear)} *</label>
           <input
             type="number"
             className="input"
@@ -202,7 +202,7 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
           />
         </div>
         <div>
-          <label className="label">{t.metaUniversity.en} *</label>
+          <label className="label">{tr(t.metaUniversity)} *</label>
           <select
             className="input"
             value={form.universityId}
@@ -216,7 +216,7 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
             }}
             required={!newUni.open}
           >
-            <option value="">{t.fSelect.en}</option>
+            <option value="">{tr(t.fSelect)}</option>
             {universities.map((u) => (
               <option key={u.id} value={u.id}>
                 {u.shortName}
@@ -256,14 +256,14 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
                   onClick={() => setNewUni({ open: false, name: '', shortName: '', city: '', busy: false })}
                   className="btn-secondary text-sm"
                 >
-                  {t.fCancel.en}
+                  {tr(t.fCancel)}
                 </button>
               </div>
             </div>
           )}
         </div>
         <div>
-          <label className="label">{t.metaDepartment.en} *</label>
+          <label className="label">{tr(t.metaDepartment)} *</label>
           <select
             className="input"
             value={form.departmentId}
@@ -278,7 +278,7 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
             required={!newDept.open}
             disabled={!selectedUni}
           >
-            <option value="">{t.fSelect.en}</option>
+            <option value="">{tr(t.fSelect)}</option>
             {selectedUni?.departments.map((d) => (
               <option key={d.id} value={d.id}>
                 {d.code} — {d.name}
@@ -312,23 +312,23 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
                   onClick={() => setNewDept({ open: false, name: '', code: '', busy: false })}
                   className="btn-secondary text-sm"
                 >
-                  {t.fCancel.en}
+                  {tr(t.fCancel)}
                 </button>
               </div>
             </div>
           )}
         </div>
         <div>
-          <label className="label">{t.fLevel.en} *</label>
+          <label className="label">{tr(t.fLevel)} *</label>
           <select className="input" value={form.level} onChange={(e) => set({ level: e.target.value as Card['level'] })}>
-            <option value="YEAR_3">{levelLabel.YEAR_3.en}</option>
-            <option value="YEAR_5">{levelLabel.YEAR_5.en}</option>
-            <option value="FINAL_YEAR">{levelLabel.FINAL_YEAR.en}</option>
-            <option value="OTHER">{levelLabel.OTHER.en}</option>
+            <option value="YEAR_3">{tr(levelLabel.YEAR_3)}</option>
+            <option value="YEAR_5">{tr(levelLabel.YEAR_5)}</option>
+            <option value="FINAL_YEAR">{tr(levelLabel.FINAL_YEAR)}</option>
+            <option value="OTHER">{tr(levelLabel.OTHER)}</option>
           </select>
         </div>
         <div>
-          <label className="label">{t.fPrice.en}</label>
+          <label className="label">{tr(t.fPrice)}</label>
           <input
             type="number"
             className="input"
@@ -337,11 +337,11 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
           />
         </div>
         <div>
-          <label className="label">{t.fAuthors.en}</label>
+          <label className="label">{tr(t.fAuthors)}</label>
           <input className="input" value={form.authorsText} onChange={(e) => set({ authorsText: e.target.value })} />
         </div>
         <div>
-          <label className="label">{t.fSupervisor.en}</label>
+          <label className="label">{tr(t.fSupervisor)}</label>
           <input
             className="input"
             value={form.supervisorName}
@@ -366,7 +366,7 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
       </div>
 
       <div>
-        <label className="label">{t.fProjectFile.en}</label>
+        <label className="label">{tr(t.fProjectFile)}</label>
         <input
           type="file"
           accept=".pdf,.doc,.docx,.zip,.jpg,.jpeg,.png"
@@ -378,7 +378,7 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
           viewer, save the project first, then use the image manager below.
         </p>
         {project?.hasFile && !file && (
-          <p className="mt-1 text-xs text-slate-400">{t.fFileAttached.en}</p>
+          <p className="mt-1 text-xs text-slate-400">{tr(t.fFileAttached)}</p>
         )}
       </div>
 
@@ -396,11 +396,11 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
 
       <div className="grid gap-4 rounded-lg bg-white/5 p-4 sm:grid-cols-2">
         <div>
-          <label className="label">{t.fStatus.en}</label>
+          <label className="label">{tr(t.fStatus)}</label>
           <select className="input" value={form.status} onChange={(e) => set({ status: e.target.value as Card['status'] })}>
-            <option value="DRAFT">{statusLabel.DRAFT.en}</option>
-            <option value="PUBLISHED">{statusLabel.PUBLISHED.en}</option>
-            <option value="ARCHIVED">{statusLabel.ARCHIVED.en}</option>
+            <option value="DRAFT">{tr(statusLabel.DRAFT)}</option>
+            <option value="PUBLISHED">{tr(statusLabel.PUBLISHED)}</option>
+            <option value="ARCHIVED">{tr(statusLabel.ARCHIVED)}</option>
           </select>
         </div>
         <label className="flex items-center gap-2 self-end pb-2 text-sm text-slate-200">
@@ -410,21 +410,21 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
             onChange={(e) => set({ hasConsent: e.target.checked })}
             className="h-4 w-4 rounded border-white/15"
           />
-          {t.fConsentLabel.en}
+          {tr(t.fConsentLabel)}
         </label>
         {consentBlocked && (
           <div className="sm:col-span-2">
-            <Alert kind="warning">{t.fConsentBlocked.en}</Alert>
+            <Alert kind="warning">{tr(t.fConsentBlocked)}</Alert>
           </div>
         )}
       </div>
 
       <div className="flex gap-2">
         <button type="submit" disabled={busy || consentBlocked} className="btn-primary">
-          {busy ? t.fSaving.en : t.fSaveProject.en}
+          {busy ? tr(t.fSaving) : tr(t.fSaveProject)}
         </button>
         <button type="button" onClick={onCancel} className="btn-secondary">
-          {t.fCancel.en}
+          {tr(t.fCancel)}
         </button>
       </div>
     </form>

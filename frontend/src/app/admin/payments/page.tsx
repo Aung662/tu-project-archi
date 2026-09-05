@@ -5,7 +5,7 @@ import { api } from '@/lib/api';
 import type { PaymentOrder } from '@/lib/types';
 import { Spinner, EmptyState, StatusBadge, Alert } from '@/components/ui';
 import { formatDate, formatMMK } from '@/lib/format';
-import { t, statusLabel } from '@/lib/i18n';
+import { tr, t, statusLabel } from '@/lib/i18n';
 
 export default function AdminPayments() {
   const [status, setStatus] = useState('PENDING');
@@ -22,7 +22,7 @@ export default function AdminPayments() {
     try {
       setOrders(await api.get<PaymentOrder[]>(`/admin/payments${api.qs({ status })}`));
     } catch (err) {
-      setMsg({ kind: 'error', text: err instanceof Error ? err.message : t.pActionFailed.en });
+      setMsg({ kind: 'error', text: err instanceof Error ? err.message : tr(t.pActionFailed) });
     } finally {
       setLoading(false);
     }
@@ -40,14 +40,14 @@ export default function AdminPayments() {
   }, [msg]);
 
   async function approve(order: PaymentOrder) {
-    if (!confirm(t.pConfirmApprove.en)) return;
+    if (!confirm(tr(t.pConfirmApprove))) return;
     setBusyId(order.id);
     try {
       await api.post(`/admin/payments/${order.id}/approve`, {});
-      setMsg({ kind: 'success', text: t.pApproved.en });
+      setMsg({ kind: 'success', text: tr(t.pApproved) });
       await load();
     } catch (err) {
-      setMsg({ kind: 'error', text: err instanceof Error ? err.message : t.pActionFailed.en });
+      setMsg({ kind: 'error', text: err instanceof Error ? err.message : tr(t.pActionFailed) });
     } finally {
       setBusyId(null);
     }
@@ -60,12 +60,12 @@ export default function AdminPayments() {
       await api.post(`/admin/payments/${rejecting.id}/reject`, {
         note: rejectNote.trim() || undefined,
       });
-      setMsg({ kind: 'success', text: t.pRejected.en });
+      setMsg({ kind: 'success', text: tr(t.pRejected) });
       setRejecting(null);
       setRejectNote('');
       await load();
     } catch (err) {
-      setMsg({ kind: 'error', text: err instanceof Error ? err.message : t.pActionFailed.en });
+      setMsg({ kind: 'error', text: err instanceof Error ? err.message : tr(t.pActionFailed) });
     } finally {
       setBusyId(null);
     }
@@ -82,7 +82,7 @@ export default function AdminPayments() {
               status === s ? 'bg-brand-600 text-white' : 'bg-white/10 text-slate-300'
             }`}
           >
-            {s ? statusLabel[s].en : t.pAll.en}
+            {s ? tr(statusLabel[s]) : tr(t.pAll)}
           </button>
         ))}
       </div>
@@ -92,20 +92,20 @@ export default function AdminPayments() {
       {loading ? (
         <Spinner />
       ) : orders.length === 0 ? (
-        <EmptyState title={t.pNoOrders.en} />
+        <EmptyState title={tr(t.pNoOrders)} />
       ) : (
         <div className="card overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-white/5 text-left text-xs uppercase text-slate-400">
               <tr>
-                <th className="px-4 py-3">{t.pColUser.en}</th>
-                <th className="px-4 py-3">{t.colProject.en}</th>
-                <th className="px-4 py-3">{t.colAmount.en}</th>
-                <th className="px-4 py-3">{t.pColMethodRef.en}</th>
-                <th className="px-4 py-3">{t.pColProof.en}</th>
-                <th className="px-4 py-3">{t.colDate.en}</th>
-                <th className="px-4 py-3">{t.colStatus.en}</th>
-                <th className="px-4 py-3">{t.aColActions.en}</th>
+                <th className="px-4 py-3">{tr(t.pColUser)}</th>
+                <th className="px-4 py-3">{tr(t.colProject)}</th>
+                <th className="px-4 py-3">{tr(t.colAmount)}</th>
+                <th className="px-4 py-3">{tr(t.pColMethodRef)}</th>
+                <th className="px-4 py-3">{tr(t.pColProof)}</th>
+                <th className="px-4 py-3">{tr(t.colDate)}</th>
+                <th className="px-4 py-3">{tr(t.colStatus)}</th>
+                <th className="px-4 py-3">{tr(t.aColActions)}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10">
@@ -131,10 +131,10 @@ export default function AdminPayments() {
                         rel="noopener noreferrer"
                         className="text-brand-300 underline-offset-2 hover:underline"
                       >
-                        {t.pViewProof.en}
+                        {tr(t.pViewProof)}
                       </a>
                     ) : (
-                      <span className="text-xs text-slate-400">{t.pNoProof.en}</span>
+                      <span className="text-xs text-slate-400">{tr(t.pNoProof)}</span>
                     )}
                   </td>
                   <td className="px-4 py-3">{formatDate(o.createdAt)}</td>
@@ -149,7 +149,7 @@ export default function AdminPayments() {
                           disabled={busyId === o.id}
                           className="btn-primary px-3 py-1 text-xs"
                         >
-                          {t.pApprove.en}
+                          {tr(t.pApprove)}
                         </button>
                         <button
                           onClick={() => {
@@ -159,7 +159,7 @@ export default function AdminPayments() {
                           disabled={busyId === o.id}
                           className="btn-danger px-3 py-1 text-xs"
                         >
-                          {t.pReject.en}
+                          {tr(t.pReject)}
                         </button>
                       </div>
                     ) : (
@@ -177,13 +177,13 @@ export default function AdminPayments() {
       {rejecting && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="card w-full max-w-md space-y-3 p-5">
-            <h2 className="text-lg font-semibold text-slate-100">{t.pRejectTitle.en}</h2>
+            <h2 className="text-lg font-semibold text-slate-100">{tr(t.pRejectTitle)}</h2>
             <p className="text-sm text-slate-400">
               {rejecting.user?.name} · {rejecting.project.title}
             </p>
             <textarea
               className="input min-h-[90px]"
-              placeholder={t.pRejectPlaceholder.en}
+              placeholder={tr(t.pRejectPlaceholder)}
               value={rejectNote}
               onChange={(e) => setRejectNote(e.target.value)}
               autoFocus
@@ -194,14 +194,14 @@ export default function AdminPayments() {
                 onClick={() => setRejecting(null)}
                 disabled={busyId === rejecting.id}
               >
-                {t.pCancel.en}
+                {tr(t.pCancel)}
               </button>
               <button
                 className="btn-danger"
                 onClick={confirmReject}
                 disabled={busyId === rejecting.id}
               >
-                {t.pReject.en}
+                {tr(t.pReject)}
               </button>
             </div>
           </div>

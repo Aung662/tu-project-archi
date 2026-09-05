@@ -8,7 +8,7 @@ import { api } from '@/lib/api';
 import type { SearchResult } from '@/lib/types';
 import { SimilarityMeter, Alert, SkeletonList, EmptyState, LevelBadge } from '@/components/ui';
 import { formatMMK } from '@/lib/format';
-import { t } from '@/lib/i18n';
+import { tr, t } from '@/lib/i18n';
 import { Reveal, StaggerGrid, StaggerItem, TiltCard } from '@/components/motion';
 
 interface Suggestion {
@@ -98,7 +98,7 @@ export default function HomePage() {
       const data = await api.get<SearchResult>(`/search${api.qs({ q, limit: 25 })}`);
       setResult(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t.searchFailed.en);
+      setError(err instanceof Error ? err.message : tr(t.searchFailed));
     } finally {
       setLoading(false);
     }
@@ -126,13 +126,10 @@ export default function HomePage() {
         >
           <span className="eyebrow font-latin">✦ AI Title Similarity</span>
           <h1 className="mx-auto mt-5 max-w-3xl text-4xl font-extrabold leading-tight tracking-tight sm:text-6xl">
-            <span className="text-gradient">{t.heroTitle.en}</span>
+            <span className="text-gradient">{tr(t.heroTitle)}</span>
           </h1>
-          <p className="mx-auto mt-3 max-w-2xl font-latin text-sm text-slate-400">
-            {t.heroTitle.en}
-          </p>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-300">
-            {t.heroSubtitle.en}
+            {tr(t.heroSubtitle)}
           </p>
         </motion.div>
 
@@ -152,9 +149,9 @@ export default function HomePage() {
               onChange={(e) => setQ(e.target.value)}
               onKeyDown={onKeyDown}
               onFocus={() => suggestions.length > 0 && setShowSuggest(true)}
-              placeholder={t.searchPlaceholder.en}
+              placeholder={tr(t.searchPlaceholder)}
               className="input py-3.5 pl-11 text-base"
-              aria-label={t.navSearch.en}
+              aria-label={tr(t.navSearch)}
               autoComplete="off"
               role="combobox"
               aria-expanded={showSuggest}
@@ -195,7 +192,7 @@ export default function HomePage() {
             </AnimatePresence>
           </div>
           <button type="submit" className="btn-primary px-8 py-3.5 text-base animate-shine">
-            {t.searchBtn.en}
+            {tr(t.searchBtn)}
           </button>
         </motion.form>
 
@@ -210,7 +207,7 @@ export default function HomePage() {
             className="group inline-flex items-center gap-2 rounded-full border border-brand-400/40 bg-brand-500/15 px-5 py-2.5 font-semibold text-brand-100 shadow-glow transition hover:border-brand-300 hover:bg-brand-500/30 hover:text-white"
           >
             <span aria-hidden>🗂️</span>
-            {t.browseCta.en}
+            {tr(t.browseCta)}
             <span className="transition-transform group-hover:translate-x-0.5">→</span>
           </Link>
           <Link
@@ -218,7 +215,7 @@ export default function HomePage() {
             className="group inline-flex items-center gap-2 rounded-full border border-plum-400/40 bg-plum-500/15 px-5 py-2.5 font-semibold text-plum-100 shadow-glow transition hover:border-plum-300 hover:bg-plum-500/30 hover:text-white"
           >
             <span aria-hidden>🛡️</span>
-            {t.checkCta.en}
+            {tr(t.checkCta)}
             <span className="transition-transform group-hover:translate-x-0.5">→</span>
           </Link>
         </motion.div>
@@ -241,20 +238,20 @@ export default function HomePage() {
               {result.total === 1 ? '' : 'es'} for “{result.query}”
             </h2>
             <span className="font-latin text-xs text-slate-400">
-              {t.normalized.en}:{' '}
+              {tr(t.normalized)}:{' '}
               <code className="rounded bg-white/10 px-1.5 py-0.5">{result.normalizedQuery}</code>
             </span>
           </div>
 
           {exactCount > 0 && (
             <Alert kind="warning">
-              <strong>{t.duplicateRiskLead.en}</strong> Found {exactCount} highly similar
-              title{exactCount === 1 ? '' : 's'}. {t.duplicateRiskBody.en}
+              <strong>{tr(t.duplicateRiskLead)}</strong> Found {exactCount} highly similar
+              title{exactCount === 1 ? '' : 's'}. {tr(t.duplicateRiskBody)}
             </Alert>
           )}
 
           {result.results.length === 0 ? (
-            <EmptyState title={t.noSimilarTitle.en} hint={t.noSimilarHint.en} />
+            <EmptyState title={tr(t.noSimilarTitle)} hint={tr(t.noSimilarHint)} />
           ) : (
             <StaggerGrid className="space-y-3">
               {result.results.map((r) => (
@@ -274,7 +271,7 @@ export default function HomePage() {
                         <p className="font-latin text-xs text-slate-400">
                           {r.project.university.shortName} · {r.project.department.code} ·{' '}
                           {r.project.year} ·{' '}
-                          {r.project.priceMmk > 0 ? formatMMK(r.project.priceMmk) : t.free.en}
+                          {r.project.priceMmk > 0 ? formatMMK(r.project.priceMmk) : tr(t.free)}
                         </p>
                         <p className="mt-2 line-clamp-2 text-sm text-slate-300">
                           {r.project.abstract}
@@ -302,8 +299,8 @@ export default function HomePage() {
 
           <StaggerGrid className="grid gap-6 sm:grid-cols-3">
             <Feature
-              title={t.featSearchTitle.en}
-              desc={t.featSearchDesc.en}
+              title={tr(t.featSearchTitle)}
+              desc={tr(t.featSearchDesc)}
               icon="🔎"
               tint="from-brand-500/20 to-brand-500/0"
               details={[
@@ -315,8 +312,8 @@ export default function HomePage() {
               onCtaScrollTop
             />
             <Feature
-              title={t.featRankTitle.en}
-              desc={t.featRankDesc.en}
+              title={tr(t.featRankTitle)}
+              desc={tr(t.featRankDesc)}
               icon="📊"
               tint="from-plum-500/20 to-plum-500/0"
               details={[
@@ -327,8 +324,8 @@ export default function HomePage() {
               cta={{ label: 'Run a full check', href: '/check' }}
             />
             <Feature
-              title={t.featBuyTitle.en}
-              desc={t.featBuyDesc.en}
+              title={tr(t.featBuyTitle)}
+              desc={tr(t.featBuyDesc)}
               icon="📄"
               tint="from-mint-500/20 to-mint-500/0"
               details={[

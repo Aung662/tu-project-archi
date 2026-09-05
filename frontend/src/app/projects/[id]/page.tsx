@@ -8,7 +8,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Alert, Spinner, LevelBadge } from '@/components/ui';
 import { formatMMK } from '@/lib/format';
 import { downloadProjectFile } from '@/lib/download';
-import { t, levelLabel } from '@/lib/i18n';
+import { tr, t, levelLabel } from '@/lib/i18n';
 import { PurchasePanel } from '@/components/PurchasePanel';
 import { ProjectMedia } from '@/components/media/ProjectMedia';
 import { BookmarkButton } from '@/components/BookmarkButton';
@@ -31,7 +31,7 @@ export default function ProjectDetailPage() {
         const p = await api.get<Card>(`/projects/${id}`);
         if (active) setProject(p);
       } catch (err) {
-        if (active) setError(err instanceof ApiError ? err.message : t.loadProjectFailed.en);
+        if (active) setError(err instanceof ApiError ? err.message : tr(t.loadProjectFailed));
       } finally {
         if (active) setLoading(false);
       }
@@ -60,22 +60,22 @@ export default function ProjectDetailPage() {
     }
     setDownloadError(
       result.reason === 'forbidden'
-        ? t.dlNotApproved.en
+        ? tr(t.dlNotApproved)
         : result.reason === 'unauthorized'
-          ? t.dlSessionExpired.en
-          : t.dlFailed.en,
+          ? tr(t.dlSessionExpired)
+          : tr(t.dlFailed),
     );
   }
 
-  if (loading) return <Spinner label={t.loadingProject.en} />;
-  if (error || !project) return <Alert kind="error">{error || t.notFound.en}</Alert>;
+  if (loading) return <Spinner label={tr(t.loadingProject)} />;
+  if (error || !project) return <Alert kind="error">{error || tr(t.notFound)}</Alert>;
 
   return (
     <>
     <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
       <article className="space-y-5">
         <button onClick={() => router.back()} className="text-sm text-slate-400 hover:text-slate-100">
-          ← {t.back.en}
+          ← {tr(t.back)}
         </button>
         <div className="flex flex-wrap items-center gap-2">
           <LevelBadge level={project.level} />
@@ -93,7 +93,7 @@ export default function ProjectDetailPage() {
 
         <section className="card p-5">
           <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-400">
-            {t.abstract.en}
+            {tr(t.abstract)}
           </h2>
           <p className="whitespace-pre-line text-slate-200">{project.abstract}</p>
         </section>
@@ -101,7 +101,7 @@ export default function ProjectDetailPage() {
         {project.keywords.length > 0 && (
           <section>
             <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-400">
-              {t.keywords.en}
+              {tr(t.keywords)}
             </h2>
             <div className="flex flex-wrap gap-2">
               {project.keywords.map((k) => (
@@ -114,12 +114,12 @@ export default function ProjectDetailPage() {
         )}
 
         <dl className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
-          <Meta label={t.metaUniversity.en} value={project.university.name} />
-          <Meta label={t.metaDepartment.en} value={project.department.name} />
-          <Meta label={t.metaLevel.en} value={levelLabel[project.level]?.en ?? project.level} />
-          <Meta label={t.metaYear.en} value={String(project.year)} />
-          {project.authorsText && <Meta label={t.metaAuthors.en} value={project.authorsText} />}
-          {project.supervisorName && <Meta label={t.metaSupervisor.en} value={project.supervisorName} />}
+          <Meta label={tr(t.metaUniversity)} value={project.university.name} />
+          <Meta label={tr(t.metaDepartment)} value={project.department.name} />
+          <Meta label={tr(t.metaLevel)} value={tr(levelLabel[project.level]) ?? project.level} />
+          <Meta label={tr(t.metaYear)} value={String(project.year)} />
+          {project.authorsText && <Meta label={tr(t.metaAuthors)} value={project.authorsText} />}
+          {project.supervisorName && <Meta label={tr(t.metaSupervisor)} value={project.supervisorName} />}
         </dl>
       </article>
 
@@ -127,30 +127,30 @@ export default function ProjectDetailPage() {
       <aside className="lg:sticky lg:top-20 lg:self-start">
         <div className="card space-y-4 p-5">
           <div>
-            <p className="text-sm text-slate-400">{t.fullFile.en}</p>
+            <p className="text-sm text-slate-400">{tr(t.fullFile)}</p>
             <p className="text-2xl font-bold text-slate-100">
-              {project.priceMmk > 0 ? formatMMK(project.priceMmk) : t.free.en}
+              {project.priceMmk > 0 ? formatMMK(project.priceMmk) : tr(t.free)}
             </p>
           </div>
 
           {!project.hasFile ? (
-            <Alert kind="info">{t.fileNotAvailable.en}</Alert>
+            <Alert kind="info">{tr(t.fileNotAvailable)}</Alert>
           ) : owned || user?.role === 'ADMIN' ? (
             <>
-              <Alert kind="success">{t.youHaveAccess.en}</Alert>
+              <Alert kind="success">{tr(t.youHaveAccess)}</Alert>
               {downloadError && <Alert kind="error">{downloadError}</Alert>}
               <button onClick={download} className="btn-primary w-full">
-                {t.downloadFile.en}
+                {tr(t.downloadFile)}
               </button>
             </>
           ) : !user ? (
             <>
-              <Alert kind="info">{t.loginToBuyInfo.en}</Alert>
+              <Alert kind="info">{tr(t.loginToBuyInfo)}</Alert>
               <button
                 onClick={() => router.push(`/login?next=/projects/${id}`)}
                 className="btn-primary w-full"
               >
-                {t.loginToBuyBtn.en}
+                {tr(t.loginToBuyBtn)}
               </button>
             </>
           ) : (

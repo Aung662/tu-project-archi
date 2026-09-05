@@ -9,6 +9,7 @@ import { InstallPrompt } from '@/components/InstallPrompt';
 import { PageViewTracker } from '@/components/PageViewTracker';
 import { BookmarksProvider } from '@/context/BookmarksContext';
 import { ThemeProvider, themeInitScript } from '@/context/ThemeContext';
+import { LanguageProvider } from '@/context/LanguageContext';
 import { WelcomeOverlay } from '@/components/WelcomeOverlay';
 
 // Modern geometric sans for Latin / UI numerals.
@@ -74,6 +75,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </div>
 
         <ThemeProvider>
+        <LanguageProvider>
         <AuthProvider>
           <BookmarksProvider>
             <div className="relative flex min-h-screen flex-col">
@@ -87,6 +89,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <PageViewTracker />
           </BookmarksProvider>
         </AuthProvider>
+        </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

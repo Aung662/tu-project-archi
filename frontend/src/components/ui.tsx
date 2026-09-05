@@ -1,6 +1,6 @@
 'use client';
 
-import { levelLabel, statusLabel, type Label } from '@/lib/i18n';
+import { tr, levelLabel, statusLabel, type Label } from '@/lib/i18n';
 
 /**
  * Bilingual text: Burmese primary (larger), English secondary (smaller, muted).
@@ -9,11 +9,11 @@ import { levelLabel, statusLabel, type Label } from '@/lib/i18n';
  */
 export function Bi({ label, inline = false, className = '' }: { label: Label; inline?: boolean; className?: string }) {
   if (inline) {
-    return <span className={className}>{label.en}</span>;
+    return <span className={className}>{tr(label)}</span>;
   }
   return (
     <span className={className}>
-      <span className="block">{label.en}</span>
+      <span className="block">{tr(label)}</span>
     </span>
   );
 }
@@ -27,7 +27,7 @@ export function LevelBadge({ level }: { level: string }) {
   };
   return (
     <span className={`badge ${colors[level] || colors.OTHER}`}>
-      {levelLabel[level]?.en || level}
+      {tr(levelLabel[level]) || level}
     </span>
   );
 }
@@ -43,7 +43,7 @@ export function StatusBadge({ status }: { status: string }) {
   };
   return (
     <span className={`badge ${colors[status] || 'bg-white/10 text-slate-300 ring-1 ring-white/15'}`}>
-      {statusLabel[status]?.en || status}
+      {tr(statusLabel[status]) || status}
     </span>
   );
 }

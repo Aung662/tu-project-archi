@@ -15,6 +15,38 @@ export interface Label {
 
 const L = (my: string, en: string): Label => ({ my, en });
 
+/** Supported UI languages. English is the default; Burmese is a full toggle. */
+export type Lang = 'en' | 'my';
+
+/**
+ * Module-level "current language". Kept outside React on purpose: every label
+ * read goes through `tr()`, and the LanguageProvider forces a remount of the
+ * app subtree whenever the language changes, so components simply re-read this
+ * value — no per-component hook wiring required. Defaults to English so the
+ * server render and first client render agree (no hydration mismatch).
+ */
+let _lang: Lang = 'en';
+
+export const LANG_STORAGE_KEY = 'tu-lang';
+
+export function getLang(): Lang {
+  return _lang;
+}
+
+export function setLangModule(lang: Lang): void {
+  _lang = lang;
+}
+
+/**
+ * Translate a label to the current language. Accepts `undefined` (e.g. a lookup
+ * miss like `levelLabel[unknownKey]`) and returns '' so callers can keep their
+ * `tr(x) || fallback` idiom.
+ */
+export function tr(label: Label | undefined | null): string {
+  if (!label) return '';
+  return label[_lang] ?? label.en;
+}
+
 export const t = {
   // Brand / chrome
   brandTitle: L('မြန်မာနည်းပညာတက္ကသိုလ် စီမံကိန်းမှတ်တမ်း', 'Project Archive'),

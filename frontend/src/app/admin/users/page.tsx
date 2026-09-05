@@ -5,7 +5,7 @@ import { api } from '@/lib/api';
 import type { User } from '@/lib/types';
 import { Spinner, Alert } from '@/components/ui';
 import { formatDate } from '@/lib/format';
-import { t } from '@/lib/i18n';
+import { tr, t } from '@/lib/i18n';
 
 export default function AdminUsers() {
   const [users, setUsers] = useState<User[]>([]);
@@ -28,10 +28,10 @@ export default function AdminUsers() {
   async function changeRole(id: string, role: string) {
     try {
       await api.put(`/admin/users/${id}/role`, { role });
-      setMsg(t.uRoleChanged.en);
+      setMsg(tr(t.uRoleChanged));
       await load();
     } catch (err) {
-      setMsg(err instanceof Error ? err.message : t.scActionFailed.en);
+      setMsg(err instanceof Error ? err.message : tr(t.scActionFailed));
     }
   }
 
@@ -44,10 +44,10 @@ export default function AdminUsers() {
         <table className="w-full text-sm">
           <thead className="bg-white/5 text-left text-xs uppercase text-slate-400">
             <tr>
-              <th className="px-4 py-3">{t.uColName.en}</th>
-              <th className="px-4 py-3">{t.uColEmail.en}</th>
-              <th className="px-4 py-3">{t.uColJoined.en}</th>
-              <th className="px-4 py-3">{t.uColRole.en}</th>
+              <th className="px-4 py-3">{tr(t.uColName)}</th>
+              <th className="px-4 py-3">{tr(t.uColEmail)}</th>
+              <th className="px-4 py-3">{tr(t.uColJoined)}</th>
+              <th className="px-4 py-3">{tr(t.uColRole)}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/10">

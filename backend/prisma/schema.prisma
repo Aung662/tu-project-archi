@@ -102,9 +102,6 @@ model Bookmark {
 }
 
 // ── Password reset tokens (single-use, short-lived) ──────────────────────────
-// We store only a SHA-256 hash of the token; the raw token is delivered to the
-// user (via email in production; surfaced in the API response in dev where no
-// SMTP is configured) and never persisted in the clear.
 model PasswordResetToken {
   id        String   @id @default(cuid())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)

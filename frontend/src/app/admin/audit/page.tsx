@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import type { AuditEntry } from '@/lib/types';
 import { Spinner, EmptyState } from '@/components/ui';
-import { t } from '@/lib/i18n';
+import { tr, t } from '@/lib/i18n';
 
 export default function AdminAudit() {
   const [logs, setLogs] = useState<AuditEntry[]>([]);
@@ -18,17 +18,17 @@ export default function AdminAudit() {
   }, []);
 
   if (loading) return <Spinner />;
-  if (logs.length === 0) return <EmptyState title={t.auEmpty.en} />;
+  if (logs.length === 0) return <EmptyState title={tr(t.auEmpty)} />;
 
   return (
     <div className="card overflow-x-auto">
       <table className="w-full text-sm">
         <thead className="bg-white/5 text-left text-xs uppercase text-slate-400">
           <tr>
-            <th className="px-4 py-3">{t.auColWhen.en}</th>
-            <th className="px-4 py-3">{t.auColActor.en}</th>
-            <th className="px-4 py-3">{t.auColAction.en}</th>
-            <th className="px-4 py-3">{t.auColEntity.en}</th>
+            <th className="px-4 py-3">{tr(t.auColWhen)}</th>
+            <th className="px-4 py-3">{tr(t.auColActor)}</th>
+            <th className="px-4 py-3">{tr(t.auColAction)}</th>
+            <th className="px-4 py-3">{tr(t.auColEntity)}</th>
             <th className="px-4 py-3">Details</th>
           </tr>
         </thead>

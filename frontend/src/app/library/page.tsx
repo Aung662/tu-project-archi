@@ -10,7 +10,7 @@ import { ProjectCard } from '@/components/ProjectCard';
 import { Alert, Spinner, EmptyState, StatusBadge } from '@/components/ui';
 import { formatDate, formatMMK } from '@/lib/format';
 import { downloadProjectFile } from '@/lib/download';
-import { t } from '@/lib/i18n';
+import { tr, t } from '@/lib/i18n';
 
 export default function LibraryPage() {
   const { user, loading: authLoading } = useAuth();
@@ -46,24 +46,24 @@ export default function LibraryPage() {
       setDlError(null);
       return;
     }
-    setDlError(result.reason === 'forbidden' ? t.dlNoLonger.en : t.dlFailedRetry.en);
+    setDlError(result.reason === 'forbidden' ? tr(t.dlNoLonger) : tr(t.dlFailedRetry));
   }
 
-  if (authLoading || loading) return <Spinner label={t.loadingLibrary.en} />;
+  if (authLoading || loading) return <Spinner label={tr(t.loadingLibrary)} />;
   if (!user) return null;
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-slate-100">{t.libraryTitle.en}</h1>
-        <p className="text-sm text-slate-400">{t.librarySubtitle.en}</p>
+        <h1 className="text-2xl font-bold text-slate-100">{tr(t.libraryTitle)}</h1>
+        <p className="text-sm text-slate-400">{tr(t.librarySubtitle)}</p>
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-100">{t.purchasedProjects.en}</h2>
+        <h2 className="text-lg font-semibold text-slate-100">{tr(t.purchasedProjects)}</h2>
         {dlError && <Alert kind="error">{dlError}</Alert>}
         {purchases.length === 0 ? (
-          <EmptyState title={t.noPurchasesTitle.en} hint={t.noPurchasesHint.en} />
+          <EmptyState title={tr(t.noPurchasesTitle)} hint={tr(t.noPurchasesHint)} />
         ) : (
           <div className="grid gap-3 sm:grid-cols-2">
             {purchases.map((p) => (
@@ -76,7 +76,7 @@ export default function LibraryPage() {
                 </div>
                 {p.project.hasFile && (
                   <button onClick={() => download(p.project.id, p.project.title)} className="btn-primary">
-                    {t.download.en}
+                    {tr(t.download)}
                   </button>
                 )}
               </div>
@@ -121,19 +121,19 @@ export default function LibraryPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-100">{t.paymentHistory.en}</h2>
+        <h2 className="text-lg font-semibold text-slate-100">{tr(t.paymentHistory)}</h2>
         {orders.length === 0 ? (
-          <Alert kind="info">{t.noOrders.en}</Alert>
+          <Alert kind="info">{tr(t.noOrders)}</Alert>
         ) : (
           <div className="card overflow-x-auto">
             <table className="w-full min-w-[600px] text-sm">
               <thead className="bg-white/5 text-left text-xs uppercase text-slate-400">
                 <tr>
-                  <th className="px-4 py-3">{t.colProject.en}</th>
-                  <th className="px-4 py-3">{t.colAmount.en}</th>
-                  <th className="px-4 py-3">{t.colMethod.en}</th>
-                  <th className="px-4 py-3">{t.colDate.en}</th>
-                  <th className="px-4 py-3">{t.colStatus.en}</th>
+                  <th className="px-4 py-3">{tr(t.colProject)}</th>
+                  <th className="px-4 py-3">{tr(t.colAmount)}</th>
+                  <th className="px-4 py-3">{tr(t.colMethod)}</th>
+                  <th className="px-4 py-3">{tr(t.colDate)}</th>
+                  <th className="px-4 py-3">{tr(t.colStatus)}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/10">

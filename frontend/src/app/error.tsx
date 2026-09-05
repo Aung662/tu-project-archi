@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { t } from '@/lib/i18n';
+import { tr, t } from '@/lib/i18n';
 
 /**
  * Route-segment error boundary. Catches render/data errors in any page under the
@@ -17,16 +17,15 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
 
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-4 px-4 py-20 text-center">
-      <div className="grid h-16 w-16 place-items-center rounded-full bg-red-50 text-3xl">⚠️</div>
-      <h1 className="text-xl font-bold text-slate-100">{t.errorTitle.en}</h1>
-      <p className="text-sm text-slate-400">{t.errorTitle.en}</p>
-      <p className="text-sm text-slate-300">{t.errorBody.en}</p>
+      <div className="grid h-16 w-16 place-items-center rounded-full bg-red-500/10 text-3xl ring-1 ring-red-400/25">⚠️</div>
+      <h1 className="text-xl font-bold text-slate-100">{tr(t.errorTitle)}</h1>
+      <p className="text-sm text-slate-300">{tr(t.errorBody)}</p>
       <div className="mt-2 flex gap-3">
         <button className="btn-primary" onClick={reset}>
-          {t.errorRetry.en}
+          {tr(t.errorRetry)}
         </button>
         <Link href="/" className="btn-secondary">
-          {t.backHome.en}
+          {tr(t.backHome)}
         </Link>
       </div>
     </div>

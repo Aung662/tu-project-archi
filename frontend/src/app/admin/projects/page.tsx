@@ -6,7 +6,7 @@ import { api } from '@/lib/api';
 import type { Paginated, ProjectCard as Card } from '@/lib/types';
 import { Spinner, EmptyState, StatusBadge, Alert } from '@/components/ui';
 import { ProjectForm } from '@/components/ProjectForm';
-import { t, statusLabel } from '@/lib/i18n';
+import { tr, t, statusLabel } from '@/lib/i18n';
 
 export default function AdminProjects() {
   const [data, setData] = useState<Paginated<Card> | null>(null);
@@ -32,9 +32,9 @@ export default function AdminProjects() {
   }, [load]);
 
   async function remove(id: string) {
-    if (!confirm(t.aConfirmDelete.en)) return;
+    if (!confirm(tr(t.aConfirmDelete))) return;
     await api.del(`/admin/projects/${id}`);
-    setMsg(t.aDeleted.en);
+    setMsg(tr(t.aDeleted));
     await load();
   }
 
@@ -45,7 +45,7 @@ export default function AdminProjects() {
         onDone={async () => {
           setEditing(null);
           setCreating(false);
-          setMsg(t.aSaved.en);
+          setMsg(tr(t.aSaved));
           await load();
         }}
         onCancel={() => {
@@ -62,7 +62,7 @@ export default function AdminProjects() {
         <div className="flex flex-wrap items-center gap-2">
           <input
             className="input max-w-xs"
-            placeholder={t.aSearchPlaceholder.en}
+            placeholder={tr(t.aSearchPlaceholder)}
             value={q}
             onChange={(e) => {
               setQ(e.target.value);
@@ -77,14 +77,14 @@ export default function AdminProjects() {
               setPage(1);
             }}
           >
-            <option value="">{t.aAllStatuses.en}</option>
-            <option value="DRAFT">{statusLabel.DRAFT.en}</option>
-            <option value="PUBLISHED">{statusLabel.PUBLISHED.en}</option>
-            <option value="ARCHIVED">{statusLabel.ARCHIVED.en}</option>
+            <option value="">{tr(t.aAllStatuses)}</option>
+            <option value="DRAFT">{tr(statusLabel.DRAFT)}</option>
+            <option value="PUBLISHED">{tr(statusLabel.PUBLISHED)}</option>
+            <option value="ARCHIVED">{tr(statusLabel.ARCHIVED)}</option>
           </select>
         </div>
         <button onClick={() => setCreating(true)} className="btn-primary">
-          {t.aNewProject.en}
+          {tr(t.aNewProject)}
         </button>
       </div>
 
@@ -93,20 +93,20 @@ export default function AdminProjects() {
       {loading ? (
         <Spinner />
       ) : !data || data.items.length === 0 ? (
-        <EmptyState title={t.aNoProjects.en} hint={t.aNoProjectsHint.en} />
+        <EmptyState title={tr(t.aNoProjects)} hint={tr(t.aNoProjectsHint)} />
       ) : (
         <>
           <div className="card overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-white/5 text-left text-xs uppercase text-slate-400">
                 <tr>
-                  <th className="px-4 py-3">{t.aColTitle.en}</th>
-                  <th className="px-4 py-3">{t.aColYear.en}</th>
-                  <th className="px-4 py-3">{t.aColUniDept.en}</th>
-                  <th className="px-4 py-3">{t.aColStatus.en}</th>
-                  <th className="px-4 py-3">{t.aColConsent.en}</th>
-                  <th className="px-4 py-3">{t.aColFile.en}</th>
-                  <th className="px-4 py-3">{t.aColActions.en}</th>
+                  <th className="px-4 py-3">{tr(t.aColTitle)}</th>
+                  <th className="px-4 py-3">{tr(t.aColYear)}</th>
+                  <th className="px-4 py-3">{tr(t.aColUniDept)}</th>
+                  <th className="px-4 py-3">{tr(t.aColStatus)}</th>
+                  <th className="px-4 py-3">{tr(t.aColConsent)}</th>
+                  <th className="px-4 py-3">{tr(t.aColFile)}</th>
+                  <th className="px-4 py-3">{tr(t.aColActions)}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/10">
@@ -126,19 +126,19 @@ export default function AdminProjects() {
                     </td>
                     <td className="px-4 py-3">
                       {p.hasConsent ? (
-                        <span className="badge bg-emerald-100 text-emerald-700">{t.aYes.en}</span>
+                        <span className="badge bg-emerald-100 text-emerald-700">{tr(t.aYes)}</span>
                       ) : (
-                        <span className="badge bg-red-100 text-red-700">{t.aNo.en}</span>
+                        <span className="badge bg-red-100 text-red-700">{tr(t.aNo)}</span>
                       )}
                     </td>
                     <td className="px-4 py-3">{p.hasFile ? '📄' : '—'}</td>
                     <td className="px-4 py-3">
                       <div className="flex gap-2">
                         <button onClick={() => setEditing(p)} className="btn-secondary px-3 py-1 text-xs">
-                          {t.aEdit.en}
+                          {tr(t.aEdit)}
                         </button>
                         <button onClick={() => remove(p.id)} className="btn-danger px-3 py-1 text-xs">
-                          {t.aDelete.en}
+                          {tr(t.aDelete)}
                         </button>
                       </div>
                     </td>
@@ -150,7 +150,7 @@ export default function AdminProjects() {
           {data.totalPages > 1 && (
             <div className="flex items-center justify-center gap-2">
               <button className="btn-secondary" disabled={page <= 1} onClick={() => setPage(page - 1)}>
-                {t.aPrev.en}
+                {tr(t.aPrev)}
               </button>
               <span className="text-sm text-slate-300">
                 {page} / {data.totalPages}
@@ -160,7 +160,7 @@ export default function AdminProjects() {
                 disabled={page >= data.totalPages}
                 onClick={() => setPage(page + 1)}
               >
-                {t.aNext.en}
+                {tr(t.aNext)}
               </button>
             </div>
           )}

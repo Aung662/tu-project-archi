@@ -5,7 +5,7 @@ import { api } from '@/lib/api';
 import type { Paginated, ProjectCard as Card, University } from '@/lib/types';
 import { ProjectCard } from '@/components/ProjectCard';
 import { EmptyState, Alert, SkeletonCard } from '@/components/ui';
-import { t, levelLabel } from '@/lib/i18n';
+import { tr, t, levelLabel } from '@/lib/i18n';
 
 export default function BrowsePage() {
   const [universities, setUniversities] = useState<University[]>([]);
@@ -44,7 +44,7 @@ export default function BrowsePage() {
       );
       setData(res);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t.loadFailed.en);
+      setError(err instanceof Error ? err.message : tr(t.loadFailed));
     } finally {
       setLoading(false);
     }
@@ -62,29 +62,29 @@ export default function BrowsePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-100">{t.browseTitle.en}</h1>
-        <p className="text-sm text-slate-400">{t.browseSubtitle.en}</p>
+        <h1 className="text-2xl font-bold text-slate-100">{tr(t.browseTitle)}</h1>
+        <p className="text-sm text-slate-400">{tr(t.browseSubtitle)}</p>
       </div>
 
       {/* Filters */}
       <div className="card grid gap-3 p-4 md:grid-cols-5">
         <div className="md:col-span-2">
-          <label className="label">{t.fKeyword.en}</label>
+          <label className="label">{tr(t.fKeyword)}</label>
           <input
             className="input"
-            placeholder={t.fKeywordPlaceholder.en}
+            placeholder={tr(t.fKeywordPlaceholder)}
             value={filters.q}
             onChange={(e) => update({ q: e.target.value })}
           />
         </div>
         <div>
-          <label className="label">{t.fUniversity.en}</label>
+          <label className="label">{tr(t.fUniversity)}</label>
           <select
             className="input"
             value={filters.universityId}
             onChange={(e) => update({ universityId: e.target.value, departmentId: '' })}
           >
-            <option value="">{t.fAll.en}</option>
+            <option value="">{tr(t.fAll)}</option>
             {universities.map((u) => (
               <option key={u.id} value={u.id}>
                 {u.shortName}
@@ -93,14 +93,14 @@ export default function BrowsePage() {
           </select>
         </div>
         <div>
-          <label className="label">{t.fDepartment.en}</label>
+          <label className="label">{tr(t.fDepartment)}</label>
           <select
             className="input"
             value={filters.departmentId}
             onChange={(e) => update({ departmentId: e.target.value })}
             disabled={!selectedUni}
           >
-            <option value="">{t.fAll.en}</option>
+            <option value="">{tr(t.fAll)}</option>
             {selectedUni?.departments.map((d) => (
               <option key={d.id} value={d.id}>
                 {d.code} — {d.name}
@@ -109,13 +109,13 @@ export default function BrowsePage() {
           </select>
         </div>
         <div>
-          <label className="label">{t.fYear.en}</label>
+          <label className="label">{tr(t.fYear)}</label>
           <select
             className="input"
             value={filters.year}
             onChange={(e) => update({ year: e.target.value })}
           >
-            <option value="">{t.fAll.en}</option>
+            <option value="">{tr(t.fAll)}</option>
             {years.map((y) => (
               <option key={y} value={y}>
                 {y}
@@ -135,7 +135,7 @@ export default function BrowsePage() {
                     : 'bg-white/10 text-slate-300 hover:bg-white/10'
                 }`}
               >
-                {lv ? levelLabel[lv].en : t.fAllLevels.en}
+                {lv ? tr(levelLabel[lv]) : tr(t.fAllLevels)}
               </button>
             ))}
           </div>
@@ -207,7 +207,7 @@ export default function BrowsePage() {
         </div>
       ) : data && data.items.length > 0 ? (
         <>
-          <p className="text-sm text-slate-400">{data.total} {t.projectsFound.en}</p>
+          <p className="text-sm text-slate-400">{data.total} {tr(t.projectsFound)}</p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {data.items.map((p) => (
               <ProjectCard key={p.id} p={p} />
@@ -220,23 +220,23 @@ export default function BrowsePage() {
                 disabled={data.page <= 1}
                 onClick={() => update({ page: data.page - 1 })}
               >
-                {t.prevPage.en}
+                {tr(t.prevPage)}
               </button>
               <span className="text-sm text-slate-300">
-                {t.pageOf.en} {data.page} / {data.totalPages}
+                {tr(t.pageOf)} {data.page} / {data.totalPages}
               </span>
               <button
                 className="btn-secondary"
                 disabled={data.page >= data.totalPages}
                 onClick={() => update({ page: data.page + 1 })}
               >
-                {t.nextPage.en}
+                {tr(t.nextPage)}
               </button>
             </div>
           )}
         </>
       ) : (
-        <EmptyState title={t.noProjectsTitle.en} hint={t.noProjectsHint.en} />
+        <EmptyState title={tr(t.noProjectsTitle)} hint={tr(t.noProjectsHint)} />
       )}
     </div>
   );

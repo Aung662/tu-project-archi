@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import type { ProjectCard as Card } from '@/lib/types';
 import { formatMMK } from '@/lib/format';
-import { t } from '@/lib/i18n';
+import { tr, t } from '@/lib/i18n';
 import { LevelBadge } from './ui';
 import { BookmarkButton } from './BookmarkButton';
 import { ProjectThumb } from './ProjectThumb';
@@ -65,13 +65,13 @@ export function ProjectCard({ p }: { p: Card }) {
             {p.priceMmk > 0 ? (
               <span className="font-semibold text-brand-300">{formatMMK(p.priceMmk)}</span>
             ) : (
-              <span className="font-semibold text-mint-300">{t.free.en}</span>
+              <span className="font-semibold text-mint-300">{tr(t.free)}</span>
             )}
           </span>
           {p.hasFile ? (
-            <span className="badge bg-white/10 text-slate-300">{t.fullFileAvailable.en}</span>
+            <span className="badge bg-white/10 text-slate-300">{tr(t.fullFileAvailable)}</span>
           ) : (
-            <span className="badge bg-white/10 text-slate-400">{t.summaryOnly.en}</span>
+            <span className="badge bg-white/10 text-slate-400">{tr(t.summaryOnly)}</span>
           )}
         </div>
       </div>

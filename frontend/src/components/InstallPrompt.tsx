@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { t } from '@/lib/i18n';
+import { tr, t } from '@/lib/i18n';
 
 /** The browser's beforeinstallprompt event (not in the standard TS lib yet). */
 interface BeforeInstallPromptEvent extends Event {
@@ -60,14 +60,14 @@ export function InstallPrompt() {
           TU
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-slate-100">{t.installApp.en}</p>
-          <p className="truncate text-xs text-slate-400">{t.installApp.en}</p>
+          <p className="truncate text-sm font-semibold text-slate-100">{tr(t.installApp)}</p>
+          <p className="truncate text-xs text-slate-400">{tr(t.installApp)}</p>
         </div>
         <button className="btn-secondary px-3 py-1.5 text-xs" onClick={dismiss}>
-          {t.installDismiss.en}
+          {tr(t.installDismiss)}
         </button>
         <button className="btn-primary px-3 py-1.5 text-xs" onClick={install}>
-          {t.installApp.en}
+          {tr(t.installApp)}
         </button>
       </div>
     </div>

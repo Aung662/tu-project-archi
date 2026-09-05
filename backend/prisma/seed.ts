@@ -65,6 +65,36 @@ async function attachCoverImage(projectId: string, fileName: string) {
   });
 }
 
+/**
+ * Keyword → topic cover mapping used to backfill a relevant thumbnail onto ANY
+ * published project that has no image yet — including projects created by real
+ * users (not just the demo seed rows). Ordered: the first keyword that appears
+ * in the (lowercased) title wins. Files must exist under seed-assets/covers/.
+ */
+const COVER_BY_KEYWORD: { keywords: string[]; file: string }[] = [
+  { keywords: ['waste', 'garbage', 'recycl', 'trash'], file: 'smart-waste-robot.jpg' },
+  { keywords: ['agriculture', 'agri', 'irrigation', 'crop', 'farm'], file: 'smart-agri-ml.jpg' },
+  { keywords: ['attendance'], file: 'student-attendance-web.jpg' },
+  { keywords: ['face recognition', 'face'], file: 'face-recognition.jpg' },
+  { keywords: ['library'], file: 'library-management.jpg' },
+  { keywords: ['e-commerce', 'ecommerce', 'commerce', 'shop', 'handicraft'], file: 'ecommerce-handicraft.jpg' },
+  { keywords: ['street light', 'arduino'], file: 'street-light-arduino.jpg' },
+  { keywords: ['solar', 'irrigation'], file: 'solar-irrigation.jpg' },
+  { keywords: ['hospital', 'appointment', 'clinic', 'medical'], file: 'hospital-appointment.jpg' },
+  { keywords: ['license plate', 'plate recognition', 'anpr'], file: 'license-plate-recognition.jpg' },
+  { keywords: ['blockchain', 'certificate'], file: 'blockchain-certificate.jpg' },
+  { keywords: ['sentiment', 'nlp', 'text analysis'], file: 'sentiment-analysis.jpg' },
+];
+
+/** Pick the best topic cover for a title, or a sensible default. */
+function coverForTitle(title: string): string {
+  const t = title.toLowerCase();
+  for (const entry of COVER_BY_KEYWORD) {
+    if (entry.keywords.some((k) => t.includes(k))) return entry.file;
+  }
+  return 'library-management.jpg'; // neutral academic default
+}
+
 const SEED_ADMIN_EMAIL = process.env.SEED_ADMIN_EMAIL || 'admin@tu-archive.mm';
 const SEED_ADMIN_PASSWORD = process.env.SEED_ADMIN_PASSWORD || 'ChangeMe_Admin#2026';
 const SEED_ADMIN_NAME = process.env.SEED_ADMIN_NAME || 'Platform Admin';
@@ -160,43 +190,78 @@ async function main() {
   }
   console.log(`   ✓ ${universities.length} universities + departments ensured`);
 
-  // Projects (assigned to YTU for demo). Idempotent-ish: skip if same title+year exists.
+  // Projects (assigned to YTU for demo). Idempotent: create if missing, and —
+  // critically — ALWAYS ensure the topic cover is attached, even for projects
+  // that already existed from a previous seed/deploy. (Older seeds skipped cover
+  // attachment on existing rows via an early `continue`, which left demo
+  // projects with no thumbnail after a redeploy.)
   let created = 0;
+  let coversBackfilled = 0;
+  let idx = 0;
   for (const p of sampleProjects) {
+    const isFlagship = idx === 0;
+    idx++;
     const universityId = uniIdByShort['YTU'];
     const departmentId = deptIdByKey[`YTU:${p.dept}`] ?? deptIdByKey['YTU:IT'];
-    const exists = await prisma.project.findFirst({ where: { title: p.title, year: p.year } });
-    if (exists) continue;
-    const proj = await prisma.project.create({
-      data: {
-        title: p.title,
-        normalizedTitle: normalizeTitle(p.title),
-        abstract: `This project presents ${p.title.toLowerCase()}. It documents the objectives, methodology, system design, implementation and evaluation carried out by the student team.`,
-        keywords: p.title.split(' ').slice(0, 4).join(', '),
-        year: p.year,
-        level: p.level as any,
-        authorsText: 'Sample Author A, Sample Author B',
-        supervisorName: 'Dr. Sample Supervisor',
-        universityId,
-        departmentId,
-        status: 'PUBLISHED',
-        hasConsent: true,
-        priceMmk: DEFAULT_PRICE,
-      },
-    });
-    // Flagship demo (first project): full media set — gallery photos + a 360°
-    // turntable — so reviewers see the media feature end to end.
-    if (created === 0) {
+
+    let proj = await prisma.project.findFirst({ where: { title: p.title, year: p.year } });
+    if (!proj) {
+      proj = await prisma.project.create({
+        data: {
+          title: p.title,
+          normalizedTitle: normalizeTitle(p.title),
+          abstract: `This project presents ${p.title.toLowerCase()}. It documents the objectives, methodology, system design, implementation and evaluation carried out by the student team.`,
+          keywords: p.title.split(' ').slice(0, 4).join(', '),
+          year: p.year,
+          level: p.level as any,
+          authorsText: 'Sample Author A, Sample Author B',
+          supervisorName: 'Dr. Sample Supervisor',
+          universityId,
+          departmentId,
+          status: 'PUBLISHED',
+          hasConsent: true,
+          priceMmk: DEFAULT_PRICE,
+        },
+      });
+      created++;
+    }
+
+    // Ensure media is present (attach* helpers are no-ops when images exist, so
+    // this is safe to run every time and backfills projects that had none).
+    const before = await prisma.projectImage.count({ where: { projectId: proj.id } });
+    if (isFlagship) {
+      // Flagship demo: full media set — gallery photos + a 360° turntable — so
+      // reviewers see the media feature end to end.
       await attachDemoImages(proj.id);
     } else if (p.cover) {
       // Every other project gets a single topic-matched cover photo so the grid
       // never shows the blank document placeholder.
       await attachCoverImage(proj.id, p.cover);
     }
-    created++;
+    const after = await prisma.projectImage.count({ where: { projectId: proj.id } });
+    if (before === 0 && after > 0) coversBackfilled++;
   }
   console.log(`   ✓ ${created} sample projects created (published)`);
-  console.log('   ✓ demo images attached to flagship project');
+  console.log(`   ✓ ${coversBackfilled} project cover(s) attached/backfilled`);
+
+  // Universal cover backfill: give EVERY published project that still has no
+  // image a relevant, topic-matched thumbnail (keyword-based). This also covers
+  // projects created by real users through the app — so the browse grid never
+  // shows a placeholder. Safe & idempotent: only touches projects with 0 images.
+  const allPublished = await prisma.project.findMany({
+    where: { status: 'PUBLISHED' },
+    select: { id: true, title: true },
+  });
+  let universalBackfilled = 0;
+  for (const proj of allPublished) {
+    const imgCount = await prisma.projectImage.count({ where: { projectId: proj.id } });
+    if (imgCount > 0) continue;
+    const file = coverForTitle(proj.title);
+    if (!existsSync(join(ASSETS, 'covers', file))) continue;
+    await attachCoverImage(proj.id, file);
+    universalBackfilled++;
+  }
+  console.log(`   ✓ ${universalBackfilled} additional project(s) given a topic cover`);
 
   // Demo analytics so the admin dashboard charts are populated on first run.
   const existingViews = await prisma.pageView.count();

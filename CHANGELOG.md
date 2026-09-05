@@ -3,6 +3,56 @@
 All notable changes to **TU Project Archive & Title Similarity Checker**. Grouped by build wave;
 newest first. Dates are the project timeline (Asia/Yangon).
 
+## [Unreleased] — Universal project covers + seed backfill fix (2026-09-06)
+
+### Fixed
+- **Demo/project thumbnails missing on the live site.** The seeder skipped cover
+  attachment for any project that already existed (`if (exists) continue`), so after the
+  first deploy every demo project showed no image. The seed now always ensures media on
+  demo rows (idempotent), backfilling covers that were never attached.
+
+### Added
+- **Universal topic-cover backfill.** After seeding, every PUBLISHED project with zero
+  images — including projects created by real users through the app — is given a relevant,
+  keyword-matched cover (e.g. titles containing "waste/recycle" → the smart-waste-robot
+  cover, "agriculture/irrigation" → the smart-agri cover, etc.), with a neutral academic
+  default as a last resort. The browse grid therefore never shows a bare placeholder.
+- **New topic cover asset** `smart-waste-robot.jpg` for the Smart Waste AI Guidance Robot
+  projects (AI sorting robot + wet/dry/recyclable/hazardous bins).
+
+### Notes — media uploads (video) & storage
+- Uploads remain restricted to `pdf, doc, docx, zip, jpg, jpeg, png` (max 25 MB); video
+  files are safely rejected (HTTP 400) rather than stored. Images are kept as bytes in the
+  DB, which is fine for thumbnails but unsuitable for video. Recommended path for video:
+  object storage (Cloudinary / Supabase Storage / Backblaze B2 / Cloudflare R2) with only a
+  URL in the DB, or an unlisted YouTube/Vimeo embed. Personal Gmail/Drive is not recommended
+  as a storage backend (ToS/OAuth-secret/rate-limit concerns).
+
+## [Unreleased] — UX/professionalism audit + language switcher (2026-09-06)
+
+### Added
+- **Runtime language switcher (EN ⇄ မြ).** The whole UI can now be flipped between English (default)
+  and Burmese from a compact toggle in the navbar (desktop and mobile). Implemented with a
+  module-level current-language variable read through a new `tr()` translator, plus a
+  `LanguageProvider` that remounts the app subtree on change — so every one of the ~300 label sites
+  updates at once without threading a hook through each file. The preference persists
+  (`localStorage`), and English is the SSR default so there is no hydration mismatch. This finally
+  surfaces the full Burmese translation set that previously shipped but was never rendered.
+
+### Fixed
+- **Duplicate-title anti-pattern removed.** The home hero, the error boundary, and the 404 page each
+  rendered the same heading text twice (title shown again as its own subtitle). Now each shows its
+  title once with the intended descriptive subtitle.
+- **Error page theming.** The error boundary's warning icon used a light `bg-red-50` circle that
+  clashed with the dark UI; replaced with a dark-friendly red tint + ring.
+- **Tablet navigation dead zone.** Primary nav links were hidden until `md` while the hamburger only
+  appeared below `sm`, leaving tablet-width users (sm–md) with no navigation. Nav links now appear
+  from `sm`, matching the action bar.
+- **Already-signed-in users no longer see the login form.** Visiting `/login` while authenticated now
+  redirects to the intended destination (or the admin dashboard for admins via the hidden portal).
+- **Keyboard-friendly duplicate check.** The title check textarea now submits on Enter (Shift+Enter
+  inserts a newline), and the button is disabled while the field is empty.
+
 ## [Unreleased] — Discovery features (2026-09-06)
 
 ### Added
