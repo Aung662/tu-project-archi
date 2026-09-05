@@ -3,6 +3,21 @@
 All notable changes to **TU Project Archive & Title Similarity Checker**. Grouped by build wave;
 newest first. Dates are the project timeline (Asia/Yangon).
 
+## [Unreleased] — Admin usability fixes (2026-09-06)
+
+### Fixed
+- **Project file upload rejected images.** The admin "Project file" uploader only accepted
+  `pdf,doc,docx,zip`, so attaching a `.jpg`/`.png` failed with "File extension .jpg is not allowed".
+  Added `jpg,jpeg,png` to `UPLOAD_ALLOWED_EXT` (code default + `.env`/`.env.example`); the
+  magic-byte validator and MIME map already supported these, so the fix is safe. The form's
+  `accept` list and a helper hint were updated to match.
+
+### Added
+- **Add university / department on the fly.** The New/Edit Project form's University and Department
+  dropdowns now include an "➕ Add new…" option that reveals an inline form and calls the existing
+  admin CRUD endpoints (`POST /api/admin/universities`, `POST /api/admin/departments`), then
+  auto-selects the newly created record. Admins are no longer limited to the seeded list.
+
 ## [Unreleased] — Feature expansion: media, analytics, UX (2026-09-06)
 
 ### Added — Project media

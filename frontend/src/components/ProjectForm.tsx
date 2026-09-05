@@ -34,12 +34,74 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
+  // Inline "add new" state for university / department. Admins can register a
+  // TU or department on the fly instead of being limited to the seeded list.
+  const [newUni, setNewUni] = useState({ open: false, name: '', shortName: '', city: '', busy: false });
+  const [newDept, setNewDept] = useState({ open: false, name: '', code: '', busy: false });
+
+  async function loadUniversities() {
+    const list = await api.get<University[]>('/universities');
+    setUniversities(list);
+    return list;
+  }
+
   useEffect(() => {
-    api.get<University[]>('/universities').then(setUniversities).catch(() => {});
+    loadUniversities().catch(() => {});
   }, []);
 
   const selectedUni = universities.find((u) => u.id === form.universityId);
   const set = (patch: Partial<typeof form>) => setForm((f) => ({ ...f, ...patch }));
+
+  const ADD_NEW = '__add_new__';
+
+  async function addUniversity() {
+    setError(null);
+    if (newUni.name.trim().length < 2 || newUni.shortName.trim().length < 1) {
+      setError('Enter a university name and short name.');
+      return;
+    }
+    setNewUni((s) => ({ ...s, busy: true }));
+    try {
+      const created = await api.post<University>('/admin/universities', {
+        name: newUni.name.trim(),
+        shortName: newUni.shortName.trim(),
+        city: newUni.city.trim() || undefined,
+      });
+      await loadUniversities();
+      // Select the newly created university; clear any stale department.
+      set({ universityId: created.id, departmentId: '' });
+      setNewUni({ open: false, name: '', shortName: '', city: '', busy: false });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to add university.');
+      setNewUni((s) => ({ ...s, busy: false }));
+    }
+  }
+
+  async function addDepartment() {
+    setError(null);
+    if (!form.universityId) {
+      setError('Select a university first, then add a department.');
+      return;
+    }
+    if (newDept.name.trim().length < 2 || newDept.code.trim().length < 1) {
+      setError('Enter a department name and code.');
+      return;
+    }
+    setNewDept((s) => ({ ...s, busy: true }));
+    try {
+      const created = await api.post<{ id: string }>('/admin/departments', {
+        universityId: form.universityId,
+        name: newDept.name.trim(),
+        code: newDept.code.trim(),
+      });
+      await loadUniversities();
+      set({ departmentId: created.id });
+      setNewDept({ open: false, name: '', code: '', busy: false });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to add department.');
+      setNewDept((s) => ({ ...s, busy: false }));
+    }
+  }
 
   // Guard shown in UI; the server enforces the same rule authoritatively.
   const consentBlocked = form.status === 'PUBLISHED' && !form.hasConsent;
@@ -135,8 +197,15 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
           <select
             className="input"
             value={form.universityId}
-            onChange={(e) => set({ universityId: e.target.value, departmentId: '' })}
-            required
+            onChange={(e) => {
+              const v = e.target.value;
+              if (v === ADD_NEW) {
+                setNewUni((s) => ({ ...s, open: true }));
+                return;
+              }
+              set({ universityId: v, departmentId: '' });
+            }}
+            required={!newUni.open}
           >
             <option value="">{t.fSelect.en}</option>
             {universities.map((u) => (
@@ -144,15 +213,60 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
                 {u.shortName}
               </option>
             ))}
+            <option value={ADD_NEW}>➕ Add new university…</option>
           </select>
+
+          {newUni.open && (
+            <div className="mt-2 space-y-2 rounded-lg border border-white/15 bg-white/5 p-3">
+              <input
+                className="input"
+                placeholder="Full name (e.g. Technological University (Mandalay))"
+                value={newUni.name}
+                onChange={(e) => setNewUni((s) => ({ ...s, name: e.target.value }))}
+              />
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  className="input"
+                  placeholder="Short name (e.g. TU-MDY)"
+                  value={newUni.shortName}
+                  onChange={(e) => setNewUni((s) => ({ ...s, shortName: e.target.value }))}
+                />
+                <input
+                  className="input"
+                  placeholder="City (optional)"
+                  value={newUni.city}
+                  onChange={(e) => setNewUni((s) => ({ ...s, city: e.target.value }))}
+                />
+              </div>
+              <div className="flex gap-2">
+                <button type="button" onClick={addUniversity} disabled={newUni.busy} className="btn-primary text-sm">
+                  {newUni.busy ? 'Adding…' : 'Add university'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setNewUni({ open: false, name: '', shortName: '', city: '', busy: false })}
+                  className="btn-secondary text-sm"
+                >
+                  {t.fCancel.en}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
         <div>
           <label className="label">{t.metaDepartment.en} *</label>
           <select
             className="input"
             value={form.departmentId}
-            onChange={(e) => set({ departmentId: e.target.value })}
-            required
+            onChange={(e) => {
+              const v = e.target.value;
+              if (v === ADD_NEW) {
+                setNewDept((s) => ({ ...s, open: true }));
+                return;
+              }
+              set({ departmentId: v });
+            }}
+            required={!newDept.open}
             disabled={!selectedUni}
           >
             <option value="">{t.fSelect.en}</option>
@@ -161,7 +275,39 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
                 {d.code} — {d.name}
               </option>
             ))}
+            {selectedUni && <option value={ADD_NEW}>➕ Add new department…</option>}
           </select>
+
+          {newDept.open && (
+            <div className="mt-2 space-y-2 rounded-lg border border-white/15 bg-white/5 p-3">
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  className="input"
+                  placeholder="Name (e.g. Civil Engineering)"
+                  value={newDept.name}
+                  onChange={(e) => setNewDept((s) => ({ ...s, name: e.target.value }))}
+                />
+                <input
+                  className="input"
+                  placeholder="Code (e.g. CE)"
+                  value={newDept.code}
+                  onChange={(e) => setNewDept((s) => ({ ...s, code: e.target.value }))}
+                />
+              </div>
+              <div className="flex gap-2">
+                <button type="button" onClick={addDepartment} disabled={newDept.busy} className="btn-primary text-sm">
+                  {newDept.busy ? 'Adding…' : 'Add department'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setNewDept({ open: false, name: '', code: '', busy: false })}
+                  className="btn-secondary text-sm"
+                >
+                  {t.fCancel.en}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
         <div>
           <label className="label">{t.fLevel.en} *</label>
@@ -199,10 +345,14 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
         <label className="label">{t.fProjectFile.en}</label>
         <input
           type="file"
-          accept=".pdf,.doc,.docx,.zip"
+          accept=".pdf,.doc,.docx,.zip,.jpg,.jpeg,.png"
           onChange={(e) => setFile(e.target.files?.[0] ?? null)}
           className="input"
         />
+        <p className="mt-1 text-xs text-slate-400">
+          Allowed: PDF, Word (.doc/.docx), ZIP, or image (.jpg/.png). For gallery photos and the 360°
+          viewer, save the project first, then use the image manager below.
+        </p>
         {project?.hasFile && !file && (
           <p className="mt-1 text-xs text-slate-400">{t.fFileAttached.en}</p>
         )}

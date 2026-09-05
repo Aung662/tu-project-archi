@@ -34,7 +34,7 @@ const EnvSchema = z.object({
   SIMILARITY_SIMILAR_THRESHOLD: z.coerce.number().min(0).max(1).default(0.3),
 
   UPLOAD_MAX_BYTES: z.coerce.number().int().positive().default(26_214_400),
-  UPLOAD_ALLOWED_EXT: z.string().default('pdf,doc,docx,zip'),
+  UPLOAD_ALLOWED_EXT: z.string().default('pdf,doc,docx,zip,jpg,jpeg,png'),
   PRIVATE_STORAGE_DIR: z.string().default('./storage/private'),
   PUBLIC_STORAGE_DIR: z.string().default('./storage/public'),
 
