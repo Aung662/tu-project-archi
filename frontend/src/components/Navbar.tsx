@@ -39,9 +39,12 @@ export function Navbar() {
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
         <div className="flex items-center gap-6">
           <button onClick={onLogoClick} title="TU Project Archive" className="flex items-center gap-2 text-left">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-plum-500 font-latin font-extrabold text-white shadow-glow">
-              TU
-            </span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.png"
+              alt="Technological University Taunggyi"
+              className="h-10 w-auto drop-shadow-[0_0_12px_rgba(99,102,241,0.35)]"
+            />
             <span className="hidden sm:block">
               <span className="block text-sm font-bold leading-tight text-slate-100">{t.brandTitle.en}</span>
               <span className="block text-[11px] leading-tight text-slate-400">{t.brandSubtitle.en}</span>

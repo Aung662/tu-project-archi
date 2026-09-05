@@ -6,9 +6,9 @@
  *   - Static assets (same-origin GET): stale-while-revalidate.
  * Bump CACHE_VERSION to invalidate old caches on deploy.
  */
-const CACHE_VERSION = 'tu-archive-v1';
+const CACHE_VERSION = 'tu-archive-v2';
 const OFFLINE_URL = '/offline';
-const PRECACHE = [OFFLINE_URL, '/manifest.webmanifest', '/icon.svg', '/icon-192.png'];
+const PRECACHE = [OFFLINE_URL, '/manifest.webmanifest', '/logo.png', '/icon-192.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
