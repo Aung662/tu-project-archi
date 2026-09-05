@@ -9,6 +9,7 @@ import { InstallPrompt } from '@/components/InstallPrompt';
 import { PageViewTracker } from '@/components/PageViewTracker';
 import { BookmarksProvider } from '@/context/BookmarksContext';
 import { ThemeProvider, themeInitScript } from '@/context/ThemeContext';
+import { WelcomeOverlay } from '@/components/WelcomeOverlay';
 
 // Modern geometric sans for Latin / UI numerals.
 const jakarta = Plus_Jakarta_Sans({
@@ -80,6 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">{children}</main>
               <Footer />
             </div>
+            <WelcomeOverlay />
             <InstallPrompt />
             <ServiceWorkerRegistrar />
             <PageViewTracker />

@@ -3,6 +3,32 @@
 All notable changes to **TU Project Archive & Title Similarity Checker**. Grouped by build wave;
 newest first. Dates are the project timeline (Asia/Yangon).
 
+## [Unreleased] — Discovery features (2026-09-06)
+
+### Added
+- **"You might also like" related projects.** Each project detail page now shows up to 4 related
+  projects via `GET /api/projects/:id/similar`, powered by the existing blended similarity scorer
+  (title trigram/token/edit-distance) with a same-department → same-university fallback so the row is
+  never empty. Never recommends the project itself.
+- **Search autocomplete.** The home search box now suggests matching published titles as you type
+  (`GET /api/projects/autocomplete`, debounced, min 2 chars), with keyboard navigation (↑/↓/Enter/Esc)
+  and click-to-open; picking a suggestion jumps straight to that project.
+- Backend tests grown to **52 passing** (+3): similar-projects (incl. never-self), autocomplete
+  suggestions, and short-query empty guard.
+
+## [Unreleased] — Welcome animation & universal thumbnails (2026-09-06)
+
+### Added
+- **Animated welcome overlay.** On first arrival each session, two 3D-style cartoon student
+  greeters float in, wave and sparkle with a friendly message (personalised when logged in).
+  framer-motion only — no heavy 3D engine or external assets, so it works in the sandboxed preview.
+  Shown once per session (sessionStorage), dismissible, Esc-to-close, auto-hides. A render is picked
+  at random from two character images.
+- **Universal project thumbnails.** Projects without an uploaded cover now render an attractive,
+  deterministic placeholder (themed gradient + department/topic emoji + title initials) via an inline
+  SVG component, instead of a bare document glyph. Every project — including ones added later —
+  always shows a proper tile.
+
 ## [Unreleased] — Admin usability fixes (2026-09-06)
 
 ### Added (round 2)

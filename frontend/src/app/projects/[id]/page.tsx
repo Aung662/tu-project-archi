@@ -12,6 +12,7 @@ import { t, levelLabel } from '@/lib/i18n';
 import { PurchasePanel } from '@/components/PurchasePanel';
 import { ProjectMedia } from '@/components/media/ProjectMedia';
 import { BookmarkButton } from '@/components/BookmarkButton';
+import { SimilarProjects } from '@/components/SimilarProjects';
 
 export default function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -70,6 +71,7 @@ export default function ProjectDetailPage() {
   if (error || !project) return <Alert kind="error">{error || t.notFound.en}</Alert>;
 
   return (
+    <>
     <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
       <article className="space-y-5">
         <button onClick={() => router.back()} className="text-sm text-slate-400 hover:text-slate-100">
@@ -157,6 +159,8 @@ export default function ProjectDetailPage() {
         </div>
       </aside>
     </div>
+    <SimilarProjects projectId={project.id} />
+    </>
   );
 }
 

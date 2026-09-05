@@ -6,6 +6,7 @@ import { formatMMK } from '@/lib/format';
 import { t } from '@/lib/i18n';
 import { LevelBadge } from './ui';
 import { BookmarkButton } from './BookmarkButton';
+import { ProjectThumb } from './ProjectThumb';
 
 export function ProjectCard({ p }: { p: Card }) {
   return (
@@ -24,9 +25,7 @@ export function ProjectCard({ p }: { p: Card }) {
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="grid h-full w-full place-items-center bg-gradient-to-br from-brand-500/20 via-plum-500/10 to-transparent text-3xl opacity-70">
-            📄
-          </div>
+          <ProjectThumb p={p} />
         )}
         {(p.spin?.length ?? 0) >= 2 && (
           <span className="absolute left-2 top-2 rounded-full bg-black/55 px-2 py-0.5 text-[11px] font-semibold text-white backdrop-blur">

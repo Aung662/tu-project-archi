@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '@/lib/api';
 import type { SearchResult } from '@/lib/types';
 import { SimilarityMeter, Alert, SkeletonList, EmptyState, LevelBadge } from '@/components/ui';
@@ -10,15 +11,87 @@ import { formatMMK } from '@/lib/format';
 import { t } from '@/lib/i18n';
 import { Reveal, StaggerGrid, StaggerItem, TiltCard } from '@/components/motion';
 
+interface Suggestion {
+  id: string;
+  title: string;
+  year: number;
+  deptCode: string;
+}
+
 export default function HomePage() {
+  const router = useRouter();
   const [q, setQ] = useState('');
   const [result, setResult] = useState<SearchResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // ── Autocomplete ──────────────────────────────────────────
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [showSuggest, setShowSuggest] = useState(false);
+  const [activeIdx, setActiveIdx] = useState(-1);
+  const suppressRef = useRef(false); // skip fetch right after picking/searching
+  const boxRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (suppressRef.current) {
+      suppressRef.current = false;
+      return;
+    }
+    const query = q.trim();
+    if (query.length < 2) {
+      setSuggestions([]);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      try {
+        const rows = await api.get<Suggestion[]>(`/projects/autocomplete${api.qs({ q: query })}`);
+        setSuggestions(rows);
+        setShowSuggest(true);
+        setActiveIdx(-1);
+      } catch {
+        setSuggestions([]);
+      }
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [q]);
+
+  // Close the dropdown on outside click.
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (boxRef.current && !boxRef.current.contains(e.target as Node)) setShowSuggest(false);
+    };
+    document.addEventListener('mousedown', onClick);
+    return () => document.removeEventListener('mousedown', onClick);
+  }, []);
+
+  function pickSuggestion(s: Suggestion) {
+    suppressRef.current = true;
+    setShowSuggest(false);
+    setQ(s.title);
+    router.push(`/projects/${s.id}`);
+  }
+
+  function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (!showSuggest || suggestions.length === 0) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActiveIdx((i) => (i + 1) % suggestions.length);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActiveIdx((i) => (i <= 0 ? suggestions.length - 1 : i - 1));
+    } else if (e.key === 'Enter' && activeIdx >= 0) {
+      e.preventDefault();
+      pickSuggestion(suggestions[activeIdx]);
+    } else if (e.key === 'Escape') {
+      setShowSuggest(false);
+    }
+  }
+
   async function runSearch(e?: React.FormEvent) {
     e?.preventDefault();
     if (!q.trim()) return;
+    suppressRef.current = true;
+    setShowSuggest(false);
     setLoading(true);
     setError(null);
     try {
@@ -70,17 +143,56 @@ export default function HomePage() {
           transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
           className="mx-auto mt-8 flex max-w-2xl flex-col gap-3 sm:flex-row"
         >
-          <div className="relative flex-1">
+          <div className="relative flex-1" ref={boxRef}>
             <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-lg">
               🔍
             </span>
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
+              onKeyDown={onKeyDown}
+              onFocus={() => suggestions.length > 0 && setShowSuggest(true)}
               placeholder={t.searchPlaceholder.en}
               className="input py-3.5 pl-11 text-base"
               aria-label={t.navSearch.en}
+              autoComplete="off"
+              role="combobox"
+              aria-expanded={showSuggest}
+              aria-controls="search-suggestions"
             />
+            <AnimatePresence>
+              {showSuggest && suggestions.length > 0 && (
+                <motion.ul
+                  id="search-suggestions"
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  className="absolute z-30 mt-2 w-full overflow-hidden rounded-xl border border-white/15 bg-ink-800/95 text-left shadow-2xl backdrop-blur"
+                >
+                  {suggestions.map((s, i) => (
+                    <li key={s.id}>
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => pickSuggestion(s)}
+                        onMouseEnter={() => setActiveIdx(i)}
+                        className={`flex w-full items-center gap-3 px-4 py-2.5 text-sm transition ${
+                          i === activeIdx ? 'bg-brand-500/25 text-white' : 'text-slate-200 hover:bg-white/5'
+                        }`}
+                      >
+                        <span className="text-slate-400" aria-hidden>
+                          🔎
+                        </span>
+                        <span className="flex-1 truncate">{s.title}</span>
+                        <span className="shrink-0 text-xs text-slate-400">
+                          {s.deptCode} · {s.year}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </motion.ul>
+              )}
+            </AnimatePresence>
           </div>
           <button type="submit" className="btn-primary px-8 py-3.5 text-base animate-shine">
             {t.searchBtn.en}

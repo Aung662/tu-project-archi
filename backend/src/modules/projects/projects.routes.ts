@@ -3,7 +3,12 @@ import { z } from 'zod';
 import { asyncHandler, ok, params } from '../../lib/http.js';
 import { validate } from '../../middleware/validate.js';
 import { optionalAuth } from '../../middleware/auth.js';
-import { browseProjects, getProjectDetail } from './projects.service.js';
+import {
+  browseProjects,
+  getProjectDetail,
+  getSimilarProjects,
+  autocompleteTitles,
+} from './projects.service.js';
 
 export const projectsRouter = Router();
 
@@ -34,6 +39,16 @@ projectsRouter.get(
   }),
 );
 
+// GET /api/projects/autocomplete?q= — title suggestions for the search box
+projectsRouter.get(
+  '/autocomplete',
+  validate({ query: z.object({ q: z.string().max(200).optional() }) }),
+  asyncHandler(async (req, res) => {
+    const q = (req.query.q as string) ?? '';
+    res.json(ok(await autocompleteTitles(q)));
+  }),
+);
+
 // GET /api/projects/:id — public detail (published only for non-admins)
 projectsRouter.get(
   '/:id',
@@ -42,5 +57,14 @@ projectsRouter.get(
   asyncHandler(async (req, res) => {
     const isAdmin = req.user?.role === 'ADMIN';
     res.json(ok(await getProjectDetail(params(req).id, { isAdmin })));
+  }),
+);
+
+// GET /api/projects/:id/similar — related "you might also like" projects
+projectsRouter.get(
+  '/:id/similar',
+  validate({ params: z.object({ id: z.string().min(1) }) }),
+  asyncHandler(async (req, res) => {
+    res.json(ok(await getSimilarProjects(params(req).id)));
   }),
 );

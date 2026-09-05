@@ -437,3 +437,33 @@ describe('Wave 11 features — images, bookmarks, analytics, password reset, fil
     expect(res.body.data.devToken).toBeUndefined();
   });
 });
+
+describe('Discovery — similar projects & autocomplete', () => {
+  it('GET /api/projects/:id/similar returns related published projects (never itself)', async () => {
+    const list = await request(app).get('/api/projects?pageSize=1&q=Smart Agriculture');
+    expect(list.status).toBe(200);
+    const id = list.body.data.items[0].id;
+
+    const res = await request(app).get(`/api/projects/${id}/similar`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.data)).toBe(true);
+    expect(res.body.data.length).toBeGreaterThan(0);
+    // The project must never recommend itself.
+    expect(res.body.data.every((p: any) => p.id !== id)).toBe(true);
+  });
+
+  it('GET /api/projects/autocomplete suggests published titles', async () => {
+    const res = await request(app).get('/api/projects/autocomplete?q=Smart');
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.data)).toBe(true);
+    expect(res.body.data.length).toBeGreaterThan(0);
+    expect(res.body.data[0]).toHaveProperty('title');
+    expect(res.body.data[0]).toHaveProperty('deptCode');
+  });
+
+  it('autocomplete returns empty for very short queries', async () => {
+    const res = await request(app).get('/api/projects/autocomplete?q=a');
+    expect(res.status).toBe(200);
+    expect(res.body.data).toEqual([]);
+  });
+});

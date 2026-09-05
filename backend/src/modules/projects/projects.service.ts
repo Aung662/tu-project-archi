@@ -2,6 +2,7 @@ import type { Prisma } from '@prisma/client';
 import { prisma } from '../../lib/prisma.js';
 import { BadRequest, NotFound } from '../../lib/errors.js';
 import { normalizeTitle } from '../search/normalize.js';
+import { scoreNormalized } from '../search/similarity.js';
 import { deletePrivateFile } from '../../lib/storage.js';
 
 const listSelect = {
@@ -161,6 +162,81 @@ export async function getProjectDetail(id: string, opts: { isAdmin?: boolean } =
   if (!p) throw NotFound('Project not found');
   if (p.status !== 'PUBLISHED' && !opts.isAdmin) throw NotFound('Project not found');
   return toPublicCard(p);
+}
+
+/**
+ * "You might also like" — related published projects for a given project.
+ * Reuses the blended similarity scorer against the project's own title, then
+ * falls back to same-department / same-university projects if there aren't
+ * enough close title matches. Always excludes the project itself.
+ */
+export async function getSimilarProjects(id: string, limit = 4) {
+  const base = await prisma.project.findUnique({
+    where: { id },
+    select: { id: true, title: true, departmentId: true, universityId: true },
+  });
+  if (!base) throw NotFound('Project not found');
+
+  const candidates = await prisma.project.findMany({
+    where: { status: 'PUBLISHED', id: { not: id } },
+    select: { ...listSelect },
+    take: 2000,
+  });
+
+  const qNorm = normalizeTitle(base.title);
+  const scored = candidates
+    .map((p) => ({ p, score: scoreNormalized(qNorm, normalizeTitle(p.title)).score }))
+    .sort((a, b) => b.score - a.score);
+
+  // Prefer genuinely similar titles (score high), then top up with same-dept /
+  // same-university projects so the row is never empty.
+  const chosen: typeof candidates = [];
+  const seen = new Set<string>();
+  const push = (p: (typeof candidates)[number]) => {
+    if (p && !seen.has(p.id)) {
+      seen.add(p.id);
+      chosen.push(p);
+    }
+  };
+
+  for (const s of scored) {
+    if (chosen.length >= limit) break;
+    if (s.score >= 0.2) push(s.p);
+  }
+  if (chosen.length < limit) {
+    for (const s of scored) {
+      if (chosen.length >= limit) break;
+      if (s.p.department?.id === base.departmentId) push(s.p);
+    }
+  }
+  if (chosen.length < limit) {
+    for (const s of scored) {
+      if (chosen.length >= limit) break;
+      if (s.p.university?.id === base.universityId) push(s.p);
+    }
+  }
+  for (const s of scored) {
+    if (chosen.length >= limit) break;
+    push(s.p);
+  }
+
+  return chosen.slice(0, limit).map(toPublicCard);
+}
+
+/**
+ * Lightweight title autocomplete for the search box. Returns published project
+ * titles that contain the query (case-insensitive), most recent first.
+ */
+export async function autocompleteTitles(q: string, limit = 6) {
+  const query = q.trim();
+  if (query.length < 2) return [];
+  const rows = await prisma.project.findMany({
+    where: { status: 'PUBLISHED', title: { contains: query } },
+    select: { id: true, title: true, year: true, department: { select: { code: true } } },
+    orderBy: { createdAt: 'desc' },
+    take: limit,
+  });
+  return rows.map((r) => ({ id: r.id, title: r.title, year: r.year, deptCode: r.department.code }));
 }
 
 export interface UpsertProjectInput {
