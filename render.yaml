@@ -14,14 +14,8 @@ services:
     runtime: node
     plan: free
     rootDir: backend
-    # --include=dev is required: prisma/tsc/tsx are devDependencies and the build
-    # needs them even though NODE_ENV=production (which normally skips dev deps).
-    buildCommand: npm install --include=dev && npm run build
-    # Free tier does NOT support preDeployCommand, so we bootstrap the database as
-    # part of the start command: create/update tables (prisma db push), enable
-    # pg_trgm + trigram index, seed admin + reference data, then start the API.
-    # All steps are idempotent, so running them on every boot is safe.
-    startCommand: npm run deploy:release && npm start
+    buildCommand: npm install && npm run build
+    startCommand: npm start
     healthCheckPath: /health
     autoDeploy: true
     envVars:
@@ -53,8 +47,10 @@ services:
         value: "5000"
       - key: PAYMENT_INSTRUCTIONS
         sync: false
-    # NOTE: the free plan has an EPHEMERAL filesystem and does NOT support disks,
-    # so uploaded paid files are lost on redeploy/restart. This is fine for a
-    # demo/thesis. For durable storage upgrade to a paid plan with a Render Disk
-    # mounted at PRIVATE_STORAGE_DIR, or switch lib/storage.ts to S3 (seam
-    # provided). The database (PostgreSQL) is persistent regardless.
+    # NOTE: the free plan has an EPHEMERAL filesystem — uploaded paid files are
+    # lost on redeploy. For real use, add a Render Disk mounted at the
+    # PRIVATE_STORAGE_DIR path, or switch lib/storage.ts to S3 (seam provided).
+    disk:
+      name: tu-archive-storage
+      mountPath: /opt/render/project/src/backend/storage
+      sizeGB: 1
