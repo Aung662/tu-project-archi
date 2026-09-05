@@ -5,6 +5,16 @@ newest first. Dates are the project timeline (Asia/Yangon).
 
 ## [Unreleased] — Admin usability fixes (2026-09-06)
 
+### Added (round 2)
+- **Cover image / thumbnail field** in the New/Edit Project form. Uploading here attaches a public
+  GALLERY image (which becomes the tile thumbnail) immediately at create time — so admins no longer
+  have to save, re-open, and use the image manager just to get a thumbnail. Clarified in the UI that
+  this public cover is distinct from the paid project file.
+- **Admins can view a DRAFT/ARCHIVED project's images.** `GET /api/images/project/:id` now uses
+  `optionalAuth`: public callers still only see PUBLISHED projects' images, but an authenticated
+  admin can list images before publishing (so the image manager works pre-publish). Anonymous access
+  to unpublished images stays 404.
+
 ### Fixed
 - **Project file upload rejected images.** The admin "Project file" uploader only accepted
   `pdf,doc,docx,zip`, so attaching a `.jpg`/`.png` failed with "File extension .jpg is not allowed".

@@ -31,6 +31,7 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
     supervisorName: project?.supervisorName ?? '',
   });
   const [file, setFile] = useState<File | null>(null);
+  const [cover, setCover] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -142,6 +143,14 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
         const fd = new FormData();
         fd.append('file', file);
         await api.postForm(`/files/${projectId}/upload`, fd);
+      }
+
+      // Cover image → a GALLERY image. The first gallery image becomes the tile
+      // thumbnail, so this lets an admin set the thumbnail right at create time.
+      if (cover && projectId) {
+        const fd = new FormData();
+        fd.append('images', cover);
+        await api.postForm(`/images/project/${projectId}?kind=GALLERY`, fd);
       }
       onDone();
     } catch (err) {
@@ -342,6 +351,21 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
       </div>
 
       <div>
+        <label className="label">Cover image (thumbnail)</label>
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          onChange={(e) => setCover(e.target.files?.[0] ?? null)}
+          className="input"
+        />
+        <p className="mt-1 text-xs text-slate-400">
+          Shown as the project’s tile thumbnail. JPEG / PNG / WebP. This is a{' '}
+          <span className="font-medium text-slate-300">public</span> image — different from the paid
+          project file below.
+        </p>
+      </div>
+
+      <div>
         <label className="label">{t.fProjectFile.en}</label>
         <input
           type="file"
@@ -364,7 +388,9 @@ export function ProjectForm({ project, onDone, onCancel }: Props) {
         <ProjectImageManager projectId={project.id} />
       ) : (
         <p className="rounded-lg border border-dashed border-white/15 px-3 py-3 text-xs text-slate-400">
-          💡 Save the project first, then re-open it to add gallery photos and 360° images.
+          💡 Use the <span className="font-medium text-slate-300">Cover image</span> field above to set
+          the tile thumbnail now. To add more gallery photos or a 360° set, save the project first,
+          then re-open it.
         </p>
       )}
 

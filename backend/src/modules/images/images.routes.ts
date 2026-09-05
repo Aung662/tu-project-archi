@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { z } from 'zod';
 import { asyncHandler, ok, params } from '../../lib/http.js';
 import { validate } from '../../middleware/validate.js';
-import { requireAuth, requireAdmin } from '../../middleware/auth.js';
+import { requireAuth, requireAdmin, optionalAuth } from '../../middleware/auth.js';
 import { projectImageUpload } from '../../middleware/upload.js';
 import { uploadLimiter } from '../../middleware/rateLimit.js';
 import { prisma } from '../../lib/prisma.js';
@@ -28,6 +28,7 @@ const ImageKind = z.enum(['GALLERY', 'SPIN']);
  */
 imagesRouter.get(
   '/project/:projectId',
+  optionalAuth,
   validate({ params: z.object({ projectId: z.string().min(1) }) }),
   asyncHandler(async (req, res) => {
     const { projectId } = params<{ projectId: string }>(req);
@@ -35,7 +36,10 @@ imagesRouter.get(
       where: { id: projectId },
       select: { status: true },
     });
-    if (!project || project.status !== 'PUBLISHED') throw NotFound('Project not found');
+    // Public callers only see images of PUBLISHED projects; an admin can view a
+    // DRAFT/ARCHIVED project's images too (so the image manager works pre-publish).
+    const isAdmin = req.user?.role === 'ADMIN';
+    if (!project || (project.status !== 'PUBLISHED' && !isAdmin)) throw NotFound('Project not found');
 
     const images = await prisma.projectImage.findMany({
       where: { projectId },
