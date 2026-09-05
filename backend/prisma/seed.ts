@@ -1,9 +1,49 @@
 import 'dotenv/config';
 import bcrypt from 'bcryptjs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 import { PrismaClient } from '@prisma/client';
 import { normalizeTitle } from '../src/modules/search/normalize.js';
 
 const prisma = new PrismaClient();
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ASSETS = join(__dirname, 'seed-assets');
+
+/** Attach demo public images (gallery + ordered 360° frames) to a project. */
+async function attachDemoImages(projectId: string) {
+  // Skip if this project already has images (keeps the seed idempotent).
+  const existing = await prisma.projectImage.count({ where: { projectId } });
+  if (existing > 0) return;
+
+  const galleryDir = join(ASSETS, 'gallery');
+  const spinDir = join(ASSETS, 'spin');
+
+  const addImage = async (path: string, kind: 'GALLERY' | 'SPIN', order: number) => {
+    const buf = readFileSync(path);
+    const mimeType = path.endsWith('.png') ? 'image/png' : 'image/jpeg';
+    await prisma.projectImage.create({
+      data: {
+        projectId,
+        data: new Uint8Array(buf),
+        mimeType,
+        kind,
+        sortOrder: order,
+        sizeBytes: buf.length,
+      },
+    });
+  };
+
+  if (existsSync(galleryDir)) {
+    const files = readdirSync(galleryDir).filter((f) => /\.(jpe?g|png)$/i.test(f)).sort();
+    for (let i = 0; i < files.length; i++) await addImage(join(galleryDir, files[i]), 'GALLERY', i);
+  }
+  if (existsSync(spinDir)) {
+    const files = readdirSync(spinDir).filter((f) => /\.(jpe?g|png)$/i.test(f)).sort();
+    for (let i = 0; i < files.length; i++) await addImage(join(spinDir, files[i]), 'SPIN', i);
+  }
+}
 
 const SEED_ADMIN_EMAIL = process.env.SEED_ADMIN_EMAIL || 'admin@tu-archive.mm';
 const SEED_ADMIN_PASSWORD = process.env.SEED_ADMIN_PASSWORD || 'ChangeMe_Admin#2026';
@@ -107,7 +147,7 @@ async function main() {
     const departmentId = deptIdByKey[`YTU:${p.dept}`] ?? deptIdByKey['YTU:IT'];
     const exists = await prisma.project.findFirst({ where: { title: p.title, year: p.year } });
     if (exists) continue;
-    await prisma.project.create({
+    const proj = await prisma.project.create({
       data: {
         title: p.title,
         normalizedTitle: normalizeTitle(p.title),
@@ -124,9 +164,56 @@ async function main() {
         priceMmk: DEFAULT_PRICE,
       },
     });
+    // Flagship demo: give the first (IoT Smart Agriculture) project a full media
+    // set — gallery photos + a 360° turntable — so reviewers see the feature.
+    if (created === 0) await attachDemoImages(proj.id);
     created++;
   }
   console.log(`   ✓ ${created} sample projects created (published)`);
+  console.log('   ✓ demo images attached to flagship project');
+
+  // Demo analytics so the admin dashboard charts are populated on first run.
+  const existingViews = await prisma.pageView.count();
+  if (existingViews === 0) {
+    const paths = ['/', '/browse', '/check', '/projects/:id', '/login', '/library'];
+    const rows: { path: string; ip: string; createdAt: Date }[] = [];
+    for (let d = 13; d >= 0; d--) {
+      const day = new Date();
+      day.setDate(day.getDate() - d);
+      // A little organic variation across the 14-day window.
+      const base = 6 + Math.round(Math.sin(d / 2) * 4) + Math.floor(Math.random() * 6);
+      for (let i = 0; i < base; i++) {
+        const when = new Date(day);
+        when.setHours(9 + (i % 12), (i * 7) % 60, 0, 0);
+        rows.push({
+          path: paths[Math.floor(Math.random() * paths.length)],
+          ip: `demo-${(i % 5) + 1}`,
+          createdAt: when,
+        });
+      }
+    }
+    await prisma.pageView.createMany({ data: rows });
+
+    const queries = ['iot smart agriculture', 'attendance system', 'blockchain certificate', 'license plate'];
+    const searchRows = queries.flatMap((q, idx) => {
+      const day = new Date();
+      day.setDate(day.getDate() - (idx * 2));
+      return [
+        { kind: 'SEARCH', rawQuery: q, normalizedQuery: q, resultCount: 3, topScore: 0.7, createdAt: day },
+        {
+          kind: 'CHECK',
+          rawQuery: q,
+          normalizedQuery: q,
+          resultCount: 2,
+          topScore: 0.88,
+          verdict: idx % 2 === 0 ? 'DUPLICATE_RISK' : 'SIMILAR_EXISTS',
+          createdAt: day,
+        },
+      ];
+    });
+    await prisma.searchLog.createMany({ data: searchRows as any });
+    console.log(`   ✓ demo analytics seeded (${rows.length} views, ${searchRows.length} search logs)`);
+  }
   console.log('✅ Seed complete.');
 }
 

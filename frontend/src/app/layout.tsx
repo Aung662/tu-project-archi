@@ -6,6 +6,9 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ServiceWorkerRegistrar } from '@/components/ServiceWorkerRegistrar';
 import { InstallPrompt } from '@/components/InstallPrompt';
+import { PageViewTracker } from '@/components/PageViewTracker';
+import { BookmarksProvider } from '@/context/BookmarksContext';
+import { ThemeProvider, themeInitScript } from '@/context/ThemeContext';
 
 // Modern geometric sans for Latin / UI numerals.
 const jakarta = Plus_Jakarta_Sans({
@@ -24,9 +27,9 @@ const myanmar = Noto_Sans_Myanmar({
 });
 
 export const metadata: Metadata = {
-  title: 'မြန်မာနည်းပညာတက္ကသိုလ် စီမံကိန်းမှတ်တမ်း | TU Project Archive',
+  title: 'TU Project Archive | Title Similarity Checker',
   description:
-    'မြန်မာနည်းပညာတက္ကသိုလ်များအတွက် စီမံကိန်းမှတ်တမ်း — ခေါင်းစဉ်ရှာဖွေခြင်း၊ ဆင်တူခေါင်းစဉ်စစ်ဆေးခြင်းနှင့် စီမံကိန်းဟောင်းများ လှော်လှန်ကြည့်ခြင်း။ Centralized academic archive for Myanmar Technological Universities.',
+    'Project archive for Myanmar Technological Universities — search titles, check for similar or duplicate titles, and browse previous projects. A centralized academic archive.',
   applicationName: 'TU Archive',
   manifest: '/manifest.webmanifest',
   appleWebApp: {
@@ -54,7 +57,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="my" className={`${jakarta.variable} ${myanmar.variable}`}>
+    <html lang="en" className={`${jakarta.variable} ${myanmar.variable}`}>
+      <head>
+        {/* Apply the saved theme before first paint to avoid a flash of the
+            wrong theme (FOUC). */}
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body>
         {/* Ambient animated background — sits behind everything */}
         <div className="app-aurora" aria-hidden="true">
@@ -64,15 +72,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="aurora-grid" />
         </div>
 
+        <ThemeProvider>
         <AuthProvider>
-          <div className="relative flex min-h-screen flex-col">
-            <Navbar />
-            <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">{children}</main>
-            <Footer />
-          </div>
-          <InstallPrompt />
-          <ServiceWorkerRegistrar />
+          <BookmarksProvider>
+            <div className="relative flex min-h-screen flex-col">
+              <Navbar />
+              <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">{children}</main>
+              <Footer />
+            </div>
+            <InstallPrompt />
+            <ServiceWorkerRegistrar />
+            <PageViewTracker />
+          </BookmarksProvider>
         </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

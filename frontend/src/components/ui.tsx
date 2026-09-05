@@ -9,16 +9,11 @@ import { levelLabel, statusLabel, type Label } from '@/lib/i18n';
  */
 export function Bi({ label, inline = false, className = '' }: { label: Label; inline?: boolean; className?: string }) {
   if (inline) {
-    return (
-      <span className={className}>
-        {label.my} <span className="font-latin text-slate-400">· {label.en}</span>
-      </span>
-    );
+    return <span className={className}>{label.en}</span>;
   }
   return (
     <span className={className}>
-      <span className="block">{label.my}</span>
-      <span className="block font-latin text-xs font-normal text-slate-400">{label.en}</span>
+      <span className="block">{label.en}</span>
     </span>
   );
 }
@@ -32,7 +27,7 @@ export function LevelBadge({ level }: { level: string }) {
   };
   return (
     <span className={`badge ${colors[level] || colors.OTHER}`}>
-      {levelLabel[level]?.my || level}
+      {levelLabel[level]?.en || level}
     </span>
   );
 }
@@ -48,7 +43,7 @@ export function StatusBadge({ status }: { status: string }) {
   };
   return (
     <span className={`badge ${colors[status] || 'bg-white/10 text-slate-300 ring-1 ring-white/15'}`}>
-      {statusLabel[status]?.my || status}
+      {statusLabel[status]?.en || status}
     </span>
   );
 }
@@ -61,7 +56,7 @@ export function SimilarityMeter({ percent, kind }: { percent: number; kind: 'EXA
       : percent >= 60
         ? 'from-amber-500 to-yellow-400'
         : 'from-brand-500 to-plum-500';
-  const label = kind === 'EXACT' ? 'ထပ်တူဖြစ်နိုင်ခြေ' : 'ဆင်တူ';
+  const label = kind === 'EXACT' ? 'Exact match risk' : 'Similar';
   return (
     <div className="w-full">
       <div className="mb-1.5 flex items-center justify-between text-xs">

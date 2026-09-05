@@ -23,8 +23,8 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
       >
         <div style={{ textAlign: 'center', padding: '2rem', maxWidth: 420 }}>
           <div style={{ fontSize: 48 }}>⚠️</div>
-          <h1 style={{ fontSize: 20, fontWeight: 700 }}>တစ်ခုခု မှားယွင်းသွားပါသည်</h1>
-          <p style={{ fontSize: 14, color: '#64748b' }}>Something went wrong</p>
+          <h1 style={{ fontSize: 20, fontWeight: 700 }}>Something went wrong</h1>
+          <p style={{ fontSize: 14, color: '#64748b' }}>An unexpected error occurred</p>
           <button
             onClick={reset}
             style={{
@@ -38,7 +38,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
               cursor: 'pointer',
             }}
           >
-            ထပ်မံကြိုးစားရန် / Try again
+            Try again
           </button>
         </div>
       </body>

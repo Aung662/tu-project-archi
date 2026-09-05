@@ -33,7 +33,7 @@ export function AuthForm({ adminHint = false }: { adminHint?: boolean }) {
       if (adminHint && user.role === 'ADMIN') router.push('/admin');
       else router.push(next);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t.somethingWrong.my);
+      setError(err instanceof Error ? err.message : t.somethingWrong.en);
     } finally {
       setBusy(false);
     }
@@ -44,10 +44,10 @@ export function AuthForm({ adminHint = false }: { adminHint?: boolean }) {
       <div className="card space-y-4 p-6">
         <div>
           <h1 className="text-xl font-bold text-slate-100">
-            {adminHint ? t.authAdminTitle.my : mode === 'login' ? t.authWelcome.my : t.authCreate.my}
+            {adminHint ? t.authAdminTitle.en : mode === 'login' ? t.authWelcome.en : t.authCreate.en}
           </h1>
           <p className="text-sm text-slate-400">
-            {adminHint ? t.authAdminHint.my : t.authStudentHint.my}
+            {adminHint ? t.authAdminHint.en : t.authStudentHint.en}
           </p>
         </div>
 
@@ -56,12 +56,12 @@ export function AuthForm({ adminHint = false }: { adminHint?: boolean }) {
         <form onSubmit={submit} className="space-y-3">
           {mode === 'register' && (
             <div>
-              <label className="label">{t.fullName.my}</label>
+              <label className="label">{t.fullName.en}</label>
               <input className="input" value={name} onChange={(e) => setName(e.target.value)} required />
             </div>
           )}
           <div>
-            <label className="label">{t.email.my}</label>
+            <label className="label">{t.email.en}</label>
             <input
               type="email"
               className="input"
@@ -71,7 +71,14 @@ export function AuthForm({ adminHint = false }: { adminHint?: boolean }) {
             />
           </div>
           <div>
-            <label className="label">{t.password.my}</label>
+            <div className="flex items-center justify-between">
+              <label className="label">{t.password.en}</label>
+              {mode === 'login' && !adminHint && (
+                <a href="/forgot-password" className="text-xs text-brand-300 hover:underline">
+                  Forgot password?
+                </a>
+              )}
+            </div>
             <input
               type="password"
               className="input"
@@ -82,18 +89,18 @@ export function AuthForm({ adminHint = false }: { adminHint?: boolean }) {
             />
           </div>
           <button type="submit" disabled={busy} className="btn-primary w-full">
-            {busy ? t.pleaseWait.my : mode === 'login' ? t.logIn.my : t.authCreate.my}
+            {busy ? t.pleaseWait.en : mode === 'login' ? t.logIn.en : t.authCreate.en}
           </button>
         </form>
 
         {!adminHint && (
           <p className="text-center text-sm text-slate-400">
-            {mode === 'login' ? t.noAccount.my : t.haveAccount.my}
+            {mode === 'login' ? t.noAccount.en : t.haveAccount.en}
             <button
               onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
               className="font-semibold text-brand-300 hover:underline"
             >
-              {mode === 'login' ? t.register.my : t.logIn.my}
+              {mode === 'login' ? t.register.en : t.logIn.en}
             </button>
           </p>
         )}

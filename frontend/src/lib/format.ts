@@ -1,11 +1,11 @@
 /**
- * Formatting helpers. Burmese-first: currency reads in Myanmar kyat ("ကျပ်").
+ * Formatting helpers. Currency reads in Myanmar kyat (MMK).
  * Enum label maps now live in `@/lib/i18n` (bilingual { my, en }).
  */
 
-// Myanmar kyat, Burmese-first. Numerals stay Western digits (standard in MM UIs).
+// Myanmar kyat. Numerals stay Western digits with a trailing "MMK" suffix.
 export const formatMMK = (amount: number) =>
-  `${new Intl.NumberFormat('en-US').format(amount)} ကျပ်`;
+  `${new Intl.NumberFormat('en-US').format(amount)} MMK`;
 
 export const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });

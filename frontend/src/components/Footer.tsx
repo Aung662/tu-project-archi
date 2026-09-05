@@ -8,9 +8,9 @@ export function Footer() {
           <span className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-brand-500 to-plum-500 font-latin text-xs font-extrabold text-white">
             TU
           </span>
-          <p>© {new Date().getFullYear()} {t.footerRights.my}</p>
+          <p>© {new Date().getFullYear()} {t.footerRights.en}</p>
         </div>
-        <p className="text-xs">{t.footerNote.my}</p>
+        <p className="text-xs">{t.footerNote.en}</p>
       </div>
     </footer>
   );

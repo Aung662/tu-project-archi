@@ -61,6 +61,28 @@ function matches(head: Buffer, sig: Sig): boolean {
 }
 
 /**
+ * Buffer-based magic-byte check for uploaded IMAGES held in memory (project
+ * gallery / 360° frames are stored in the DB, never written to disk first).
+ * Confirms the real leading bytes match one of the accepted image MIME types.
+ * WebP is a RIFF container: bytes 0-3 = "RIFF", bytes 8-11 = "WEBP".
+ */
+export function imageBufferMatchesMime(buf: Buffer, mime: string): boolean {
+  switch (mime) {
+    case 'image/png':
+      return matches(buf, { bytes: [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a] });
+    case 'image/jpeg':
+      return matches(buf, { bytes: [0xff, 0xd8, 0xff] });
+    case 'image/webp':
+      return (
+        matches(buf, { bytes: [0x52, 0x49, 0x46, 0x46] }) && // "RIFF"
+        matches(buf, { bytes: [0x57, 0x45, 0x42, 0x50], offset: 8 }) // "WEBP"
+      );
+    default:
+      return false;
+  }
+}
+
+/**
  * Returns true if the file at `absPath` has leading bytes consistent with `ext`.
  * Unknown extensions return false (fail closed).
  */

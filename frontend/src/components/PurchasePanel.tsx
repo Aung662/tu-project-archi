@@ -40,7 +40,7 @@ export function PurchasePanel({ projectId, amountMmk }: { projectId: string; amo
 
   async function createOrder() {
     if (!txnRef.trim()) {
-      setMsg({ kind: 'error', text: t.txnRefRequired.my });
+      setMsg({ kind: 'error', text: t.txnRefRequired.en });
       return;
     }
     setBusy(true);
@@ -48,9 +48,9 @@ export function PurchasePanel({ projectId, amountMmk }: { projectId: string; amo
     try {
       const o = await api.post<PaymentOrder>('/payments/orders', { projectId, method, txnRef });
       setOrder(o);
-      setMsg({ kind: 'success', text: t.orderCreated.my });
+      setMsg({ kind: 'success', text: t.orderCreated.en });
     } catch (err) {
-      setMsg({ kind: 'error', text: err instanceof Error ? err.message : t.orderFailed.my });
+      setMsg({ kind: 'error', text: err instanceof Error ? err.message : t.orderFailed.en });
     } finally {
       setBusy(false);
     }
@@ -64,9 +64,9 @@ export function PurchasePanel({ projectId, amountMmk }: { projectId: string; amo
       const fd = new FormData();
       fd.append('proof', proof);
       await api.postForm(`/payments/orders/${order.id}/proof`, fd);
-      setMsg({ kind: 'success', text: t.proofUploaded.my });
+      setMsg({ kind: 'success', text: t.proofUploaded.en });
     } catch (err) {
-      setMsg({ kind: 'error', text: err instanceof Error ? err.message : t.uploadFailed.my });
+      setMsg({ kind: 'error', text: err instanceof Error ? err.message : t.uploadFailed.en });
     } finally {
       setBusy(false);
     }
@@ -75,10 +75,10 @@ export function PurchasePanel({ projectId, amountMmk }: { projectId: string; amo
   if (order?.status === 'PENDING') {
     return (
       <div className="space-y-3">
-        <Alert kind="warning">{t.pendingVerify.my}</Alert>
+        <Alert kind="warning">{t.pendingVerify.en}</Alert>
         {msg && <Alert kind={msg.kind}>{msg.text}</Alert>}
         <div className="space-y-2">
-          <label className="label">{t.uploadProofLabel.my}</label>
+          <label className="label">{t.uploadProofLabel.en}</label>
           <input
             type="file"
             accept="image/png,image/jpeg,application/pdf"
@@ -86,7 +86,7 @@ export function PurchasePanel({ projectId, amountMmk }: { projectId: string; amo
             className="input"
           />
           <button onClick={uploadProof} disabled={!proof || busy} className="btn-primary w-full">
-            {busy ? t.uploading.my : t.uploadProofBtn.my}
+            {busy ? t.uploading.en : t.uploadProofBtn.en}
           </button>
         </div>
       </div>
@@ -97,12 +97,12 @@ export function PurchasePanel({ projectId, amountMmk }: { projectId: string; amo
     <div className="space-y-3">
       {instructions && (
         <Alert kind="info">
-          <span className="font-semibold">{t.howToPay.my} ({formatMMK(amountMmk)}):</span>
+          <span className="font-semibold">{t.howToPay.en} ({formatMMK(amountMmk)}):</span>
           <p className="mt-1">{instructions}</p>
         </Alert>
       )}
       <div>
-        <label className="label">{t.paymentMethod.my}</label>
+        <label className="label">{t.paymentMethod.en}</label>
         <select className="input" value={method} onChange={(e) => setMethod(e.target.value)}>
           {/* value = the exact enum the API accepts; label = human-friendly */}
           <option value="KBZPay">KBZPay</option>
@@ -113,17 +113,17 @@ export function PurchasePanel({ projectId, amountMmk }: { projectId: string; amo
         </select>
       </div>
       <div>
-        <label className="label">{t.txnRef.my}</label>
+        <label className="label">{t.txnRef.en}</label>
         <input
           className="input"
           value={txnRef}
           onChange={(e) => setTxnRef(e.target.value)}
-          placeholder={t.txnRefPlaceholder.my}
+          placeholder={t.txnRefPlaceholder.en}
         />
       </div>
       {msg && <Alert kind={msg.kind}>{msg.text}</Alert>}
       <button onClick={createOrder} disabled={busy} className="btn-primary w-full">
-        {busy ? t.submitting.my : t.submitOrder.my}
+        {busy ? t.submitting.en : t.submitOrder.en}
       </button>
     </div>
   );

@@ -8,9 +8,9 @@ import { Alert, Spinner, SimilarityMeter } from '@/components/ui';
 import { t } from '@/lib/i18n';
 
 const VERDICT = {
-  DUPLICATE_RISK: { kind: 'error' as const, label: t.verdictDuplicate.my, emoji: '⛔' },
-  SIMILAR_EXISTS: { kind: 'warning' as const, label: t.verdictSimilar.my, emoji: '⚠️' },
-  LIKELY_UNIQUE: { kind: 'success' as const, label: t.verdictUnique.my, emoji: '✅' },
+  DUPLICATE_RISK: { kind: 'error' as const, label: t.verdictDuplicate.en, emoji: '⛔' },
+  SIMILAR_EXISTS: { kind: 'warning' as const, label: t.verdictSimilar.en, emoji: '⚠️' },
+  LIKELY_UNIQUE: { kind: 'success' as const, label: t.verdictUnique.en, emoji: '✅' },
 };
 
 export default function CheckPage() {
@@ -27,7 +27,7 @@ export default function CheckPage() {
     try {
       setRes(await api.get<DuplicateCheck>(`/search/check${api.qs({ title })}`));
     } catch (err) {
-      setError(err instanceof Error ? err.message : t.checkFailed.my);
+      setError(err instanceof Error ? err.message : t.checkFailed.en);
     } finally {
       setLoading(false);
     }
@@ -38,22 +38,22 @@ export default function CheckPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-100">{t.checkTitle.my}</h1>
-        <p className="text-sm text-slate-400">{t.checkSubtitle.my}</p>
+        <h1 className="text-2xl font-bold text-slate-100">{t.checkTitle.en}</h1>
+        <p className="text-sm text-slate-400">{t.checkSubtitle.en}</p>
       </div>
 
       <form onSubmit={run} className="card space-y-3 p-5">
         <div>
-          <label className="label">{t.proposedTitle.my}</label>
+          <label className="label">{t.proposedTitle.en}</label>
           <textarea
             className="input min-h-[80px]"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder={t.proposedPlaceholder.my}
+            placeholder={t.proposedPlaceholder.en}
           />
         </div>
         <button type="submit" className="btn-primary" disabled={loading}>
-          {loading ? t.checking.my : t.checkBtn.my}
+          {loading ? t.checking.en : t.checkBtn.en}
         </button>
       </form>
 
@@ -67,15 +67,15 @@ export default function CheckPage() {
               {VERDICT[res.verdict].emoji} {VERDICT[res.verdict].label}
             </span>
             <p className="mt-1 text-sm">
-              {res.verdict === 'DUPLICATE_RISK' && t.verdictDuplicateBody.my}
-              {res.verdict === 'SIMILAR_EXISTS' && t.verdictSimilarBody.my}
-              {res.verdict === 'LIKELY_UNIQUE' && t.verdictUniqueBody.my}
+              {res.verdict === 'DUPLICATE_RISK' && t.verdictDuplicateBody.en}
+              {res.verdict === 'SIMILAR_EXISTS' && t.verdictSimilarBody.en}
+              {res.verdict === 'LIKELY_UNIQUE' && t.verdictUniqueBody.en}
             </p>
           </Alert>
 
           {all.length > 0 && (
             <div className="space-y-3">
-              <h2 className="text-sm font-semibold text-slate-200">{t.closestTitles.my}</h2>
+              <h2 className="text-sm font-semibold text-slate-200">{t.closestTitles.en}</h2>
               {all.map((r) => (
                 <div key={r.project.id} className="card p-4">
                   <div className="grid gap-3 sm:grid-cols-[1fr_160px] sm:items-center">

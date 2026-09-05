@@ -4,9 +4,9 @@ import { asyncHandler, ok } from '../../lib/http.js';
 import { validate } from '../../middleware/validate.js';
 import { authLimiter } from '../../middleware/rateLimit.js';
 import { requireAuth, optionalAuth } from '../../middleware/auth.js';
-import { env } from '../../config/env.js';
+import { env, isProd } from '../../config/env.js';
 import { audit } from '../../lib/audit.js';
-import { getMe, login, register } from './auth.service.js';
+import { getMe, login, register, requestPasswordReset, resetPassword } from './auth.service.js';
 
 export const authRouter = Router();
 
@@ -95,5 +95,35 @@ authRouter.get(
   requireAuth,
   asyncHandler(async (req, res) => {
     res.json(ok({ user: await getMe(req.user!.sub) }));
+  }),
+);
+
+// ── Password reset ───────────────────────────────────────────────────────────
+// POST /auth/forgot-password → always returns success (no user enumeration).
+// In production the raw token would be emailed; in dev (no SMTP) it is returned
+// in the response body so the flow can be exercised end-to-end.
+authRouter.post(
+  '/forgot-password',
+  authLimiter,
+  validate({ body: z.object({ email: z.string().trim().toLowerCase().email().max(200) }).strict() }),
+  asyncHandler(async (req, res) => {
+    const rawToken = await requestPasswordReset(req.body.email);
+    const payload: { message: string; devToken?: string } = {
+      message: 'If an account exists for that email, a reset link has been generated.',
+    };
+    // Only expose the token outside production (no email service is wired up).
+    if (!isProd && rawToken) payload.devToken = rawToken;
+    res.json(ok(payload));
+  }),
+);
+
+// POST /auth/reset-password → consume a single-use token and set a new password.
+authRouter.post(
+  '/reset-password',
+  authLimiter,
+  validate({ body: z.object({ token: z.string().min(10).max(200), password: strongPassword }).strict() }),
+  asyncHandler(async (req, res) => {
+    await resetPassword(req.body.token, req.body.password);
+    res.json(ok({ message: 'Your password has been reset. You can now sign in.' }));
   }),
 );

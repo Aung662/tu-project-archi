@@ -47,6 +47,121 @@ adminRouter.get(
   }),
 );
 
+// ── Rich dashboard: totals + 14-day time series + top pages/projects ─────────
+adminRouter.get(
+  '/dashboard',
+  asyncHandler(async (_req, res) => {
+    const DAYS = 14;
+    const since = new Date();
+    since.setDate(since.getDate() - (DAYS - 1));
+    since.setHours(0, 0, 0, 0);
+
+    const [
+      projects,
+      published,
+      pendingPayments,
+      users,
+      purchases,
+      totalPageViews,
+      totalSearches,
+      totalChecks,
+      recentSearchLogs,
+      recentPageViews,
+      byUniversityRaw,
+      topPathsRaw,
+    ] = await Promise.all([
+      prisma.project.count(),
+      prisma.project.count({ where: { status: 'PUBLISHED' } }),
+      prisma.paymentOrder.count({ where: { status: 'PENDING' } }),
+      prisma.user.count(),
+      prisma.purchaseAccess.count(),
+      prisma.pageView.count(),
+      prisma.searchLog.count({ where: { kind: 'SEARCH' } }),
+      prisma.searchLog.count({ where: { kind: 'CHECK' } }),
+      prisma.searchLog.findMany({
+        where: { createdAt: { gte: since } },
+        select: { createdAt: true, kind: true },
+      }),
+      prisma.pageView.findMany({
+        where: { createdAt: { gte: since } },
+        select: { createdAt: true, ip: true },
+      }),
+      prisma.project.groupBy({
+        by: ['universityId'],
+        _count: { _all: true },
+      }),
+      prisma.pageView.groupBy({
+        by: ['path'],
+        _count: { _all: true },
+        orderBy: { _count: { path: 'desc' } },
+        take: 8,
+      }),
+    ]);
+
+    // Build a dense day-by-day series (fill gaps with zeros).
+    const dayKey = (d: Date) => d.toISOString().slice(0, 10);
+    const days: string[] = [];
+    for (let i = 0; i < DAYS; i++) {
+      const d = new Date(since);
+      d.setDate(since.getDate() + i);
+      days.push(dayKey(d));
+    }
+    const zero = () => Object.fromEntries(days.map((d) => [d, 0])) as Record<string, number>;
+
+    const viewsByDay = zero();
+    const uniqueByDay: Record<string, Set<string>> = Object.fromEntries(days.map((d) => [d, new Set()]));
+    for (const pv of recentPageViews) {
+      const k = dayKey(pv.createdAt);
+      if (k in viewsByDay) {
+        viewsByDay[k]++;
+        uniqueByDay[k]?.add(pv.ip ?? 'anon');
+      }
+    }
+    const searchesByDay = zero();
+    const checksByDay = zero();
+    for (const s of recentSearchLogs) {
+      const k = dayKey(s.createdAt);
+      if (s.kind === 'SEARCH' && k in searchesByDay) searchesByDay[k]++;
+      if (s.kind === 'CHECK' && k in checksByDay) checksByDay[k]++;
+    }
+
+    const series = days.map((d) => ({
+      date: d,
+      views: viewsByDay[d],
+      uniques: uniqueByDay[d]?.size ?? 0,
+      searches: searchesByDay[d],
+      checks: checksByDay[d],
+    }));
+
+    // Resolve university names for the distribution chart.
+    const unis = await prisma.university.findMany({ select: { id: true, shortName: true } });
+    const uniName = new Map(unis.map((u) => [u.id, u.shortName]));
+    const byUniversity = byUniversityRaw
+      .map((r) => ({ label: uniName.get(r.universityId) ?? '—', value: r._count._all }))
+      .sort((a, b) => b.value - a.value);
+
+    const topPaths = topPathsRaw.map((r) => ({ path: r.path, count: r._count._all }));
+
+    res.json(
+      ok({
+        totals: {
+          projects,
+          published,
+          pendingPayments,
+          users,
+          purchases,
+          totalPageViews,
+          totalSearches,
+          totalChecks,
+        },
+        series,
+        byUniversity,
+        topPaths,
+      }),
+    );
+  }),
+);
+
 // ── Projects management ──────────────────────────────────────────────────────
 const upsertSchema = z.object({
   title: z.string().min(3).max(300),
@@ -290,6 +405,99 @@ adminRouter.get(
       include: { actor: { select: { name: true, email: true } } },
     });
     res.json(ok(logs));
+  }),
+);
+
+// ── CSV report exports (Excel-compatible; opens directly in Excel/Sheets) ────
+/** Escape a value for CSV (quote if it contains comma/quote/newline). */
+function csvCell(v: unknown): string {
+  const s = v == null ? '' : String(v);
+  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+function toCsv(headers: string[], rows: unknown[][]): string {
+  // Prepend a UTF-8 BOM so Excel opens Unicode correctly.
+  return '\uFEFF' + [headers, ...rows].map((r) => r.map(csvCell).join(',')).join('\r\n');
+}
+function sendCsv(res: import('express').Response, filename: string, csv: string) {
+  res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+  res.send(csv);
+}
+
+adminRouter.get(
+  '/reports/search-logs.csv',
+  validate({ query: z.object({ kind: z.enum(['SEARCH', 'CHECK']).optional() }) }),
+  asyncHandler(async (req, res) => {
+    const q = req.query as { kind?: 'SEARCH' | 'CHECK' };
+    const logs = await prisma.searchLog.findMany({
+      where: q.kind ? { kind: q.kind } : {},
+      orderBy: { createdAt: 'desc' },
+      take: 5000,
+    });
+    const csv = toCsv(
+      ['Date', 'Kind', 'Query', 'Normalized', 'Results', 'Top Score', 'Verdict', 'IP'],
+      logs.map((l) => [
+        l.createdAt.toISOString(),
+        l.kind,
+        l.rawQuery,
+        l.normalizedQuery,
+        l.resultCount,
+        l.topScore ?? '',
+        l.verdict ?? '',
+        l.ip ?? '',
+      ]),
+    );
+    sendCsv(res, `search-logs-${new Date().toISOString().slice(0, 10)}.csv`, csv);
+  }),
+);
+
+adminRouter.get(
+  '/reports/duplicate-risks.csv',
+  asyncHandler(async (_req, res) => {
+    // Title checks that were flagged as duplicate/near-duplicate risks.
+    const logs = await prisma.searchLog.findMany({
+      where: { kind: 'CHECK', verdict: { in: ['DUPLICATE_RISK', 'SIMILAR_EXISTS'] } },
+      orderBy: { createdAt: 'desc' },
+      take: 5000,
+    });
+    const csv = toCsv(
+      ['Date', 'Proposed Title', 'Normalized', 'Verdict', 'Top Similarity %', 'Matches Found'],
+      logs.map((l) => [
+        l.createdAt.toISOString(),
+        l.rawQuery,
+        l.normalizedQuery,
+        l.verdict ?? '',
+        l.topScore != null ? Math.round(l.topScore * 100) : '',
+        l.resultCount,
+      ]),
+    );
+    sendCsv(res, `duplicate-risks-${new Date().toISOString().slice(0, 10)}.csv`, csv);
+  }),
+);
+
+adminRouter.get(
+  '/reports/projects.csv',
+  asyncHandler(async (_req, res) => {
+    const projects = await prisma.project.findMany({
+      orderBy: [{ year: 'desc' }, { createdAt: 'desc' }],
+      include: { university: true, department: true },
+      take: 5000,
+    });
+    const csv = toCsv(
+      ['Title', 'Year', 'Level', 'University', 'Department', 'Status', 'Price (MMK)', 'Authors', 'Supervisor'],
+      projects.map((p) => [
+        p.title,
+        p.year,
+        p.level,
+        p.university.shortName,
+        p.department.code,
+        p.status,
+        p.priceMmk,
+        p.authorsText,
+        p.supervisorName ?? '',
+      ]),
+    );
+    sendCsv(res, `projects-${new Date().toISOString().slice(0, 10)}.csv`, csv);
   }),
 );
 

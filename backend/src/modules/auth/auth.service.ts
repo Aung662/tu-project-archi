@@ -1,4 +1,4 @@
-import { randomBytes } from 'node:crypto';
+import { randomBytes, createHash } from 'node:crypto';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../../lib/prisma.js';
@@ -98,4 +98,54 @@ export async function getMe(userId: string) {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) throw BadRequest('User no longer exists');
   return publicUser(user);
+}
+
+// ── Password reset ───────────────────────────────────────────────────────────
+
+const RESET_TTL_MS = 1000 * 60 * 30; // 30 minutes
+const hashToken = (raw: string) => createHash('sha256').update(raw).digest('hex');
+
+/**
+ * Begin a password reset. ALWAYS resolves the same way regardless of whether the
+ * email exists (no user enumeration). Returns the raw token ONLY so the caller
+ * can decide how to deliver it: in production email it; in dev (no SMTP) the API
+ * surfaces it so the flow is testable. Any existing unused tokens are cleared.
+ */
+export async function requestPasswordReset(emailInput: string): Promise<string | null> {
+  const email = emailInput.toLowerCase().trim();
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) return null; // silently succeed to avoid leaking which emails exist
+
+  await prisma.passwordResetToken.deleteMany({ where: { userId: user.id, usedAt: null } });
+
+  const rawToken = randomBytes(32).toString('hex');
+  await prisma.passwordResetToken.create({
+    data: {
+      userId: user.id,
+      tokenHash: hashToken(rawToken),
+      expiresAt: new Date(Date.now() + RESET_TTL_MS),
+    },
+  });
+  await audit({ actorId: user.id, action: 'PASSWORD_RESET_REQUESTED', entityType: 'User', entityId: user.id });
+  return rawToken;
+}
+
+/** Complete a reset: validate the single-use, unexpired token and set the new password. */
+export async function resetPassword(rawToken: string, newPassword: string): Promise<void> {
+  const record = await prisma.passwordResetToken.findUnique({
+    where: { tokenHash: hashToken(rawToken) },
+    include: { user: true },
+  });
+  if (!record || record.usedAt || record.expiresAt < new Date()) {
+    throw BadRequest('This reset link is invalid or has expired. Please request a new one.');
+  }
+
+  const passwordHash = await bcrypt.hash(newPassword, 12);
+  await prisma.$transaction([
+    prisma.user.update({ where: { id: record.userId }, data: { passwordHash } }),
+    prisma.passwordResetToken.update({ where: { id: record.id }, data: { usedAt: new Date() } }),
+    // Invalidate any other outstanding tokens for this user.
+    prisma.passwordResetToken.deleteMany({ where: { userId: record.userId, usedAt: null } }),
+  ]);
+  await audit({ actorId: record.userId, action: 'PASSWORD_RESET_COMPLETED', entityType: 'User', entityId: record.userId });
 }

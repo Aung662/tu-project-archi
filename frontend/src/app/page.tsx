@@ -25,7 +25,7 @@ export default function HomePage() {
       const data = await api.get<SearchResult>(`/search${api.qs({ q, limit: 25 })}`);
       setResult(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t.searchFailed.my);
+      setError(err instanceof Error ? err.message : t.searchFailed.en);
     } finally {
       setLoading(false);
     }
@@ -53,13 +53,13 @@ export default function HomePage() {
         >
           <span className="eyebrow font-latin">✦ AI Title Similarity</span>
           <h1 className="mx-auto mt-5 max-w-3xl text-4xl font-extrabold leading-tight tracking-tight sm:text-6xl">
-            <span className="text-gradient">{t.heroTitle.my}</span>
+            <span className="text-gradient">{t.heroTitle.en}</span>
           </h1>
           <p className="mx-auto mt-3 max-w-2xl font-latin text-sm text-slate-400">
             {t.heroTitle.en}
           </p>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-300">
-            {t.heroSubtitle.my}
+            {t.heroSubtitle.en}
           </p>
         </motion.div>
 
@@ -77,13 +77,13 @@ export default function HomePage() {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder={t.searchPlaceholder.my}
+              placeholder={t.searchPlaceholder.en}
               className="input py-3.5 pl-11 text-base"
-              aria-label={t.navSearch.my}
+              aria-label={t.navSearch.en}
             />
           </div>
           <button type="submit" className="btn-primary px-8 py-3.5 text-base animate-shine">
-            {t.searchBtn.my}
+            {t.searchBtn.en}
           </button>
         </motion.form>
 
@@ -94,11 +94,11 @@ export default function HomePage() {
           className="mt-6 flex flex-wrap items-center justify-center gap-4 text-sm text-slate-300"
         >
           <Link href="/browse" className="transition hover:text-white">
-            {t.browseCta.my} →
+            {t.browseCta.en} →
           </Link>
           <span className="opacity-30">|</span>
           <Link href="/check" className="transition hover:text-white">
-            {t.checkCta.my} →
+            {t.checkCta.en} →
           </Link>
         </motion.div>
       </section>
@@ -116,24 +116,24 @@ export default function HomePage() {
         <section className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-xl font-bold text-slate-100">
-              “{result.query}” အတွက် ကိုက်ညီမှု{' '}
-              <span className="text-gradient font-latin">{result.total}</span> ခု
+              <span className="text-gradient font-latin">{result.total}</span> match
+              {result.total === 1 ? '' : 'es'} for “{result.query}”
             </h2>
             <span className="font-latin text-xs text-slate-400">
-              {t.normalized.my}:{' '}
+              {t.normalized.en}:{' '}
               <code className="rounded bg-white/10 px-1.5 py-0.5">{result.normalizedQuery}</code>
             </span>
           </div>
 
           {exactCount > 0 && (
             <Alert kind="warning">
-              <strong>{t.duplicateRiskLead.my}</strong> အလွန်ဆင်တူသော ခေါင်းစဉ် {exactCount} ခု{' '}
-              {t.duplicateRiskBody.my}
+              <strong>{t.duplicateRiskLead.en}</strong> Found {exactCount} highly similar
+              title{exactCount === 1 ? '' : 's'}. {t.duplicateRiskBody.en}
             </Alert>
           )}
 
           {result.results.length === 0 ? (
-            <EmptyState title={t.noSimilarTitle.my} hint={t.noSimilarHint.my} />
+            <EmptyState title={t.noSimilarTitle.en} hint={t.noSimilarHint.en} />
           ) : (
             <StaggerGrid className="space-y-3">
               {result.results.map((r) => (
@@ -153,7 +153,7 @@ export default function HomePage() {
                         <p className="font-latin text-xs text-slate-400">
                           {r.project.university.shortName} · {r.project.department.code} ·{' '}
                           {r.project.year} ·{' '}
-                          {r.project.priceMmk > 0 ? formatMMK(r.project.priceMmk) : t.free.my}
+                          {r.project.priceMmk > 0 ? formatMMK(r.project.priceMmk) : t.free.en}
                         </p>
                         <p className="mt-2 line-clamp-2 text-sm text-slate-300">
                           {r.project.abstract}
@@ -175,26 +175,26 @@ export default function HomePage() {
           <Reveal className="text-center">
             <span className="eyebrow font-latin">Why TU Archive</span>
             <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-100">
-              ဘာကြောင့် <span className="text-gradient">TU Archive</span> လဲ
+              Why <span className="text-gradient">TU Archive</span>?
             </h2>
           </Reveal>
 
           <StaggerGrid className="grid gap-6 sm:grid-cols-3">
             <Feature
-              title={t.featSearchTitle.my}
-              desc={t.featSearchDesc.my}
+              title={t.featSearchTitle.en}
+              desc={t.featSearchDesc.en}
               icon="🔎"
               tint="from-brand-500/20 to-brand-500/0"
             />
             <Feature
-              title={t.featRankTitle.my}
-              desc={t.featRankDesc.my}
+              title={t.featRankTitle.en}
+              desc={t.featRankDesc.en}
               icon="📊"
               tint="from-plum-500/20 to-plum-500/0"
             />
             <Feature
-              title={t.featBuyTitle.my}
-              desc={t.featBuyDesc.my}
+              title={t.featBuyTitle.en}
+              desc={t.featBuyDesc.en}
               icon="📄"
               tint="from-mint-500/20 to-mint-500/0"
             />
@@ -203,9 +203,9 @@ export default function HomePage() {
           {/* Stats band */}
           <Reveal>
             <div className="card grid grid-cols-2 gap-6 p-8 sm:grid-cols-4">
-              <Stat value="3" label="တက္ကသိုလ်" />
-              <Stat value="7" label="ဌာန" />
-              <Stat value="12+" label="စီမံကိန်း" />
+              <Stat value="3" label="Universities" />
+              <Stat value="7" label="Departments" />
+              <Stat value="12+" label="Projects" />
               <Stat value="AI" label="Similarity Engine" />
             </div>
           </Reveal>

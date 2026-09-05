@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { ThemeToggle } from './ThemeToggle';
 import { t } from '@/lib/i18n';
 
 export function Navbar() {
@@ -42,74 +43,78 @@ export function Navbar() {
               TU
             </span>
             <span className="hidden sm:block">
-              <span className="block text-sm font-bold leading-tight text-slate-100">{t.brandTitle.my}</span>
-              <span className="block text-[11px] leading-tight text-slate-400">{t.brandSubtitle.my}</span>
+              <span className="block text-sm font-bold leading-tight text-slate-100">{t.brandTitle.en}</span>
+              <span className="block text-[11px] leading-tight text-slate-400">{t.brandSubtitle.en}</span>
             </span>
           </button>
           <div className="hidden items-center gap-1 md:flex">
-            <NavLink href="/">{t.navSearch.my}</NavLink>
-            <NavLink href="/browse">{t.navBrowse.my}</NavLink>
-            <NavLink href="/check">{t.navCheck.my}</NavLink>
+            <NavLink href="/">{t.navSearch.en}</NavLink>
+            <NavLink href="/browse">{t.navBrowse.en}</NavLink>
+            <NavLink href="/check">{t.navCheck.en}</NavLink>
           </div>
         </div>
 
         {/* Desktop actions */}
         <div className="hidden items-center gap-2 sm:flex">
+          <ThemeToggle />
           {user ? (
             <>
               {user.role === 'ADMIN' && (
                 <Link href="/admin" className="btn-secondary">
-                  {t.navAdmin.my}
+                  {t.navAdmin.en}
                 </Link>
               )}
               <Link href="/library" className="btn-secondary">
-                {t.navLibrary.my}
+                {t.navLibrary.en}
               </Link>
               <span className="hidden text-sm text-slate-300 lg:inline">{user.name}</span>
               <button onClick={doLogout} className="btn-secondary">
-                {t.navLogout.my}
+                {t.navLogout.en}
               </button>
             </>
           ) : (
             <Link href="/login" className="btn-primary">
-              {t.navLogin.my}
+              {t.navLogin.en}
             </Link>
           )}
         </div>
 
-        {/* Mobile hamburger */}
-        <button
-          onClick={() => setMenuOpen((o) => !o)}
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={menuOpen}
-          className="grid h-10 w-10 place-items-center rounded-lg border border-white/15 text-slate-200 sm:hidden"
-        >
-          <span className="text-xl leading-none">{menuOpen ? '✕' : '☰'}</span>
-        </button>
+        {/* Mobile actions */}
+        <div className="flex items-center gap-2 sm:hidden">
+          <ThemeToggle />
+          <button
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+            className="grid h-10 w-10 place-items-center rounded-lg border border-white/15 text-slate-200"
+          >
+            <span className="text-xl leading-none">{menuOpen ? '✕' : '☰'}</span>
+          </button>
+        </div>
       </nav>
 
       {/* Mobile menu panel */}
       {menuOpen && (
         <div className="border-t border-white/10 bg-ink-900/95 backdrop-blur-xl sm:hidden">
           <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-3">
-            <MobileLink href="/" onClick={() => setMenuOpen(false)}>{t.navSearch.my}</MobileLink>
-            <MobileLink href="/browse" onClick={() => setMenuOpen(false)}>{t.navBrowse.my}</MobileLink>
-            <MobileLink href="/check" onClick={() => setMenuOpen(false)}>{t.navCheck.my}</MobileLink>
+            <MobileLink href="/" onClick={() => setMenuOpen(false)}>{t.navSearch.en}</MobileLink>
+            <MobileLink href="/browse" onClick={() => setMenuOpen(false)}>{t.navBrowse.en}</MobileLink>
+            <MobileLink href="/check" onClick={() => setMenuOpen(false)}>{t.navCheck.en}</MobileLink>
             {user ? (
               <>
                 {user.role === 'ADMIN' && (
-                  <MobileLink href="/admin" onClick={() => setMenuOpen(false)}>{t.navAdminDashboard.my}</MobileLink>
+                  <MobileLink href="/admin" onClick={() => setMenuOpen(false)}>{t.navAdminDashboard.en}</MobileLink>
                 )}
-                <MobileLink href="/library" onClick={() => setMenuOpen(false)}>{t.navLibrary.my}</MobileLink>
+                <MobileLink href="/library" onClick={() => setMenuOpen(false)}>{t.navLibrary.en}</MobileLink>
                 <button
                   onClick={doLogout}
                   className="rounded-lg px-3 py-2 text-left text-sm font-medium text-red-300 hover:bg-red-500/10"
                 >
-                  {t.navLogout.my} ({user.name})
+                  {t.navLogout.en} ({user.name})
                 </button>
               </>
             ) : (
-              <MobileLink href="/login" onClick={() => setMenuOpen(false)}>{t.navLogin.my}</MobileLink>
+              <MobileLink href="/login" onClick={() => setMenuOpen(false)}>{t.navLogin.en}</MobileLink>
             )}
           </div>
         </div>

@@ -84,6 +84,37 @@ model User {
   purchases         PurchaseAccess[]
   paymentOrders     PaymentOrder[]
   auditLogs         AuditLog[]
+  bookmarks         Bookmark[]
+  resetTokens       PasswordResetToken[]
+}
+
+// ── Saved projects (bookmarks / favourites) ──────────────────────────────────
+model Bookmark {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, projectId])
+  @@index([userId])
+}
+
+// ── Password reset tokens (single-use, short-lived) ──────────────────────────
+// We store only a SHA-256 hash of the token; the raw token is delivered to the
+// user (via email in production; surfaced in the API response in dev where no
+// SMTP is configured) and never persisted in the clear.
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 // ── Core: Projects ───────────────────────────────────────────────────────────
@@ -120,6 +151,8 @@ model Project {
 
   purchases        PurchaseAccess[]
   paymentOrders    PaymentOrder[]
+  images           ProjectImage[]
+  bookmarks        Bookmark[]
 
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
@@ -130,6 +163,24 @@ model Project {
   @@index([level])
   @@index([status])
   @@index([normalizedTitle])
+}
+
+// ── Public project images (gallery + 360° spin frames) ───────────────────────
+// Stored as DB binary so they survive redeploys on ephemeral hosts (e.g. Render
+// free tier wipes local disk on every deploy). Unlike paid files these ARE meant
+// to be publicly viewable and are streamed through a cache-friendly endpoint.
+model ProjectImage {
+  id        String   @id @default(cuid())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String
+  data      Bytes    // raw image bytes
+  mimeType  String   // image/jpeg | image/png | image/webp
+  kind      String   @default("GALLERY") // GALLERY | SPIN (360° turntable frame)
+  sortOrder Int      @default(0)         // ordering within its kind
+  sizeBytes Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([projectId, kind, sortOrder])
 }
 
 // ── Payments (manual MMK verification) ───────────────────────────────────────
@@ -186,6 +237,19 @@ model AuditLog {
   @@index([action])
   @@index([entityType, entityId])
   // The audit view lists most-recent-first, so index the sort column.
+  @@index([createdAt])
+}
+
+// ── Visitor page views (privacy-light: no cookies, no PII beyond coarse IP) ───
+model PageView {
+  id        String   @id @default(cuid())
+  path      String   // normalized route, e.g. "/browse" or "/projects/:id"
+  referrer  String?
+  actorId   String?  // set when the visitor is logged in
+  ip        String?  // coarse, for unique-visitor estimates only
+  createdAt DateTime @default(now())
+
+  @@index([path])
   @@index([createdAt])
 }
 

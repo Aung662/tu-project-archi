@@ -34,16 +34,30 @@ export default function AdminAnalytics() {
   }, [kind]);
 
   if (loading && !data) return <Spinner />;
-  if (!data) return <EmptyState title={t.anEmpty.my} />;
+  if (!data) return <EmptyState title={t.anEmpty.en} />;
 
   const cards = [
-    { label: t.anTotalSearches.my, value: data.stats.totalSearches, tone: 'text-brand-300' },
-    { label: t.anTotalChecks.my, value: data.stats.totalChecks, tone: 'text-brand-300' },
-    { label: t.anDuplicateRisks.my, value: data.stats.duplicateRisks, tone: 'text-rose-600' },
+    { label: t.anTotalSearches.en, value: data.stats.totalSearches, tone: 'text-brand-300' },
+    { label: t.anTotalChecks.en, value: data.stats.totalChecks, tone: 'text-brand-300' },
+    { label: t.anDuplicateRisks.en, value: data.stats.duplicateRisks, tone: 'text-rose-600' },
   ];
 
   return (
     <div className="space-y-6">
+      {/* Report exports (CSV opens directly in Excel / Google Sheets) */}
+      <div className="card flex flex-wrap items-center gap-3 p-4">
+        <span className="text-sm font-medium text-slate-200">Export reports:</span>
+        <a href="/api/admin/reports/search-logs.csv" className="btn-secondary px-3 py-1.5 text-xs">
+          ⬇ Search logs (CSV)
+        </a>
+        <a href="/api/admin/reports/duplicate-risks.csv" className="btn-secondary px-3 py-1.5 text-xs">
+          ⬇ Duplicate-risk report (CSV)
+        </a>
+        <a href="/api/admin/reports/projects.csv" className="btn-secondary px-3 py-1.5 text-xs">
+          ⬇ Projects (CSV)
+        </a>
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-3">
         {cards.map((c) => (
           <div key={c.label} className="card">
@@ -64,24 +78,24 @@ export default function AdminAnalytics() {
                 : 'bg-white/10 text-slate-300 hover:bg-white/10'
             }`}
           >
-            {k === 'ALL' ? t.anFilterAll.my : k}
+            {k === 'ALL' ? t.anFilterAll.en : k}
           </button>
         ))}
       </div>
 
       {data.recent.length === 0 ? (
-        <EmptyState title={t.anEmpty.my} />
+        <EmptyState title={t.anEmpty.en} />
       ) : (
         <div className="card overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-white/5 text-left text-xs uppercase text-slate-400">
               <tr>
-                <th className="px-4 py-3">{t.anColKind.my}</th>
-                <th className="px-4 py-3">{t.anColQuery.my}</th>
-                <th className="px-4 py-3">{t.anColResults.my}</th>
-                <th className="px-4 py-3">{t.anColScore.my}</th>
-                <th className="px-4 py-3">{t.anColVerdict.my}</th>
-                <th className="px-4 py-3">{t.anColWhen.my}</th>
+                <th className="px-4 py-3">{t.anColKind.en}</th>
+                <th className="px-4 py-3">{t.anColQuery.en}</th>
+                <th className="px-4 py-3">{t.anColResults.en}</th>
+                <th className="px-4 py-3">{t.anColScore.en}</th>
+                <th className="px-4 py-3">{t.anColVerdict.en}</th>
+                <th className="px-4 py-3">{t.anColWhen.en}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10">

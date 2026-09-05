@@ -18,17 +18,17 @@ export default function AdminAudit() {
   }, []);
 
   if (loading) return <Spinner />;
-  if (logs.length === 0) return <EmptyState title={t.auEmpty.my} />;
+  if (logs.length === 0) return <EmptyState title={t.auEmpty.en} />;
 
   return (
     <div className="card overflow-x-auto">
       <table className="w-full text-sm">
         <thead className="bg-white/5 text-left text-xs uppercase text-slate-400">
           <tr>
-            <th className="px-4 py-3">{t.auColWhen.my}</th>
-            <th className="px-4 py-3">{t.auColActor.my}</th>
-            <th className="px-4 py-3">{t.auColAction.my}</th>
-            <th className="px-4 py-3">{t.auColEntity.my}</th>
+            <th className="px-4 py-3">{t.auColWhen.en}</th>
+            <th className="px-4 py-3">{t.auColActor.en}</th>
+            <th className="px-4 py-3">{t.auColAction.en}</th>
+            <th className="px-4 py-3">{t.auColEntity.en}</th>
             <th className="px-4 py-3">Details</th>
           </tr>
         </thead>

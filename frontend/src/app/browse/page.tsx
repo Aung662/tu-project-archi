@@ -16,8 +16,13 @@ export default function BrowsePage() {
     departmentId: '',
     year: '',
     level: '',
+    sort: 'newest',
+    priceMax: '',
+    freeOnly: '',
+    hasFile: '',
     page: 1,
   });
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const [data, setData] = useState<Paginated<Card> | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,7 +44,7 @@ export default function BrowsePage() {
       );
       setData(res);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t.loadFailed.my);
+      setError(err instanceof Error ? err.message : t.loadFailed.en);
     } finally {
       setLoading(false);
     }
@@ -57,29 +62,29 @@ export default function BrowsePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-100">{t.browseTitle.my}</h1>
-        <p className="text-sm text-slate-400">{t.browseSubtitle.my}</p>
+        <h1 className="text-2xl font-bold text-slate-100">{t.browseTitle.en}</h1>
+        <p className="text-sm text-slate-400">{t.browseSubtitle.en}</p>
       </div>
 
       {/* Filters */}
       <div className="card grid gap-3 p-4 md:grid-cols-5">
         <div className="md:col-span-2">
-          <label className="label">{t.fKeyword.my}</label>
+          <label className="label">{t.fKeyword.en}</label>
           <input
             className="input"
-            placeholder={t.fKeywordPlaceholder.my}
+            placeholder={t.fKeywordPlaceholder.en}
             value={filters.q}
             onChange={(e) => update({ q: e.target.value })}
           />
         </div>
         <div>
-          <label className="label">{t.fUniversity.my}</label>
+          <label className="label">{t.fUniversity.en}</label>
           <select
             className="input"
             value={filters.universityId}
             onChange={(e) => update({ universityId: e.target.value, departmentId: '' })}
           >
-            <option value="">{t.fAll.my}</option>
+            <option value="">{t.fAll.en}</option>
             {universities.map((u) => (
               <option key={u.id} value={u.id}>
                 {u.shortName}
@@ -88,14 +93,14 @@ export default function BrowsePage() {
           </select>
         </div>
         <div>
-          <label className="label">{t.fDepartment.my}</label>
+          <label className="label">{t.fDepartment.en}</label>
           <select
             className="input"
             value={filters.departmentId}
             onChange={(e) => update({ departmentId: e.target.value })}
             disabled={!selectedUni}
           >
-            <option value="">{t.fAll.my}</option>
+            <option value="">{t.fAll.en}</option>
             {selectedUni?.departments.map((d) => (
               <option key={d.id} value={d.id}>
                 {d.code} — {d.name}
@@ -104,13 +109,13 @@ export default function BrowsePage() {
           </select>
         </div>
         <div>
-          <label className="label">{t.fYear.my}</label>
+          <label className="label">{t.fYear.en}</label>
           <select
             className="input"
             value={filters.year}
             onChange={(e) => update({ year: e.target.value })}
           >
-            <option value="">{t.fAll.my}</option>
+            <option value="">{t.fAll.en}</option>
             {years.map((y) => (
               <option key={y} value={y}>
                 {y}
@@ -130,10 +135,66 @@ export default function BrowsePage() {
                     : 'bg-white/10 text-slate-300 hover:bg-white/10'
                 }`}
               >
-                {lv ? levelLabel[lv].my : t.fAllLevels.my}
+                {lv ? levelLabel[lv].en : t.fAllLevels.en}
               </button>
             ))}
           </div>
+        </div>
+
+        {/* Advanced filters (collapsible) */}
+        <div className="md:col-span-5">
+          <button
+            type="button"
+            onClick={() => setShowAdvanced((s) => !s)}
+            className="text-sm font-medium text-brand-300 hover:text-brand-200"
+          >
+            {showAdvanced ? '▾ Hide advanced filters' : '▸ Advanced filters'}
+          </button>
+
+          {showAdvanced && (
+            <div className="mt-3 grid gap-3 rounded-lg bg-white/5 p-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div>
+                <label className="label">Sort by</label>
+                <select className="input" value={filters.sort} onChange={(e) => update({ sort: e.target.value })}>
+                  <option value="newest">Newest first</option>
+                  <option value="oldest">Oldest first</option>
+                  <option value="priceLow">Price: low to high</option>
+                  <option value="priceHigh">Price: high to low</option>
+                  <option value="title">Title (A–Z)</option>
+                </select>
+              </div>
+              <div>
+                <label className="label">Max price (MMK)</label>
+                <input
+                  type="number"
+                  min={0}
+                  step={1000}
+                  className="input"
+                  placeholder="Any"
+                  value={filters.priceMax}
+                  onChange={(e) => update({ priceMax: e.target.value })}
+                />
+              </div>
+              <label className="flex items-center gap-2 self-end pb-2 text-sm text-slate-200">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-white/15"
+                  checked={filters.freeOnly === 'true'}
+                  onChange={(e) => update({ freeOnly: e.target.checked ? 'true' : '' })}
+                />
+                Free only
+              </label>
+              <label className="flex items-center gap-2 self-end pb-2 text-sm text-slate-200">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-white/15"
+                  checked={filters.hasFile === 'true'}
+                  onChange={(e) => update({ hasFile: e.target.checked ? 'true' : '' })}
+                />
+                Has downloadable file
+              </label>
+            </div>
+          )}
         </div>
       </div>
 
@@ -146,7 +207,7 @@ export default function BrowsePage() {
         </div>
       ) : data && data.items.length > 0 ? (
         <>
-          <p className="text-sm text-slate-400">{t.projectsFound.my} {data.total} ခု</p>
+          <p className="text-sm text-slate-400">{data.total} {t.projectsFound.en}</p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {data.items.map((p) => (
               <ProjectCard key={p.id} p={p} />
@@ -159,23 +220,23 @@ export default function BrowsePage() {
                 disabled={data.page <= 1}
                 onClick={() => update({ page: data.page - 1 })}
               >
-                {t.prevPage.my}
+                {t.prevPage.en}
               </button>
               <span className="text-sm text-slate-300">
-                {t.pageOf.my} {data.page} / {data.totalPages}
+                {t.pageOf.en} {data.page} / {data.totalPages}
               </span>
               <button
                 className="btn-secondary"
                 disabled={data.page >= data.totalPages}
                 onClick={() => update({ page: data.page + 1 })}
               >
-                {t.nextPage.my}
+                {t.nextPage.en}
               </button>
             </div>
           )}
         </>
       ) : (
-        <EmptyState title={t.noProjectsTitle.my} hint={t.noProjectsHint.my} />
+        <EmptyState title={t.noProjectsTitle.en} hint={t.noProjectsHint.en} />
       )}
     </div>
   );

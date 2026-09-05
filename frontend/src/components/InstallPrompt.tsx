@@ -60,14 +60,14 @@ export function InstallPrompt() {
           TU
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-slate-100">{t.installApp.my}</p>
+          <p className="truncate text-sm font-semibold text-slate-100">{t.installApp.en}</p>
           <p className="truncate text-xs text-slate-400">{t.installApp.en}</p>
         </div>
         <button className="btn-secondary px-3 py-1.5 text-xs" onClick={dismiss}>
-          {t.installDismiss.my}
+          {t.installDismiss.en}
         </button>
         <button className="btn-primary px-3 py-1.5 text-xs" onClick={install}>
-          {t.installApp.my}
+          {t.installApp.en}
         </button>
       </div>
     </div>

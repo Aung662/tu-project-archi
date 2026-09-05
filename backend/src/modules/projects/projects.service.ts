@@ -23,9 +23,18 @@ const listSelect = {
   createdAt: true,
   university: { select: { id: true, name: true, shortName: true } },
   department: { select: { id: true, name: true, code: true } },
+  // Only image METADATA (id/kind/order) — never the bytes. Ordered so the first
+  // GALLERY image is the natural cover and SPIN frames stay in sequence.
+  images: {
+    orderBy: [{ kind: 'asc' }, { sortOrder: 'asc' }, { createdAt: 'asc' }],
+    select: { id: true, kind: true, sortOrder: true },
+  },
 } satisfies Prisma.ProjectSelect;
 
 function toPublicCard(p: any) {
+  const images = (p.images ?? []) as Array<{ id: string; kind: string }>;
+  const gallery = images.filter((i) => i.kind === 'GALLERY').map((i) => `/api/images/${i.id}`);
+  const spin = images.filter((i) => i.kind === 'SPIN').map((i) => `/api/images/${i.id}`);
   return {
     id: p.id,
     title: p.title,
@@ -41,15 +50,27 @@ function toPublicCard(p: any) {
     university: p.university,
     department: p.department,
     createdAt: p.createdAt,
+    // Image surface for tiles + detail viewers.
+    coverImageUrl: gallery[0] ?? spin[0] ?? null,
+    imageCount: images.length,
+    gallery,
+    spin,
   };
 }
 
 export interface BrowseParams {
   year?: number;
+  yearFrom?: number;
+  yearTo?: number;
   universityId?: string;
   departmentId?: string;
   level?: string;
   q?: string; // simple keyword contains (browse box); similarity uses /search
+  priceMin?: number;
+  priceMax?: number;
+  freeOnly?: boolean;
+  hasFile?: boolean;
+  sort?: 'newest' | 'oldest' | 'priceLow' | 'priceHigh' | 'title';
   page?: number;
   pageSize?: number;
   includeUnpublished?: boolean; // admin only
@@ -69,9 +90,31 @@ export async function browseProjects(params: BrowseParams) {
         : {}
       : { status: 'PUBLISHED' }),
     ...(params.year ? { year: params.year } : {}),
+    // Year range (inclusive). Combines with an exact `year` if both are given.
+    ...(params.yearFrom || params.yearTo
+      ? {
+          year: {
+            ...(params.yearFrom ? { gte: params.yearFrom } : {}),
+            ...(params.yearTo ? { lte: params.yearTo } : {}),
+          },
+        }
+      : {}),
     ...(params.universityId ? { universityId: params.universityId } : {}),
     ...(params.departmentId ? { departmentId: params.departmentId } : {}),
     ...(params.level ? { level: params.level as any } : {}),
+    // Price filters: freeOnly wins; otherwise apply min/max range if present.
+    ...(params.freeOnly
+      ? { priceMmk: 0 }
+      : params.priceMin != null || params.priceMax != null
+        ? {
+            priceMmk: {
+              ...(params.priceMin != null ? { gte: params.priceMin } : {}),
+              ...(params.priceMax != null ? { lte: params.priceMax } : {}),
+            },
+          }
+        : {}),
+    // Only projects that have a downloadable full file attached.
+    ...(params.hasFile ? { fileStorageKey: { not: null } } : {}),
     ...(params.q
       ? {
           OR: [
@@ -82,12 +125,23 @@ export async function browseProjects(params: BrowseParams) {
       : {}),
   };
 
+  const orderBy: Prisma.ProjectOrderByWithRelationInput[] =
+    params.sort === 'oldest'
+      ? [{ year: 'asc' }, { createdAt: 'asc' }]
+      : params.sort === 'priceLow'
+        ? [{ priceMmk: 'asc' }, { year: 'desc' }]
+        : params.sort === 'priceHigh'
+          ? [{ priceMmk: 'desc' }, { year: 'desc' }]
+          : params.sort === 'title'
+            ? [{ title: 'asc' }]
+            : [{ year: 'desc' }, { createdAt: 'desc' }]; // newest (default)
+
   const [total, rows] = await Promise.all([
     prisma.project.count({ where }),
     prisma.project.findMany({
       where,
       select: listSelect,
-      orderBy: [{ year: 'desc' }, { createdAt: 'desc' }],
+      orderBy,
       skip: (page - 1) * pageSize,
       take: pageSize,
     }),

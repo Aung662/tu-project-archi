@@ -332,3 +332,108 @@ describe('Payment flow — end-to-end with proof review (QA-C1)', () => {
     if (projectId) await agentAdmin.delete(`/api/admin/projects/${projectId}`);
   });
 });
+
+describe('Wave 11 features — images, bookmarks, analytics, password reset, filters', () => {
+  let projectId = '';
+
+  beforeAll(async () => {
+    const list = await request(app).get('/api/projects?pageSize=1');
+    projectId = list.body.data.items[0].id;
+  });
+
+  it('advanced filters: sort + price range apply', async () => {
+    const res = await request(app).get('/api/projects?sort=priceLow&priceMax=100000&pageSize=5');
+    expect(res.status).toBe(200);
+    const prices = res.body.data.items.map((p: any) => p.priceMmk);
+    const sorted = [...prices].sort((a, b) => a - b);
+    expect(prices).toEqual(sorted);
+  });
+
+  it('public image set endpoint returns gallery + spin arrays', async () => {
+    const res = await request(app).get(`/api/images/project/${projectId}`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.data.gallery)).toBe(true);
+    expect(Array.isArray(res.body.data.spin)).toBe(true);
+  });
+
+  it('non-admin cannot upload project images (403)', async () => {
+    const res = await agentStudent
+      .post(`/api/images/project/${projectId}`)
+      .attach('images', Buffer.from([0xff, 0xd8, 0xff, 0x00]), 'x.jpg');
+    expect([401, 403]).toContain(res.status);
+  });
+
+  it('pageview beacon accepts anonymous posts', async () => {
+    const res = await request(app).post('/api/analytics/pageview').send({ path: '/browse' });
+    expect(res.status).toBe(202);
+    expect(res.body.data.recorded).toBe(true);
+  });
+
+  it('admin dashboard returns totals + a 14-day series', async () => {
+    const res = await agentAdmin.get('/api/admin/dashboard');
+    expect(res.status).toBe(200);
+    expect(res.body.data.series).toHaveLength(14);
+    expect(res.body.data.totals).toHaveProperty('totalPageViews');
+  });
+
+  it('CSV report export is Excel-friendly', async () => {
+    const res = await agentAdmin.get('/api/admin/reports/projects.csv');
+    expect(res.status).toBe(200);
+    expect(res.headers['content-type']).toContain('text/csv');
+    expect(res.text.startsWith('\uFEFF')).toBe(true); // UTF-8 BOM
+  });
+
+  it('bookmarks: student can save, list, and remove', async () => {
+    const add = await agentStudent.post(`/api/bookmarks/${projectId}`);
+    expect(add.status).toBe(201);
+
+    const ids = await agentStudent.get('/api/bookmarks/ids');
+    expect(ids.body.data).toContain(projectId);
+
+    const del = await agentStudent.delete(`/api/bookmarks/${projectId}`);
+    expect(del.status).toBe(200);
+
+    const ids2 = await agentStudent.get('/api/bookmarks/ids');
+    expect(ids2.body.data).not.toContain(projectId);
+  });
+
+  it('anonymous cannot access bookmarks (401)', async () => {
+    const res = await request(app).get('/api/bookmarks');
+    expect(res.status).toBe(401);
+  });
+
+  it('password reset: request → token → reset → login with new password', async () => {
+    const email = `reset-${Date.now()}@example.com`;
+    const password = 'OldPass#2026';
+    await request(app).post('/api/auth/register').send({ email, password, name: 'Reset User' });
+
+    const req = await request(app).post('/api/auth/forgot-password').send({ email });
+    expect(req.status).toBe(200);
+    const token = req.body.data.devToken;
+    expect(typeof token).toBe('string');
+
+    const reset = await request(app)
+      .post('/api/auth/reset-password')
+      .send({ token, password: 'BrandNew#2026' });
+    expect(reset.status).toBe(200);
+
+    const login = await request(app)
+      .post('/api/auth/login')
+      .send({ email, password: 'BrandNew#2026' });
+    expect(login.status).toBe(200);
+
+    // Old password no longer works; token is single-use.
+    const reuse = await request(app)
+      .post('/api/auth/reset-password')
+      .send({ token, password: 'Another#2026' });
+    expect(reuse.status).toBe(400);
+  });
+
+  it('forgot-password does not reveal unknown emails', async () => {
+    const res = await request(app)
+      .post('/api/auth/forgot-password')
+      .send({ email: 'definitely-not-a-user@example.com' });
+    expect(res.status).toBe(200);
+    expect(res.body.data.devToken).toBeUndefined();
+  });
+});

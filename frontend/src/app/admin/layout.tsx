@@ -8,13 +8,13 @@ import { Spinner, Alert } from '@/components/ui';
 import { t } from '@/lib/i18n';
 
 const TABS = [
-  { href: '/admin', label: t.tabOverview.my },
-  { href: '/admin/projects', label: t.tabProjects.my },
-  { href: '/admin/schools', label: t.tabSchools.my },
-  { href: '/admin/payments', label: t.tabPayments.my },
-  { href: '/admin/users', label: t.tabUsers.my },
-  { href: '/admin/analytics', label: t.tabAnalytics.my },
-  { href: '/admin/audit', label: t.tabAudit.my },
+  { href: '/admin', label: t.tabOverview.en },
+  { href: '/admin/projects', label: t.tabProjects.en },
+  { href: '/admin/schools', label: t.tabSchools.en },
+  { href: '/admin/payments', label: t.tabPayments.en },
+  { href: '/admin/users', label: t.tabUsers.en },
+  { href: '/admin/analytics', label: t.tabAnalytics.en },
+  { href: '/admin/audit', label: t.tabAudit.en },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -30,17 +30,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   }, [loading, user, router]);
 
-  if (loading) return <Spinner label={t.adminCheckingAccess.my} />;
+  if (loading) return <Spinner label={t.adminCheckingAccess.en} />;
   if (!user || user.role !== 'ADMIN') {
-    return <Alert kind="error">{t.adminOnly.my}</Alert>;
+    return <Alert kind="error">{t.adminOnly.en}</Alert>;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold text-slate-100">{t.adminDashboard.my}</h1>
+        <h1 className="text-2xl font-bold text-slate-100">{t.adminDashboard.en}</h1>
         <span className="text-sm text-slate-400">
-          {t.adminSignedInAs.my} <span className="font-medium text-slate-200">{user.name}</span>
+          {t.adminSignedInAs.en} <span className="font-medium text-slate-200">{user.name}</span>
         </span>
       </div>
       <nav className="flex flex-wrap gap-1 border-b border-white/10">

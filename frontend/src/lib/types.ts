@@ -43,6 +43,18 @@ export interface ProjectCard {
   university: UniversityLite;
   department: DepartmentLite;
   createdAt: string;
+  /** First gallery (or spin) image, used as the tile thumbnail. */
+  coverImageUrl?: string | null;
+  imageCount?: number;
+  /** Ordered public gallery image URLs. */
+  gallery?: string[];
+  /** Ordered 360° turntable frame URLs. */
+  spin?: string[];
+}
+
+export interface ProjectImageSet {
+  gallery: { id: string; url: string }[];
+  spin: { id: string; url: string }[];
 }
 
 export interface Paginated<T> {
@@ -106,6 +118,22 @@ export interface Purchase {
   project: { id: string; title: string; year: number; hasFile: boolean };
 }
 
+export interface Bookmark {
+  id: string;
+  createdAt: string;
+  project: {
+    id: string;
+    title: string;
+    year: number;
+    level: AcademicLevel;
+    priceMmk: number;
+    hasFile: boolean;
+    university: UniversityLite;
+    department: DepartmentLite;
+    coverImageUrl?: string | null;
+  };
+}
+
 export interface AdminStats {
   projects: number;
   published: number;
@@ -140,4 +168,20 @@ export interface SearchLogEntry {
 export interface SearchAnalytics {
   recent: SearchLogEntry[];
   stats: { totalSearches: number; totalChecks: number; duplicateRisks: number };
+}
+
+export interface DashboardData {
+  totals: {
+    projects: number;
+    published: number;
+    pendingPayments: number;
+    users: number;
+    purchases: number;
+    totalPageViews: number;
+    totalSearches: number;
+    totalChecks: number;
+  };
+  series: { date: string; views: number; uniques: number; searches: number; checks: number }[];
+  byUniversity: { label: string; value: number }[];
+  topPaths: { path: string; count: number }[];
 }

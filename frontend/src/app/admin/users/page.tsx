@@ -28,10 +28,10 @@ export default function AdminUsers() {
   async function changeRole(id: string, role: string) {
     try {
       await api.put(`/admin/users/${id}/role`, { role });
-      setMsg(t.uRoleChanged.my);
+      setMsg(t.uRoleChanged.en);
       await load();
     } catch (err) {
-      setMsg(err instanceof Error ? err.message : t.scActionFailed.my);
+      setMsg(err instanceof Error ? err.message : t.scActionFailed.en);
     }
   }
 
@@ -44,10 +44,10 @@ export default function AdminUsers() {
         <table className="w-full text-sm">
           <thead className="bg-white/5 text-left text-xs uppercase text-slate-400">
             <tr>
-              <th className="px-4 py-3">{t.uColName.my}</th>
-              <th className="px-4 py-3">{t.uColEmail.my}</th>
-              <th className="px-4 py-3">{t.uColJoined.my}</th>
-              <th className="px-4 py-3">{t.uColRole.my}</th>
+              <th className="px-4 py-3">{t.uColName.en}</th>
+              <th className="px-4 py-3">{t.uColEmail.en}</th>
+              <th className="px-4 py-3">{t.uColJoined.en}</th>
+              <th className="px-4 py-3">{t.uColRole.en}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/10">
