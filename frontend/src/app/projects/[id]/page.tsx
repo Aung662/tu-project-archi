@@ -96,6 +96,15 @@ export default function ProjectDetailPage() {
           title={project.title}
         />
 
+        {project.aiSummary && (
+          <section className="rounded-xl border border-brand-400/25 bg-brand-500/10 p-4">
+            <h2 className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-brand-200">
+              ✨ {tr(t.aiSummaryLabel)}
+            </h2>
+            <p className="text-sm text-slate-100">{project.aiSummary}</p>
+          </section>
+        )}
+
         <section className="card p-5">
           <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-400">
             {tr(t.abstract)}

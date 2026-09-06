@@ -40,6 +40,8 @@ export interface ProjectCard {
   status: ProjectStatus;
   hasFile: boolean;
   hasConsent?: boolean;
+  /** One-sentence AI summary of the abstract (present only when AI is enabled). */
+  aiSummary?: string | null;
   university: UniversityLite;
   department: DepartmentLite;
   createdAt: string;

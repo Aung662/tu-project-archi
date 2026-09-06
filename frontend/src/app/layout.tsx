@@ -12,6 +12,7 @@ import { ThemeProvider, themeInitScript } from '@/context/ThemeContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { WelcomeOverlay } from '@/components/WelcomeOverlay';
 import { ScrollToTop } from '@/components/ScrollToTop';
+import { AiChat } from '@/components/ai/AiChat';
 
 // Modern geometric sans for Latin / UI numerals.
 const jakarta = Plus_Jakarta_Sans({
@@ -85,6 +86,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Footer />
             </div>
             <WelcomeOverlay />
+            <AiChat />
             <ScrollToTop />
             <InstallPrompt />
             <ServiceWorkerRegistrar />

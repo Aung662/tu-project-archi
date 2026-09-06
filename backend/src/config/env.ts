@@ -49,6 +49,16 @@ const EnvSchema = z.object({
   // per video; we default to 50 MB to keep "short clips" short.
   VIDEO_MAX_BYTES: z.coerce.number().int().positive().default(52_428_800),
 
+  // ── Google Gemini (optional): powers AI features — semantic search,
+  // project TLDR summaries, and the AI assistant chatbot. When GEMINI_API_KEY
+  // is blank, every AI feature degrades gracefully (semantic search falls back
+  // to the trigram engine; summaries/chat report "AI not configured"). Get a
+  // free key at https://aistudio.google.com/apikey (no credit card).
+  GEMINI_API_KEY: z.string().default(''),
+  // Models are configurable so you can swap as Google updates the free tier.
+  GEMINI_EMBED_MODEL: z.string().default('text-embedding-004'),
+  GEMINI_CHAT_MODEL: z.string().default('gemini-2.0-flash'),
+
   DEFAULT_PROJECT_PRICE_MMK: z.coerce.number().int().nonnegative().default(5000),
   PAYMENT_INSTRUCTIONS: z
     .string()
@@ -110,3 +120,9 @@ export const isProd = env.NODE_ENV === 'production';
 export const cloudinaryConfigured = Boolean(
   env.CLOUDINARY_CLOUD_NAME && env.CLOUDINARY_API_KEY && env.CLOUDINARY_API_SECRET,
 );
+
+/**
+ * True when a Gemini API key is present. All AI features check this and degrade
+ * gracefully when false, so the app runs perfectly without any AI key set.
+ */
+export const geminiConfigured = Boolean(env.GEMINI_API_KEY);

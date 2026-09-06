@@ -4,6 +4,17 @@ import { BadRequest, NotFound } from '../../lib/errors.js';
 import { normalizeTitle } from '../search/normalize.js';
 import { scoreNormalized } from '../search/similarity.js';
 import { deletePrivateFile } from '../../lib/storage.js';
+import { indexProject } from '../ai/ai.service.js';
+
+/**
+ * Fire-and-forget AI indexing: build the embedding + TLDR summary in the
+ * background after a project is created/updated. Never blocks the response and
+ * never throws (no-op when no Gemini key is configured).
+ */
+function scheduleAiIndex(projectId: string, status?: string) {
+  if (status && status !== 'PUBLISHED') return;
+  void indexProject(projectId).catch(() => {});
+}
 
 const listSelect = {
   id: true,
@@ -21,6 +32,7 @@ const listSelect = {
   status: true,
   hasConsent: true,
   fileStorageKey: true,
+  aiSummary: true,
   createdAt: true,
   university: { select: { id: true, name: true, shortName: true } },
   department: { select: { id: true, name: true, code: true } },
@@ -48,6 +60,7 @@ function toPublicCard(p: any) {
     priceMmk: p.priceMmk,
     status: p.status,
     hasFile: Boolean(p.fileStorageKey),
+    aiSummary: p.aiSummary ?? null,
     university: p.university,
     department: p.department,
     createdAt: p.createdAt,
@@ -299,6 +312,7 @@ export async function createProject(input: UpsertProjectInput, submittedById?: s
     },
     select: listSelect,
   });
+  scheduleAiIndex(created.id, created.status);
   return toPublicCard(created);
 }
 
@@ -334,6 +348,7 @@ export async function updateProject(id: string, input: Partial<UpsertProjectInpu
     },
     select: listSelect,
   });
+  scheduleAiIndex(updated.id, updated.status);
   return toPublicCard(updated);
 }
 

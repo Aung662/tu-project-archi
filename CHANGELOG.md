@@ -3,6 +3,17 @@
 All notable changes to **TU Project Archive & Title Similarity Checker**. Grouped by build wave;
 newest first. Dates are the project timeline (Asia/Yangon).
 
+## [Unreleased] — Keep backend awake (no cold starts) (2026-09-06)
+- Added `.github/workflows/keep-alive.yml`: a free GitHub Actions cron that pings the backend `/health` every ~10 min so Render's free tier never sleeps. Users can open the site instantly at any time instead of waiting 30-50s for a cold start. Runs on GitHub's servers (no extra account/credit card); also warms the frontend.
+
+## [Unreleased] — AI features (Gemini): semantic search, TLDR, chatbot (2026-09-06)
+- **AI Assistant chatbot** — floating 🤖 bubble (mounted globally) that answers questions using ONLY the archive's own projects (retrieval-grounded, so it can't invent projects), with clickable source links. Self-hides when no AI key is set.
+- **AI semantic search** — meaning-based search over cached project embeddings (finds relevant projects even when keywords differ); falls back to the trigram engine when AI is off.
+- **AI TLDR summaries** — one-sentence auto summary per project, shown on the detail page; auto-generated on publish.
+- **Related projects (AI)** endpoint for semantic "you might also like".
+- All AI is powered by Google Gemini (free tier, no card) and degrades gracefully: new backend module `modules/ai` (service + routes), `lib/gemini.ts` (embeddings + chat + cosine), `geminiConfigured` flag, `GET /api/ai/config`. New Project fields: `aiSummary`, `embedding`, `embeddingHash`. Embeddings auto-build on project create/update (fire-and-forget) + admin `POST /api/ai/index-all` backfill.
+- New env: `GEMINI_API_KEY`, `GEMINI_EMBED_MODEL`, `GEMINI_CHAT_MODEL` (see .env.example).
+
 ## [Unreleased] — Real contact details filled in (2026-09-06)
 - Populated `src/lib/contact.ts` with real info: phones 09761795292 / 09967216095, Viber 09761795292, Telegram @akokst, email aungkhamoo60@gmail.com. Facebook/Messenger left empty (auto-hidden).
 - Contact page now supports multiple phone numbers and a Telegram @username/link.

@@ -73,6 +73,27 @@ export const t = {
   navLogout: L('ထွက်ရန်', 'Logout'),
   navContact: L('ဆက်သွယ်ရန်', 'Contact'),
 
+  // AI features
+  aiAssistant: L('AI လက်ထောက်', 'AI Assistant'),
+  aiChatTitle: L('AI လက်ထောက်ကို မေးမြန်းရန်', 'Ask the AI Assistant'),
+  aiChatIntro: L(
+    'စီမံကိန်းမှတ်တမ်းအကြောင်း မေးမြန်းနိုင်ပါသည်။ ဥပမာ — "ဆိုလာစွမ်းအင်နဲ့ ပတ်သက်တဲ့ project ဘာတွေရှိလဲ။"',
+    'Ask about the project archive. e.g. "What projects are there about solar energy?"',
+  ),
+  aiChatPlaceholder: L('သင့်မေးခွန်းကို ရိုက်ထည့်ပါ…', 'Type your question…'),
+  aiChatSend: L('ပို့ရန်', 'Send'),
+  aiChatThinking: L('စဉ်းစားနေသည်…', 'Thinking…'),
+  aiChatSources: L('ကိုးကားချက်များ', 'Sources'),
+  aiChatError: L('တောင်းပန်ပါသည်၊ ပြဿနာတစ်ခု ဖြစ်ပွားခဲ့သည်။', 'Sorry, something went wrong.'),
+  aiSmartSearch: L('AI ဖြင့် အဓိပ္ပာယ်ရှာဖွေမှု', 'AI Smart Search'),
+  aiSmartSearchHint: L(
+    'စကားလုံးအတိအကျ မတူညီသော်လည်း အဓိပ္ပာယ်တူ project များကို ရှာဖွေပေးသည်။',
+    'Finds projects by meaning, even when the exact words differ.',
+  ),
+  aiSummaryLabel: L('AI အနှစ်ချုပ်', 'AI Summary'),
+  aiRelatedTitle: L('ဆက်စပ်သော စီမံကိန်းများ (AI)', 'Related projects (AI)'),
+  aiMatch: L('ကိုက်ညီမှု', 'match'),
+
   // Contact page
   contactTitle: L('ဆက်သွယ်ရန်', 'Contact Us'),
   contactIntro: L(
