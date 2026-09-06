@@ -71,6 +71,32 @@ export const t = {
   navAdminDashboard: L('စီမံခန့်ခွဲမှု ဒက်ရှ်ဘုတ်', 'Admin Dashboard'),
   navLogin: L('အကောင့်ဝင်ရန်', 'Login'),
   navLogout: L('ထွက်ရန်', 'Logout'),
+  navContact: L('ဆက်သွယ်ရန်', 'Contact'),
+
+  // Contact page
+  contactTitle: L('ဆက်သွယ်ရန်', 'Contact Us'),
+  contactIntro: L(
+    'စီမံကိန်းများ ဝယ်ယူလိုခြင်း၊ ငွေပေးချေမှုအတွက် အကူအညီလိုခြင်း သို့မဟုတ် မေးမြန်းစရာရှိပါက အောက်ပါလမ်းကြောင်းများမှ ဆက်သွယ်နိုင်ပါသည်။',
+    'Want to buy a project, need help with payment, or have a question? Reach us through any of the channels below.',
+  ),
+  contactPhone: L('ဖုန်း', 'Phone'),
+  contactViber: L('Viber', 'Viber'),
+  contactMessenger: L('Facebook Messenger', 'Facebook Messenger'),
+  contactTelegram: L('Telegram', 'Telegram'),
+  contactEmail: L('အီးမေးလ်', 'Email'),
+  contactHours: L('ဆက်သွယ်ချိန်', 'Available hours'),
+  contactHoursValue: L('တနင်္လာ – စနေ၊ နံနက် ၉ နာရီ – ညနေ ၅ နာရီ', 'Mon – Sat, 9:00 AM – 5:00 PM'),
+  contactBuyNote: L(
+    'ဝယ်ယူလိုသော စီမံကိန်း၏ ခေါင်းစဉ်ကို ဆက်သွယ်စဉ် ထည့်သွင်းပေးပါ။',
+    'Please include the title of the project you want when you contact us.',
+  ),
+  contactChatCta: L('စာပို့ရန်', 'Message us'),
+  contactCallCta: L('ခေါ်ဆိုရန်', 'Call now'),
+  purchaseContactHeading: L('တိုက်ရိုက်ဆက်သွယ်၍ ဝယ်ယူရန်', 'Prefer to buy directly? Contact us'),
+  purchaseContactBody: L(
+    'အွန်လိုင်းငွေပေးချေမှုအဆင်မပြေပါက ကျွန်ုပ်တို့ကို တိုက်ရိုက်ဆက်သွယ်နိုင်ပါသည်။',
+    'If online payment is inconvenient, you can reach us directly.',
+  ),
 
   // Home / hero
   heroTitle: L(

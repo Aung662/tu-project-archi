@@ -3,6 +3,13 @@
 All notable changes to **TU Project Archive & Title Similarity Checker**. Grouped by build wave;
 newest first. Dates are the project timeline (Asia/Yangon).
 
+## [Unreleased] — Contact / how-to-buy (2026-09-06)
+- Added a **Contact** page (`/contact`) with all channels: Phone, Viber, Messenger, Telegram, Email + available hours and a "include the project title" note.
+- Central `frontend/src/lib/contact.ts` holds all contact details in ONE place (placeholder values — edit these with the real phone/links/email); empty fields auto-hide.
+- Added **Contact** link to the Navbar (desktop + mobile) and the Footer.
+- Added a "Prefer to buy directly? Contact us" block inside the purchase panel on every project detail page, with a one-tap call button and link to /contact.
+- New i18n keys (MY/EN) for all of the above.
+
 ## [Unreleased] — Welcome greeting copy (2026-09-06)
 
 ### Changed

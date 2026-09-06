@@ -1,11 +1,33 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { api } from '@/lib/api';
 import type { PaymentOrder } from '@/lib/types';
 import { Alert } from './ui';
 import { formatMMK } from '@/lib/format';
 import { tr, t } from '@/lib/i18n';
+import { CONTACT, telHref } from '@/lib/contact';
+
+/** Small "contact us to buy directly" block shown under every purchase flow. */
+function ContactToBuy() {
+  return (
+    <div className="rounded-lg border border-white/10 bg-white/5 p-3 text-sm">
+      <p className="font-semibold text-slate-100">{tr(t.purchaseContactHeading)}</p>
+      <p className="mt-1 text-slate-300">{tr(t.purchaseContactBody)}</p>
+      <div className="mt-2 flex flex-wrap gap-2">
+        {CONTACT.phone && (
+          <a href={telHref(CONTACT.phone)} className="rounded-md bg-brand-500/20 px-3 py-1.5 text-xs font-semibold text-brand-100 hover:bg-brand-500/30">
+            📞 {CONTACT.phone}
+          </a>
+        )}
+        <Link href="/contact" className="rounded-md bg-white/10 px-3 py-1.5 text-xs font-semibold text-slate-100 hover:bg-white/20">
+          {tr(t.navContact)} →
+        </Link>
+      </div>
+    </div>
+  );
+}
 
 /**
  * Manual MMK purchase flow:
@@ -89,6 +111,7 @@ export function PurchasePanel({ projectId, amountMmk }: { projectId: string; amo
             {busy ? tr(t.uploading) : tr(t.uploadProofBtn)}
           </button>
         </div>
+        <ContactToBuy />
       </div>
     );
   }
@@ -125,6 +148,7 @@ export function PurchasePanel({ projectId, amountMmk }: { projectId: string; amo
       <button onClick={createOrder} disabled={busy} className="btn-primary w-full">
         {busy ? tr(t.submitting) : tr(t.submitOrder)}
       </button>
+      <ContactToBuy />
     </div>
   );
 }

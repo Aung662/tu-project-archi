@@ -58,7 +58,15 @@ export function uploadVideo(buffer: Buffer, projectId: string): Promise<Uploaded
       },
       (error, result) => {
         if (error || !result) {
-          return reject(BadRequest(error?.message || 'Cloudinary upload failed'));
+          const raw = error?.message || 'Cloudinary upload failed';
+          // Cloudinary returns 401/403 with an unhelpful "unexpected status code"
+          // when the API key/secret are wrong or don't match the cloud name.
+          const status = (error as { http_code?: number } | undefined)?.http_code;
+          const hint =
+            status === 401 || status === 403 || /401|403|unexpected status/i.test(raw)
+              ? ' — check that CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET are correct and belong to the same cloud as CLOUDINARY_CLOUD_NAME.'
+              : '';
+          return reject(BadRequest(`Cloudinary upload failed: ${raw}${hint}`));
         }
         // Poster frame: same public_id delivered as a jpg with a middle frame.
         const thumbnailUrl = cloudinary.url(result.public_id, {

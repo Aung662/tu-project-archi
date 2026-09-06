@@ -56,6 +56,7 @@ export function Navbar() {
             <NavLink href="/browse">{tr(t.navBrowse)}</NavLink>
             <NavLink href="/titles">{tr(t.navTitles)}</NavLink>
             <NavLink href="/check">{tr(t.navCheck)}</NavLink>
+            <NavLink href="/contact">{tr(t.navContact)}</NavLink>
           </div>
         </div>
 
@@ -108,6 +109,7 @@ export function Navbar() {
             <MobileLink href="/browse" onClick={() => setMenuOpen(false)}>{tr(t.navBrowse)}</MobileLink>
             <MobileLink href="/titles" onClick={() => setMenuOpen(false)}>{tr(t.navTitles)}</MobileLink>
             <MobileLink href="/check" onClick={() => setMenuOpen(false)}>{tr(t.navCheck)}</MobileLink>
+            <MobileLink href="/contact" onClick={() => setMenuOpen(false)}>{tr(t.navContact)}</MobileLink>
             {user ? (
               <>
                 {user.role === 'ADMIN' && (
