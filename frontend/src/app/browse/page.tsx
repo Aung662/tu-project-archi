@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import Link from 'next/link';
 import { api } from '@/lib/api';
 import type { Paginated, ProjectCard as Card, University } from '@/lib/types';
 import { ProjectCard } from '@/components/ProjectCard';
@@ -61,9 +62,18 @@ export default function BrowsePage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-100">{tr(t.browseTitle)}</h1>
-        <p className="text-sm text-slate-400">{tr(t.browseSubtitle)}</p>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-100">{tr(t.browseTitle)}</h1>
+          <p className="text-sm text-slate-400">{tr(t.browseSubtitle)}</p>
+        </div>
+        <Link
+          href="/titles"
+          className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10"
+        >
+          <span aria-hidden>📋</span>
+          {tr(t.allTitlesLink)}
+        </Link>
       </div>
 
       {/* Filters */}

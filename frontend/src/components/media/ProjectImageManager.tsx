@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '@/lib/api';
-import type { ProjectImageSet } from '@/lib/types';
+import type { ProjectImageSet, ProjectVideo } from '@/lib/types';
 import { Alert, Spinner } from '../ui';
+import { tr, t } from '@/lib/i18n';
 
 /**
  * Admin panel to manage a project's PUBLIC images:
@@ -19,6 +20,11 @@ export function ProjectImageManager({ projectId }: { projectId: string }) {
   const [busy, setBusy] = useState<'GALLERY' | 'SPIN' | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Video state (Cloudinary-hosted).
+  const [videos, setVideos] = useState<ProjectVideo[]>([]);
+  const [videoEnabled, setVideoEnabled] = useState<boolean>(false);
+  const [videoBusy, setVideoBusy] = useState(false);
+
   const load = useCallback(() => {
     setLoading(true);
     api
@@ -28,7 +34,47 @@ export function ProjectImageManager({ projectId }: { projectId: string }) {
       .finally(() => setLoading(false));
   }, [projectId]);
 
+  const loadVideos = useCallback(() => {
+    api
+      .get<{ videos: ProjectVideo[] }>(`/images/project/${projectId}/videos`)
+      .then((r) => setVideos(r.videos))
+      .catch(() => setVideos([]));
+  }, [projectId]);
+
   useEffect(load, [load]);
+  useEffect(() => {
+    api
+      .get<{ enabled: boolean }>(`/images/video-config`)
+      .then((r) => setVideoEnabled(r.enabled))
+      .catch(() => setVideoEnabled(false));
+    loadVideos();
+  }, [loadVideos]);
+
+  async function uploadVideo(files: FileList | null) {
+    if (!files || files.length === 0) return;
+    setVideoBusy(true);
+    setError(null);
+    try {
+      const fd = new FormData();
+      fd.append('video', files[0]);
+      await api.postForm(`/images/project/${projectId}/videos`, fd);
+      loadVideos();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Video upload failed');
+    } finally {
+      setVideoBusy(false);
+    }
+  }
+
+  async function removeVideo(id: string) {
+    setError(null);
+    try {
+      await api.del(`/images/videos/${id}`);
+      loadVideos();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Delete failed');
+    }
+  }
 
   async function upload(kind: 'GALLERY' | 'SPIN', files: FileList | null) {
     if (!files || files.length === 0) return;
@@ -88,6 +134,88 @@ export function ProjectImageManager({ projectId }: { projectId: string }) {
         onUpload={(files) => upload('SPIN', files)}
         onRemove={remove}
       />
+
+      <VideoSection
+        enabled={videoEnabled}
+        videos={videos}
+        busy={videoBusy}
+        onUpload={uploadVideo}
+        onRemove={removeVideo}
+      />
+    </div>
+  );
+}
+
+function VideoSection({
+  enabled,
+  videos,
+  busy,
+  onUpload,
+  onRemove,
+}: {
+  enabled: boolean;
+  videos: ProjectVideo[];
+  busy: boolean;
+  onUpload: (files: FileList | null) => void;
+  onRemove: (id: string) => void;
+}) {
+  return (
+    <div className="space-y-2 border-t border-white/10 pt-4">
+      <div className="flex items-center justify-between gap-2">
+        <div>
+          <p className="text-sm font-medium text-slate-200">🎬 {tr(t.videoUploadLabel)}</p>
+          <p className="text-xs text-slate-400">{tr(t.videoHint)}</p>
+        </div>
+        {enabled ? (
+          <label className="btn-secondary cursor-pointer whitespace-nowrap px-3 py-1.5 text-xs">
+            {busy ? tr(t.videoUploading) : '+ Add'}
+            <input
+              type="file"
+              accept="video/mp4,video/webm,video/quicktime"
+              className="hidden"
+              disabled={busy}
+              onChange={(e) => {
+                onUpload(e.target.files);
+                e.target.value = '';
+              }}
+            />
+          </label>
+        ) : null}
+      </div>
+
+      {!enabled ? (
+        <p className="rounded-lg border border-dashed border-white/15 px-3 py-4 text-center text-xs text-amber-300/80">
+          {tr(t.videoDisabled)}
+        </p>
+      ) : videos.length === 0 ? (
+        <p className="rounded-lg border border-dashed border-white/15 px-3 py-4 text-center text-xs text-slate-500">
+          No videos yet
+        </p>
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          {videos.map((v) => (
+            <div key={v.id} className="group relative">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={v.thumbnailUrl ?? undefined}
+                alt={v.title || 'video'}
+                className="h-16 w-28 rounded-lg border border-white/10 bg-black object-cover"
+              />
+              <span className="absolute inset-0 grid place-items-center text-lg text-white/90">
+                ▶
+              </span>
+              <button
+                type="button"
+                onClick={() => onRemove(v.id)}
+                className="absolute -right-1.5 -top-1.5 grid h-5 w-5 place-items-center rounded-full bg-red-500 text-xs text-white opacity-0 transition group-hover:opacity-100"
+                aria-label="Delete video"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

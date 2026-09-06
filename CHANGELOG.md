@@ -3,6 +3,52 @@
 All notable changes to **TU Project Archive & Title Similarity Checker**. Grouped by build wave;
 newest first. Dates are the project timeline (Asia/Yangon).
 
+## [Unreleased] — Welcome greeting copy (2026-09-06)
+
+### Changed
+- **Welcome overlay greeting** now reads **"Welcome To My Project Library"** for first-time
+  visitors (the animated couple + sparkles remain). Signed-in users still get a personalised
+  "Welcome back, {name}!". Greeting, body and button are now translated (EN/မြ) via the i18n system
+  so they follow the language switch.
+
+## [Unreleased] — Hero CTAs, navigation & all-titles list (2026-09-06)
+
+### Added
+- **All Project Titles page (`/titles`).** A single numbered list of every project title in the
+  archive (fetches all pages, sorted A→Z), with a live title filter and a count. Each row links to
+  the project detail. Reachable from the navbar (**All Titles**) and a button on the Browse page.
+- **Floating "Back to top" button.** Appears after scrolling down; smooth-scrolls to the top. Global,
+  bottom-right, above the footer.
+- **Prominent "← Back to Dashboard" button** on every admin sub-page (hidden on the dashboard home).
+
+### Changed
+- **Redesigned hero call-to-action buttons.** The two hero buttons are now large 3D bevelled
+  rounded-rectangles with deep, rich color (indigo & plum), a raised highlight/lip, and hover lift.
+  Renamed: *Browse by year & university* → **Project Library**; *Run a full duplicate check* →
+  **Search Same Titles**.
+- Navbar gains an **All Titles** link (desktop + mobile).
+
+## [Unreleased] — Short video uploads via Cloudinary (2026-09-06)
+
+### Added
+- **Project demo videos (Cloudinary-hosted).** Admins can now upload one or more short
+  video clips (MP4/WebM/MOV, up to 50 MB) per project. Videos are uploaded straight to the
+  Cloudinary CDN — the database stores only the delivery URL, an auto-generated poster
+  frame, and lightweight metadata (never the video bytes, which would bloat Postgres).
+  - New `ProjectVideo` model + relation on `Project`.
+  - Backend: `POST/GET /api/images/project/:id/videos`, `DELETE /api/images/videos/:id`,
+    and `GET /api/images/video-config` (reports whether hosting is enabled). Deleting a
+    video also removes the asset from Cloudinary.
+  - Project detail responses now include a `videos` array; the detail page shows a new
+    🎬 **Video** tab with an HTML5 player (poster + controls).
+  - Admin image manager gains a video upload/delete section.
+- **Graceful degradation.** Cloudinary is fully optional. Without the `CLOUDINARY_*` env
+  vars the app runs unchanged: the upload control shows a clear "not configured" note and
+  the upload API returns a clean HTTP 400 (never a crash). Configure `CLOUDINARY_CLOUD_NAME`,
+  `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` (+ optional `VIDEO_MAX_BYTES`) to enable it.
+- Backend tests grown to **57 passing** (+5): video-config, public video list, RBAC on
+  video upload, clean-400 when unconfigured, and `videos` present in project detail.
+
 ## [Unreleased] — Universal project covers + seed backfill fix (2026-09-06)
 
 ### Fixed

@@ -35,8 +35,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return <Alert kind="error">{tr(t.adminOnly)}</Alert>;
   }
 
+  const onDashboardHome = pathname === '/admin';
+
   return (
     <div className="space-y-6">
+      {!onDashboardHome && (
+        <Link
+          href="/admin"
+          className="inline-flex items-center gap-2 rounded-xl border border-brand-400/40 bg-brand-500/15 px-4 py-2 text-sm font-semibold text-brand-100 shadow-glow transition hover:-translate-x-0.5 hover:border-brand-300 hover:bg-brand-500/30 hover:text-white"
+        >
+          <span aria-hidden>←</span>
+          {tr(t.backToDashboard)}
+        </Link>
+      )}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold text-slate-100">{tr(t.adminDashboard)}</h1>
         <span className="text-sm text-slate-400">

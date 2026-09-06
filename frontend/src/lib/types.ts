@@ -50,11 +50,22 @@ export interface ProjectCard {
   gallery?: string[];
   /** Ordered 360° turntable frame URLs. */
   spin?: string[];
+  /** Short demo videos (Cloudinary-hosted). Only present on the detail view. */
+  videos?: ProjectVideo[];
 }
 
 export interface ProjectImageSet {
   gallery: { id: string; url: string }[];
   spin: { id: string; url: string }[];
+}
+
+export interface ProjectVideo {
+  id: string;
+  url: string;
+  thumbnailUrl?: string | null;
+  title?: string;
+  durationSec?: number;
+  format?: string;
 }
 
 export interface Paginated<T> {

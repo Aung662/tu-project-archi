@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
+import { tr, t } from '@/lib/i18n';
 
 /**
  * A one-per-session animated welcome. Two 3D-style cartoon greeters float in,
@@ -49,7 +50,9 @@ export function WelcomeOverlay() {
     };
   }, [show]);
 
-  const greeting = user ? `Welcome back, ${user.name.split(' ')[0]}!` : 'Welcome to TU Archive!';
+  const greeting = user
+    ? `${tr(t.welcomeGreetingBack)}, ${user.name.split(' ')[0]}!`
+    : tr(t.welcomeGreeting);
 
   return (
     <AnimatePresence>
@@ -121,8 +124,7 @@ export function WelcomeOverlay() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.65 }}
             >
-              Search past projects, check your title for duplicates, and explore the archive.
-              Let’s find something great together!
+              {tr(t.welcomeBody)}
             </motion.p>
 
             <motion.button
@@ -135,7 +137,7 @@ export function WelcomeOverlay() {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
             >
-              Let’s go →
+              {tr(t.welcomeCta)}
             </motion.button>
           </motion.div>
         </motion.div>

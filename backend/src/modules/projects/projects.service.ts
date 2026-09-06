@@ -161,7 +161,16 @@ export async function getProjectDetail(id: string, opts: { isAdmin?: boolean } =
   const p = await prisma.project.findUnique({ where: { id }, select: listSelect });
   if (!p) throw NotFound('Project not found');
   if (p.status !== 'PUBLISHED' && !opts.isAdmin) throw NotFound('Project not found');
-  return toPublicCard(p);
+
+  // Videos are only surfaced on the detail view (kept out of list cards to keep
+  // browse queries light). They carry a Cloudinary URL, not DB bytes.
+  const videos = await prisma.projectVideo.findMany({
+    where: { projectId: id },
+    orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }],
+    select: { id: true, url: true, thumbnailUrl: true, title: true, durationSec: true, format: true },
+  });
+
+  return { ...toPublicCard(p), videos };
 }
 
 /**

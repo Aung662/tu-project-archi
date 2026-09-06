@@ -363,6 +363,44 @@ describe('Wave 11 features — images, bookmarks, analytics, password reset, fil
     expect([401, 403]).toContain(res.status);
   });
 
+  it('video-config reports whether Cloudinary is enabled', async () => {
+    const res = await request(app).get('/api/images/video-config');
+    expect(res.status).toBe(200);
+    expect(typeof res.body.data.enabled).toBe('boolean');
+  });
+
+  it('public video list endpoint returns an array', async () => {
+    const res = await request(app).get(`/api/images/project/${projectId}/videos`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.data.videos)).toBe(true);
+  });
+
+  it('non-admin cannot upload a project video (401/403)', async () => {
+    const res = await agentStudent
+      .post(`/api/images/project/${projectId}/videos`)
+      .attach('video', Buffer.from([0x00, 0x00, 0x00, 0x18]), 'clip.mp4');
+    expect([401, 403]).toContain(res.status);
+  });
+
+  it('admin video upload without Cloudinary configured fails cleanly (400)', async () => {
+    // Tests run without CLOUDINARY_* env, so the feature is disabled and the API
+    // must return a clear 400 — never a 500 crash.
+    const res = await agentAdmin
+      .post(`/api/images/project/${projectId}/videos`)
+      .attach('video', Buffer.from([0x00, 0x00, 0x00, 0x18, 0x66, 0x74, 0x79, 0x70]), {
+        filename: 'clip.mp4',
+        contentType: 'video/mp4',
+      });
+    expect(res.status).toBe(400);
+    expect(res.body.error?.message ?? res.body.message ?? '').toMatch(/not configured|Cloudinary/i);
+  });
+
+  it('project detail includes a videos array', async () => {
+    const res = await request(app).get(`/api/projects/${projectId}`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.data.videos)).toBe(true);
+  });
+
   it('pageview beacon accepts anonymous posts', async () => {
     const res = await request(app).post('/api/analytics/pageview').send({ path: '/browse' });
     expect(res.status).toBe(202);

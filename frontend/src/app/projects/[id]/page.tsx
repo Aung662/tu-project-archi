@@ -89,7 +89,12 @@ export default function ProjectDetailPage() {
           <BookmarkButton projectId={project.id} showLabel className="shrink-0 pt-1" />
         </div>
 
-        <ProjectMedia gallery={project.gallery} spin={project.spin} title={project.title} />
+        <ProjectMedia
+          gallery={project.gallery}
+          spin={project.spin}
+          videos={project.videos}
+          title={project.title}
+        />
 
         <section className="card p-5">
           <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-400">

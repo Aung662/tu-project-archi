@@ -149,6 +149,7 @@ model Project {
   purchases        PurchaseAccess[]
   paymentOrders    PaymentOrder[]
   images           ProjectImage[]
+  videos           ProjectVideo[]
   bookmarks        Bookmark[]
 
   createdAt        DateTime     @default(now())
@@ -178,6 +179,28 @@ model ProjectImage {
   createdAt DateTime @default(now())
 
   @@index([projectId, kind, sortOrder])
+}
+
+// ── Public project videos (short demo clips, hosted on Cloudinary) ────────────
+// Unlike images, video bytes are NOT stored in the DB (that would bloat Postgres
+// and is unsuitable for large binaries). Instead the file lives on Cloudinary's
+// CDN and we persist only the delivery URL + a few metadata fields. Deleting the
+// row also removes the asset from Cloudinary (see the video routes).
+model ProjectVideo {
+  id           String   @id @default(cuid())
+  project      Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId    String
+  url          String   // Cloudinary secure delivery URL (mp4/webm)
+  publicId     String   // Cloudinary public_id, needed to delete the asset
+  thumbnailUrl String?  // auto-generated poster frame (Cloudinary)
+  title        String   @default("")
+  durationSec  Int      @default(0)
+  sizeBytes    Int      @default(0)
+  format       String   @default("") // mp4 | webm | mov ...
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  @@index([projectId, sortOrder])
 }
 
 // ── Payments (manual MMK verification) ───────────────────────────────────────

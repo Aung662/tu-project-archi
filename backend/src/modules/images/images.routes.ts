@@ -3,12 +3,14 @@ import { z } from 'zod';
 import { asyncHandler, ok, params } from '../../lib/http.js';
 import { validate } from '../../middleware/validate.js';
 import { requireAuth, requireAdmin, optionalAuth } from '../../middleware/auth.js';
-import { projectImageUpload } from '../../middleware/upload.js';
+import { projectImageUpload, projectVideoUpload } from '../../middleware/upload.js';
 import { uploadLimiter } from '../../middleware/rateLimit.js';
 import { prisma } from '../../lib/prisma.js';
 import { BadRequest, NotFound } from '../../lib/errors.js';
 import { imageBufferMatchesMime } from '../../lib/fileSignature.js';
 import { audit } from '../../lib/audit.js';
+import { cloudinaryConfigured } from '../../config/env.js';
+import { uploadVideo, deleteVideo } from '../../lib/cloudinary.js';
 
 /**
  * Project images: public gallery photos + ordered 360° turntable frames.
@@ -57,6 +59,19 @@ imagesRouter.get(
           .map((i) => ({ id: i.id, url: `/api/images/${i.id}` })),
       }),
     );
+  }),
+);
+
+/**
+ * GET /api/images/video-config
+ * Public: tells the client whether video hosting is available on this server, so
+ * the UI can show/hide the upload control gracefully. MUST be declared before the
+ * `/:id` catch-all below, otherwise "video-config" is treated as an image id.
+ */
+imagesRouter.get(
+  '/video-config',
+  asyncHandler(async (_req, res) => {
+    res.json(ok({ enabled: cloudinaryConfigured }));
   }),
 );
 
@@ -179,6 +194,143 @@ imagesRouter.delete(
       entityType: 'Project',
       entityId: image.projectId,
       metadata: { imageId: id, kind: image.kind },
+    });
+    res.json(ok({ deleted: id }));
+  }),
+);
+
+// ── Videos ───────────────────────────────────────────────────────────────────
+// Short demo clips are hosted on Cloudinary; we store only the URL + metadata.
+
+/**
+ * GET /api/images/project/:projectId/videos
+ * Public list of a (published) project's videos.
+ */
+imagesRouter.get(
+  '/project/:projectId/videos',
+  optionalAuth,
+  validate({ params: z.object({ projectId: z.string().min(1) }) }),
+  asyncHandler(async (req, res) => {
+    const { projectId } = params<{ projectId: string }>(req);
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+      select: { status: true },
+    });
+    const isAdmin = req.user?.role === 'ADMIN';
+    if (!project || (project.status !== 'PUBLISHED' && !isAdmin)) throw NotFound('Project not found');
+
+    const videos = await prisma.projectVideo.findMany({
+      where: { projectId },
+      orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }],
+      select: {
+        id: true,
+        url: true,
+        thumbnailUrl: true,
+        title: true,
+        durationSec: true,
+        format: true,
+      },
+    });
+    res.json(ok({ videos }));
+  }),
+);
+
+/**
+ * POST /api/images/project/:projectId/videos  (admin)
+ * Upload ONE short video. Streams the buffer to Cloudinary, then stores the
+ * returned URL + metadata. Returns 400 with a clear message if Cloudinary is
+ * not configured on this server.
+ */
+imagesRouter.post(
+  '/project/:projectId/videos',
+  requireAuth,
+  requireAdmin,
+  uploadLimiter,
+  validate({ params: z.object({ projectId: z.string().min(1) }) }),
+  projectVideoUpload.single('video'),
+  asyncHandler(async (req, res) => {
+    const { projectId } = params<{ projectId: string }>(req);
+    const file = req.file;
+    if (!file) throw BadRequest('No video uploaded');
+
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+      select: { id: true },
+    });
+    if (!project) throw NotFound('Project not found');
+
+    // Uploads to Cloudinary (throws BadRequest if not configured).
+    const uploaded = await uploadVideo(file.buffer, projectId);
+
+    const last = await prisma.projectVideo.findFirst({
+      where: { projectId },
+      orderBy: { sortOrder: 'desc' },
+      select: { sortOrder: true },
+    });
+    const created = await prisma.projectVideo.create({
+      data: {
+        projectId,
+        url: uploaded.url,
+        publicId: uploaded.publicId,
+        thumbnailUrl: uploaded.thumbnailUrl,
+        title: (req.body?.title as string | undefined)?.slice(0, 120) ?? '',
+        durationSec: uploaded.durationSec,
+        sizeBytes: uploaded.sizeBytes,
+        format: uploaded.format,
+        sortOrder: (last?.sortOrder ?? -1) + 1,
+      },
+      select: {
+        id: true,
+        url: true,
+        thumbnailUrl: true,
+        title: true,
+        durationSec: true,
+        format: true,
+      },
+    });
+
+    await audit({
+      actorId: req.user!.sub,
+      action: 'PROJECT_VIDEO_UPLOADED',
+      entityType: 'Project',
+      entityId: projectId,
+      metadata: { videoId: created.id, sizeBytes: uploaded.sizeBytes, format: uploaded.format },
+    });
+
+    res.status(201).json(ok({ video: created }));
+  }),
+);
+
+/**
+ * DELETE /api/images/videos/:id  (admin) — remove a video (DB row + Cloudinary).
+ */
+imagesRouter.delete(
+  '/videos/:id',
+  requireAuth,
+  requireAdmin,
+  validate({ params: z.object({ id: z.string().min(1) }) }),
+  asyncHandler(async (req, res) => {
+    const { id } = params<{ id: string }>(req);
+    const video = await prisma.projectVideo.findUnique({
+      where: { id },
+      select: { id: true, projectId: true, publicId: true },
+    });
+    if (!video) throw NotFound('Video not found');
+
+    // Best-effort remove from Cloudinary, then drop the DB row regardless.
+    try {
+      await deleteVideo(video.publicId);
+    } catch {
+      /* asset may already be gone; still remove our record */
+    }
+    await prisma.projectVideo.delete({ where: { id } });
+
+    await audit({
+      actorId: req.user!.sub,
+      action: 'PROJECT_VIDEO_DELETED',
+      entityType: 'Project',
+      entityId: video.projectId,
+      metadata: { videoId: id },
     });
     res.json(ok({ deleted: id }));
   }),

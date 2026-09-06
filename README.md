@@ -22,6 +22,10 @@ manual MMK payment verification. Admins manage records, files, payments, and acc
   plus a price range, free-only / has-file toggles, and sort (newest, oldest, price, title).
 - **Project media** — public image galleries with a zoom lightbox and a drag-to-rotate **360°
   turntable viewer**. Images are stored as DB binary so they survive ephemeral-host redeploys.
+- **Short demo videos (optional)** — admins can attach MP4/WebM/MOV clips (≤ 50 MB) per project,
+  uploaded to the **Cloudinary CDN** (the DB stores only the URL + poster, never the bytes). The
+  feature degrades gracefully: without `CLOUDINARY_*` env vars it's simply hidden. See
+  [Enabling video uploads](#-enabling-video-uploads-cloudinary).
 - **Bookmarks** — signed-in users can save projects to *My Library*.
 - **Manual MMK purchase flow** — create order → upload payment proof → admin verifies → access granted.
 - **Protected paid files** — streamed only after a server-side `PurchaseAccess` check; never a public URL.
@@ -73,10 +77,32 @@ Open http://localhost:3000.
 See [`docs/04-SETUP-AND-FOLDER-STRUCTURE.md`](docs/04-SETUP-AND-FOLDER-STRUCTURE.md) for the
 PostgreSQL setup and full folder map.
 
+## 🎬 Enabling video uploads (Cloudinary)
+
+Short project videos are **optional** and off by default. To enable them:
+
+1. Create a free account at [cloudinary.com](https://cloudinary.com) (no credit card; free tier
+   includes 25 GB storage + 25 GB monthly bandwidth — ample for demo clips).
+2. From the dashboard **Account Details**, copy your **Cloud name**, **API Key** and **API Secret**.
+3. Add them to `backend/.env` (they are read only on the server — never exposed to the browser):
+   ```env
+   CLOUDINARY_CLOUD_NAME=your_cloud_name
+   CLOUDINARY_API_KEY=123456789012345
+   CLOUDINARY_API_SECRET=your_api_secret
+   VIDEO_MAX_BYTES=52428800          # optional, 50 MB default
+   ```
+4. Restart the backend. The admin project editor now shows a **🎬 Upload video** control, and the
+   public project page gains a **Video** tab. On your host (e.g. Render) add the same three vars in
+   the service's Environment settings.
+
+Without these vars the app runs exactly as before — the video control shows a "not configured"
+note and the upload endpoint returns a clean `400`. Video bytes never touch the database: only the
+Cloudinary URL + poster + metadata are stored.
+
 ## 🧪 Tests
 
 ```bash
-cd backend && npm run seed && npm test    # 39/39 passing (unit + integration + hardening + payment flow)
+cd backend && npm run seed && npm test    # 57/57 passing (unit + integration + hardening + payment + media)
 ```
 
 ## 📚 Documentation (thesis-ready)

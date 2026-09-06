@@ -38,6 +38,17 @@ const EnvSchema = z.object({
   PRIVATE_STORAGE_DIR: z.string().default('./storage/private'),
   PUBLIC_STORAGE_DIR: z.string().default('./storage/public'),
 
+  // ── Cloudinary (optional): powers short-video uploads for projects. When any
+  // of these is blank the video feature degrades gracefully — the API reports
+  // "video hosting not configured" instead of crashing, and the rest of the app
+  // is unaffected. Get these from your Cloudinary dashboard (Account Details).
+  CLOUDINARY_CLOUD_NAME: z.string().default(''),
+  CLOUDINARY_API_KEY: z.string().default(''),
+  CLOUDINARY_API_SECRET: z.string().default(''),
+  // Max accepted video size (bytes). Cloudinary free tier allows up to 100 MB
+  // per video; we default to 50 MB to keep "short clips" short.
+  VIDEO_MAX_BYTES: z.coerce.number().int().positive().default(52_428_800),
+
   DEFAULT_PROJECT_PRICE_MMK: z.coerce.number().int().nonnegative().default(5000),
   PAYMENT_INSTRUCTIONS: z
     .string()
@@ -90,3 +101,12 @@ export const allowedExtensions = env.UPLOAD_ALLOWED_EXT.split(',')
   .filter(Boolean);
 
 export const isProd = env.NODE_ENV === 'production';
+
+/**
+ * True only when all three Cloudinary credentials are present. The video upload
+ * feature checks this and returns a clear "not configured" error otherwise, so
+ * the app runs perfectly fine without Cloudinary set up.
+ */
+export const cloudinaryConfigured = Boolean(
+  env.CLOUDINARY_CLOUD_NAME && env.CLOUDINARY_API_KEY && env.CLOUDINARY_API_SECRET,
+);

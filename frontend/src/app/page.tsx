@@ -197,26 +197,20 @@ export default function HomePage() {
         </motion.form>
 
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.3 }}
-          className="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm"
+          className="mt-8 flex flex-col items-stretch justify-center gap-4 sm:flex-row sm:items-center"
         >
-          <Link
-            href="/browse"
-            className="group inline-flex items-center gap-2 rounded-full border border-brand-400/40 bg-brand-500/15 px-5 py-2.5 font-semibold text-brand-100 shadow-glow transition hover:border-brand-300 hover:bg-brand-500/30 hover:text-white"
-          >
-            <span aria-hidden>🗂️</span>
-            {tr(t.browseCta)}
-            <span className="transition-transform group-hover:translate-x-0.5">→</span>
+          <Link href="/browse" className="cta3d cta3d-blue group">
+            <span className="cta3d-icon" aria-hidden>🗂️</span>
+            <span className="cta3d-label">{tr(t.projectLibraryCta)}</span>
+            <span className="cta3d-arrow transition-transform group-hover:translate-x-1">→</span>
           </Link>
-          <Link
-            href="/check"
-            className="group inline-flex items-center gap-2 rounded-full border border-plum-400/40 bg-plum-500/15 px-5 py-2.5 font-semibold text-plum-100 shadow-glow transition hover:border-plum-300 hover:bg-plum-500/30 hover:text-white"
-          >
-            <span aria-hidden>🛡️</span>
-            {tr(t.checkCta)}
-            <span className="transition-transform group-hover:translate-x-0.5">→</span>
+          <Link href="/check" className="cta3d cta3d-plum group">
+            <span className="cta3d-icon" aria-hidden>🛡️</span>
+            <span className="cta3d-label">{tr(t.searchSameTitlesCta)}</span>
+            <span className="cta3d-arrow transition-transform group-hover:translate-x-1">→</span>
           </Link>
         </motion.div>
       </section>

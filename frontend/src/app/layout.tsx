@@ -11,6 +11,7 @@ import { BookmarksProvider } from '@/context/BookmarksContext';
 import { ThemeProvider, themeInitScript } from '@/context/ThemeContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { WelcomeOverlay } from '@/components/WelcomeOverlay';
+import { ScrollToTop } from '@/components/ScrollToTop';
 
 // Modern geometric sans for Latin / UI numerals.
 const jakarta = Plus_Jakarta_Sans({
@@ -84,6 +85,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Footer />
             </div>
             <WelcomeOverlay />
+            <ScrollToTop />
             <InstallPrompt />
             <ServiceWorkerRegistrar />
             <PageViewTracker />

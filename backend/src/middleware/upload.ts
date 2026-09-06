@@ -64,3 +64,19 @@ export const projectImageUpload = multer({
     cb(null, true);
   },
 });
+
+// ── Short project videos (uploaded to Cloudinary, not the DB) ─────────────────
+// Kept in memory so we can stream the buffer straight to Cloudinary. Size is
+// capped by env (VIDEO_MAX_BYTES). Only common web-playable containers allowed.
+const VIDEO_MIME = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-matroska'];
+
+export const projectVideoUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: env.VIDEO_MAX_BYTES, files: 1 },
+  fileFilter: (_req, file, cb) => {
+    if (!VIDEO_MIME.includes(file.mimetype)) {
+      return cb(BadRequest(`Unsupported video type ${file.mimetype} (use MP4, WebM or MOV)`));
+    }
+    cb(null, true);
+  },
+});

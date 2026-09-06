@@ -54,6 +54,7 @@ export function Navbar() {
           <div className="hidden items-center gap-1 sm:flex">
             <NavLink href="/">{tr(t.navSearch)}</NavLink>
             <NavLink href="/browse">{tr(t.navBrowse)}</NavLink>
+            <NavLink href="/titles">{tr(t.navTitles)}</NavLink>
             <NavLink href="/check">{tr(t.navCheck)}</NavLink>
           </div>
         </div>
@@ -105,6 +106,7 @@ export function Navbar() {
           <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-3">
             <MobileLink href="/" onClick={() => setMenuOpen(false)}>{tr(t.navSearch)}</MobileLink>
             <MobileLink href="/browse" onClick={() => setMenuOpen(false)}>{tr(t.navBrowse)}</MobileLink>
+            <MobileLink href="/titles" onClick={() => setMenuOpen(false)}>{tr(t.navTitles)}</MobileLink>
             <MobileLink href="/check" onClick={() => setMenuOpen(false)}>{tr(t.navCheck)}</MobileLink>
             {user ? (
               <>

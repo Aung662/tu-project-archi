@@ -50,12 +50,22 @@ export function tr(label: Label | undefined | null): string {
 export const t = {
   // Brand / chrome
   brandTitle: L('မြန်မာနည်းပညာတက္ကသိုလ် စီမံကိန်းမှတ်တမ်း', 'Project Archive'),
+
+  // Welcome overlay
+  welcomeGreeting: L('ကျွန်ုပ်၏ Project Library သို့ ကြိုဆိုပါသည်', 'Welcome To My Project Library'),
+  welcomeGreetingBack: L('ပြန်လည်ကြိုဆိုပါသည်', 'Welcome back'),
+  welcomeBody: L(
+    'စီမံကိန်းဟောင်းများ ရှာဖွေခြင်း၊ သင့်ခေါင်းစဉ် ထပ်တူဖြစ်မဖြစ် စစ်ဆေးခြင်းနှင့် မှတ်တမ်းများကို လေ့လာနိုင်ပါသည်။ အတူတကွ အကောင်းဆုံးကို ရှာဖွေကြရအောင်!',
+    'Search past projects, check your title for duplicates, and explore the archive. Let’s find something great together!',
+  ),
+  welcomeCta: L('စတင်ရန် →', 'Let’s go →'),
   brandSubtitle: L('ခေါင်းစဉ်တူ စစ်ဆေးရေးစနစ်', '& Title Similarity Checker'),
 
   // Nav
   navSearch: L('ရှာဖွေရန်', 'Search'),
   navBrowse: L('လှော်လှန်ကြည့်ရန်', 'Browse'),
   navCheck: L('ခေါင်းစဉ်စစ်ဆေးရန်', 'Title Check'),
+  navTitles: L('ခေါင်းစဉ်စာရင်း', 'All Titles'),
   navLibrary: L('ကျွန်ုပ်၏စာကြည့်တိုက်', 'My Library'),
   navAdmin: L('စီမံခန့်ခွဲမှု', 'Admin'),
   navAdminDashboard: L('စီမံခန့်ခွဲမှု ဒက်ရှ်ဘုတ်', 'Admin Dashboard'),
@@ -78,6 +88,18 @@ export const t = {
   searchBtn: L('ရှာဖွေရန်', 'Search'),
   browseCta: L('ခုနှစ် နှင့် တက္ကသိုလ်အလိုက် လှော်လှန်ကြည့်ရန်', 'Browse by year & university'),
   checkCta: L('ခေါင်းစဉ်တူ အပြည့်အစုံ စစ်ဆေးရန်', 'Run a full duplicate check'),
+  projectLibraryCta: L('စီမံကိန်း စာကြည့်တိုက်', 'Project Library'),
+  searchSameTitlesCta: L('ခေါင်းစဉ်တူများ ရှာဖွေရန်', 'Search Same Titles'),
+  backToDashboard: L('Dashboard သို့ ပြန်သွားရန်', 'Back to Dashboard'),
+  scrollTop: L('အပေါ်သို့ ပြန်တက်ရန်', 'Back to top'),
+  allTitlesTitle: L('စီမံကိန်း ခေါင်းစဉ် စာရင်းအားလုံး', 'All Project Titles'),
+  allTitlesSubtitle: L(
+    'မှတ်တမ်းရှိ စီမံကိန်းခေါင်းစဉ် အားလုံးကို နံပါတ်စဉ်ဖြင့် တစ်နေရာတည်းတွင် ကြည့်ရှုပါ။',
+    'Every project title in the archive, numbered, in one place.',
+  ),
+  allTitlesLink: L('ခေါင်းစဉ်စာရင်း အားလုံးကြည့်ရန်', 'View all titles'),
+  titlesCount: L('ခေါင်းစဉ်', 'titles'),
+  titlesSearchPlaceholder: L('ခေါင်းစဉ်ဖြင့် စစ်ထုတ်ရန်…', 'Filter by title…'),
   searching: L('မှတ်တမ်းများကို ရှာဖွေနေသည်…', 'Searching the archive…'),
   searchFailed: L('ရှာဖွေမှု မအောင်မြင်ပါ', 'Search failed'),
   matchesFor: L('ကိုက်ညီမှု', 'matches for'),
@@ -420,6 +442,21 @@ export const t = {
   backHome: L('ပင်မစာမျက်နှာသို့ ပြန်သွားရန်', 'Back to home'),
   installApp: L('အက်ပ် ထည့်သွင်းရန်', 'Install app'),
   installDismiss: L('ပိတ်ရန်', 'Dismiss'),
+
+  // Media tabs / video
+  mediaPhotos: L('ဓာတ်ပုံများ', 'Photos'),
+  media360: L('၃၆၀° ကြည့်ရှုရန်', '360° View'),
+  mediaVideo: L('ဗီဒီယို', 'Video'),
+  videoUploadLabel: L('ဗီဒီယို (short clip) တင်ရန်', 'Upload video (short clip)'),
+  videoUploading: L('ဗီဒီယို တင်နေသည်…', 'Uploading video…'),
+  videoDisabled: L(
+    'ဤဆာဗာတွင် ဗီဒီယို ဝန်ဆောင်မှု မဖွင့်ရသေးပါ (Cloudinary မသတ်မှတ်ရသေးပါ)။',
+    'Video hosting is not enabled on this server (Cloudinary not configured).',
+  ),
+  videoHint: L(
+    'MP4, WebM သို့ MOV — အများဆုံး ၅၀MB။ Cloudinary CDN ပေါ်တွင် သိမ်းဆည်းသည်။',
+    'MP4, WebM or MOV — up to 50MB. Stored on the Cloudinary CDN.',
+  ),
 } as const;
 
 /** Level enum → Burmese-first label. */
