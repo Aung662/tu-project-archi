@@ -1,16 +1,28 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { ThemeToggle } from './ThemeToggle';
 import { LanguageToggle } from './LanguageToggle';
-import { tr, t } from '@/lib/i18n';
+import { tr, t, type Label } from '@/lib/i18n';
+
+// The five primary destinations. Shown as desktop nav links AND as a row of
+// raised 3D chips directly under the header on mobile — so phone users no longer
+// have to open the hamburger to reach them. Icons mirror the rest of the UI.
+const PRIMARY: { href: string; label: Label; icon: string }[] = [
+  { href: '/', label: t.navSearch, icon: '🔎' },
+  { href: '/browse', label: t.navBrowse, icon: '🗂️' },
+  { href: '/titles', label: t.navTitles, icon: '📋' },
+  { href: '/check', label: t.navCheck, icon: '✨' },
+  { href: '/contact', label: t.navContact, icon: '✉️' },
+];
 
 export function Navbar() {
   const { user, logout } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   // Bug fix: mobile users previously had NO way to reach Browse / Title Check /
   // Library / Admin (all were hidden on small screens with no menu). Add a
   // hamburger-toggled mobile menu so the primary (mobile) persona can navigate.
@@ -52,11 +64,11 @@ export function Navbar() {
             </span>
           </button>
           <div className="hidden items-center gap-1 sm:flex">
-            <NavLink href="/">{tr(t.navSearch)}</NavLink>
-            <NavLink href="/browse">{tr(t.navBrowse)}</NavLink>
-            <NavLink href="/titles">{tr(t.navTitles)}</NavLink>
-            <NavLink href="/check">{tr(t.navCheck)}</NavLink>
-            <NavLink href="/contact">{tr(t.navContact)}</NavLink>
+            {PRIMARY.map((item) => (
+              <NavLink key={item.href} href={item.href}>
+                {tr(item.label)}
+              </NavLink>
+            ))}
           </div>
         </div>
 
@@ -101,15 +113,31 @@ export function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile menu panel */}
+      {/* Mobile primary nav — raised 3D chips shown directly under the header so
+          phone users reach the five main pages without opening the hamburger. */}
+      <div className="border-t border-white/10 bg-ink-900/60 sm:hidden">
+        <div className="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-3 py-2.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {PRIMARY.map((item) => {
+            const active = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={active ? 'page' : undefined}
+                className={`chip3d shrink-0 !px-3 !py-2 text-xs ${active ? 'chip3d-active' : ''}`}
+              >
+                <span aria-hidden>{item.icon}</span>
+                <span className="whitespace-nowrap">{tr(item.label)}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Mobile menu panel — secondary items only (primary five are chips above) */}
       {menuOpen && (
         <div className="border-t border-white/10 bg-ink-900/95 backdrop-blur-xl sm:hidden">
           <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-3">
-            <MobileLink href="/" onClick={() => setMenuOpen(false)}>{tr(t.navSearch)}</MobileLink>
-            <MobileLink href="/browse" onClick={() => setMenuOpen(false)}>{tr(t.navBrowse)}</MobileLink>
-            <MobileLink href="/titles" onClick={() => setMenuOpen(false)}>{tr(t.navTitles)}</MobileLink>
-            <MobileLink href="/check" onClick={() => setMenuOpen(false)}>{tr(t.navCheck)}</MobileLink>
-            <MobileLink href="/contact" onClick={() => setMenuOpen(false)}>{tr(t.navContact)}</MobileLink>
             {user ? (
               <>
                 {user.role === 'ADMIN' && (

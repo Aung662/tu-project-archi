@@ -13,6 +13,7 @@ newest first. Dates are the project timeline (Asia/Yangon).
 - **Browse page premium pass:** animated gradient page title, `glow-ring` filter panel, magnetic + sheen "View all titles" button, `Reveal` entrance for header/filters, staggered card grid entrance (`StaggerGrid`/`StaggerItem`), and a live pulsing result-count pill.
 - **All Titles page — level filter + year grouping:** academic-level filter chips (All / 3rd / 5th / Final / Other) with live per-level counts, and the numbered list is now grouped under year section headers sorted newest-first (2026 → 2021 …). Continuous numbering across groups. Animated gradient page title.
 - **Admin dashboard tabs restyled:** pill / segmented control — active tab is a brand gradient with glow, inactive tabs are brighter (`slate-300`) with hover highlight (replaces the dim underline style).
+- **Mobile primary navigation as 3D chips:** the five main pages (Search, Browse, All Titles, Title Check, Contact) now appear as a horizontal row of raised 3D chips directly under the header on phones — no longer buried in the hamburger. The hamburger keeps only secondary items (Admin, My Library, Logout). Active page is highlighted; row scrolls horizontally with hidden scrollbar.
 
 ## [Unreleased] — Browse filters as raised 3D buttons (2026-09-06)
 - New `.chip3d` / `.chip3d-active` CSS: compact embossed 3D pills (top highlight + bottom lip + drop shadow, lift on hover, press-in on active).
