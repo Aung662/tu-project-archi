@@ -77,9 +77,11 @@ export default function BrowsePage() {
       </div>
 
       {/* Filters */}
-      <div className="card grid gap-3 p-4 md:grid-cols-5">
+      <div className="card grid gap-4 p-4 md:grid-cols-5">
         <div className="md:col-span-2">
-          <label className="label">{tr(t.fKeyword)}</label>
+          <label className="label flex items-center gap-1.5">
+            <span aria-hidden>🔎</span> {tr(t.fKeyword)}
+          </label>
           <input
             className="input"
             placeholder={tr(t.fKeywordPlaceholder)}
@@ -88,7 +90,9 @@ export default function BrowsePage() {
           />
         </div>
         <div>
-          <label className="label">{tr(t.fUniversity)}</label>
+          <label className="label flex items-center gap-1.5">
+            <span aria-hidden>🏛️</span> {tr(t.fUniversity)}
+          </label>
           <select
             className="input"
             value={filters.universityId}
@@ -103,7 +107,9 @@ export default function BrowsePage() {
           </select>
         </div>
         <div>
-          <label className="label">{tr(t.fDepartment)}</label>
+          <label className="label flex items-center gap-1.5">
+            <span aria-hidden>🏢</span> {tr(t.fDepartment)}
+          </label>
           <select
             className="input"
             value={filters.departmentId}
@@ -119,7 +125,9 @@ export default function BrowsePage() {
           </select>
         </div>
         <div>
-          <label className="label">{tr(t.fYear)}</label>
+          <label className="label flex items-center gap-1.5">
+            <span aria-hidden>📅</span> {tr(t.fYear)}
+          </label>
           <select
             className="input"
             value={filters.year}
@@ -133,21 +141,36 @@ export default function BrowsePage() {
             ))}
           </select>
         </div>
+
+        {/* Academic level — horizontal, icon chips (scrollable on mobile) */}
         <div className="md:col-span-5">
-          <div className="flex flex-wrap gap-2">
-            {['', 'YEAR_3', 'YEAR_5', 'FINAL_YEAR', 'OTHER'].map((lv) => (
-              <button
-                key={lv || 'all'}
-                onClick={() => update({ level: lv })}
-                className={`badge cursor-pointer px-3 py-1 ${
-                  filters.level === lv
-                    ? 'bg-brand-600 text-white'
-                    : 'bg-white/10 text-slate-300 hover:bg-white/10'
-                }`}
-              >
-                {lv ? tr(levelLabel[lv]) : tr(t.fAllLevels)}
-              </button>
-            ))}
+          <label className="label flex items-center gap-1.5">
+            <span aria-hidden>🎓</span> {tr(t.fLevel)}
+          </label>
+          <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {[
+              { lv: '', icon: '✨' },
+              { lv: 'YEAR_3', icon: '3️⃣' },
+              { lv: 'YEAR_5', icon: '5️⃣' },
+              { lv: 'FINAL_YEAR', icon: '🏆' },
+              { lv: 'OTHER', icon: '📌' },
+            ].map(({ lv, icon }) => {
+              const active = filters.level === lv;
+              return (
+                <button
+                  key={lv || 'all'}
+                  onClick={() => update({ level: lv })}
+                  className={`flex shrink-0 items-center gap-1.5 rounded-xl border px-3.5 py-2 text-sm font-semibold transition ${
+                    active
+                      ? 'border-brand-400/50 bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-md shadow-brand-900/30'
+                      : 'border-white/10 bg-white/5 text-slate-300 hover:border-white/25 hover:bg-white/10'
+                  }`}
+                >
+                  <span aria-hidden>{icon}</span>
+                  <span className="whitespace-nowrap">{lv ? tr(levelLabel[lv]) : tr(t.fAllLevels)}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 

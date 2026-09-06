@@ -15,9 +15,10 @@ export function LanguageToggle({ className = '' }: { className?: string }) {
       onClick={toggle}
       aria-label={`Switch to ${next}`}
       title={`Switch to ${next}`}
-      className={`grid h-9 min-w-9 place-items-center rounded-xl border border-white/10 bg-white/5 px-2 text-sm font-semibold text-slate-200 transition hover:bg-white/10 ${className}`}
+      className={`inline-flex h-9 items-center gap-1.5 rounded-xl border border-brand-400/30 bg-brand-500/15 px-3 text-sm font-bold text-brand-100 shadow-sm transition hover:border-brand-400/50 hover:bg-brand-500/25 ${className}`}
     >
-      {lang === 'en' ? 'မြ' : 'EN'}
+      <span aria-hidden className="text-[13px] leading-none">🌐</span>
+      <span className="whitespace-nowrap">{lang === 'en' ? 'မြန်မာ' : 'ENG'}</span>
     </button>
   );
 }

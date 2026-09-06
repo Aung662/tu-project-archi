@@ -3,6 +3,10 @@
 All notable changes to **TU Project Archive & Title Similarity Checker**. Grouped by build wave;
 newest first. Dates are the project timeline (Asia/Yangon).
 
+## [Unreleased] — UI polish: language pill + browse filter icons (2026-09-06)
+- Language switcher now shows a clearer 🌐 **မြန်မာ / ENG** pill (was a cramped "မြ") with a highlighted brand style.
+- Browse filters redesigned with icons: 🔎 Keyword, 🏛️ University, 🏢 Department, 📅 Year, and a horizontal 🎓 Academic-level chip row (✨/3️⃣/5️⃣/🏆/📌) that scrolls on mobile and highlights the active level with a gradient.
+
 ## [Unreleased] — Keep backend awake (no cold starts) (2026-09-06)
 - Added `.github/workflows/keep-alive.yml`: a free GitHub Actions cron that pings the backend `/health` every ~10 min so Render's free tier never sleeps. Users can open the site instantly at any time instead of waiting 30-50s for a cold start. Runs on GitHub's servers (no extra account/credit card); also warms the frontend.
 
