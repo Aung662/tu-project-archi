@@ -1,21 +1,23 @@
 'use client';
 
 import { tr, t } from '@/lib/i18n';
-import { CONTACT, telHref, viberHref } from '@/lib/contact';
+import { CONTACT, telHref, viberHref, telegramHref } from '@/lib/contact';
 
 /**
  * Public contact page. Every channel reads from src/lib/contact.ts, so the
- * site owner edits real details in one place. Empty-string channels are hidden.
+ * site owner edits real details in one place. Empty channels are hidden.
  */
 export default function ContactPage() {
+  const phones = CONTACT.phones.filter(Boolean);
+
   const channels = [
-    CONTACT.phone && {
+    ...phones.map((p, i) => ({
       icon: '📞',
-      label: tr(t.contactPhone),
-      value: CONTACT.phone,
-      href: telHref(CONTACT.phone),
+      label: phones.length > 1 ? `${tr(t.contactPhone)} ${i + 1}` : tr(t.contactPhone),
+      value: p,
+      href: telHref(p),
       cta: tr(t.contactCallCta),
-    },
+    })),
     CONTACT.viber && {
       icon: '💜',
       label: tr(t.contactViber),
@@ -23,18 +25,18 @@ export default function ContactPage() {
       href: viberHref(CONTACT.viber),
       cta: tr(t.contactChatCta),
     },
-    CONTACT.messenger && {
-      icon: '💬',
-      label: tr(t.contactMessenger),
-      value: CONTACT.messenger.replace(/^https?:\/\//, ''),
-      href: CONTACT.messenger,
-      cta: tr(t.contactChatCta),
-    },
     CONTACT.telegram && {
       icon: '✈️',
       label: tr(t.contactTelegram),
-      value: CONTACT.telegram.replace(/^https?:\/\//, ''),
-      href: CONTACT.telegram,
+      value: CONTACT.telegram,
+      href: telegramHref(CONTACT.telegram),
+      cta: tr(t.contactChatCta),
+    },
+    (CONTACT.messenger as string) && {
+      icon: '💬',
+      label: tr(t.contactMessenger),
+      value: (CONTACT.messenger as string).replace(/^https?:\/\//, ''),
+      href: CONTACT.messenger as string,
       cta: tr(t.contactChatCta),
     },
     CONTACT.email && {
@@ -64,7 +66,7 @@ export default function ContactPage() {
       <div className="grid gap-3 sm:grid-cols-2">
         {channels.map((c) => (
           <a
-            key={c.label}
+            key={c.label + c.value}
             href={c.href}
             target={external(c.href) ? '_blank' : undefined}
             rel={external(c.href) ? 'noopener noreferrer' : undefined}

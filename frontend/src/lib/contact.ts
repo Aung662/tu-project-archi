@@ -1,30 +1,55 @@
 /**
  * Central contact details for the whole site.
  *
- * ⚠️ EDIT THESE PLACEHOLDER VALUES with your real contact info.
- * They are used by the Contact page, the Navbar link, the Footer, and the
- * purchase panel. Everything reads from here, so change once and it updates
- * everywhere. Leave a field as an empty string ('') to hide that channel.
+ * Everything (Contact page, Navbar link, Footer, purchase panel) reads from
+ * here, so changing a value here updates it everywhere.
+ * Set a field to '' (or an empty array) to hide that channel automatically.
  */
 export const CONTACT = {
-  // Phone number in international format (also used for tel: links).
-  phone: '+95 9 000 000 000',
-  // Viber uses the same number; set to '' to hide the Viber row.
-  viber: '+95 9 000 000 000',
-  // Full Facebook page / Messenger URL, e.g. https://m.me/yourpage
-  messenger: 'https://m.me/your-page-username',
-  // Telegram link or username link, e.g. https://t.me/yourusername
-  telegram: 'https://t.me/your-username',
-  // Contact email address.
-  email: 'your-email@example.com',
+  // One or more phone numbers (also used for tel: links). First = primary.
+  phones: ['09761795292', '09967216095'],
+  // Viber uses this number; set to '' to hide the Viber row.
+  viber: '09761795292',
+  // Telegram: a t.me link OR a phone number (we build the link either way).
+  telegram: '@akokst',
+  // Full Facebook page / Messenger URL, e.g. https://m.me/yourpage. '' hides it.
+  messenger: '',
+  // Contact email address. '' hides it.
+  email: 'aungkhamoo60@gmail.com',
 } as const;
 
-/** Build a tel: href from a display phone number (strips spaces/dashes). */
-export function telHref(phone: string): string {
-  return `tel:${phone.replace(/[^\d+]/g, '')}`;
+/** Strip everything except digits and a leading + for use in links. */
+function digits(s: string): string {
+  return s.replace(/[^\d+]/g, '');
 }
 
-/** Build a Viber deep link (viber://chat?number=...) from a phone number. */
+/**
+ * Normalize a Myanmar local number (09xxxxxxxxx) to international +959xxxxxxxx
+ * for app deep links (Viber/Telegram). Already-international numbers pass through.
+ */
+function toIntl(phone: string): string {
+  const d = digits(phone);
+  if (d.startsWith('+')) return d;
+  if (d.startsWith('09')) return '+959' + d.slice(2);
+  if (d.startsWith('959')) return '+' + d;
+  return d;
+}
+
+/** Build a tel: href from a display phone number. */
+export function telHref(phone: string): string {
+  return `tel:${toIntl(phone)}`;
+}
+
+/** Build a Viber deep link from a phone number. */
 export function viberHref(phone: string): string {
-  return `viber://chat?number=${encodeURIComponent(phone.replace(/[^\d+]/g, ''))}`;
+  return `viber://chat?number=${encodeURIComponent(toIntl(phone))}`;
+}
+
+/** Build a Telegram link from a t.me URL, @username, or a phone number. */
+export function telegramHref(value: string): string {
+  const v = value.trim();
+  if (/^https?:\/\//.test(v)) return v;
+  if (v.startsWith('@')) return `https://t.me/${v.slice(1)}`;
+  // A phone number → t.me supports phone links via the +country format.
+  return `https://t.me/${toIntl(v)}`;
 }

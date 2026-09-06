@@ -3,6 +3,16 @@
 All notable changes to **TU Project Archive & Title Similarity Checker**. Grouped by build wave;
 newest first. Dates are the project timeline (Asia/Yangon).
 
+## [Unreleased] — Real contact details filled in (2026-09-06)
+- Populated `src/lib/contact.ts` with real info: phones 09761795292 / 09967216095, Viber 09761795292, Telegram @akokst, email aungkhamoo60@gmail.com. Facebook/Messenger left empty (auto-hidden).
+- Contact page now supports multiple phone numbers and a Telegram @username/link.
+
+## [Unreleased] — Performance / page speed (2026-09-06)
+- **Image optimization on upload (biggest win):** gallery/360° photos are now downscaled (long edge 1600px gallery / 1024px spin) and re-encoded to WebP with `sharp` before storage. Real test: a large photo shrank ~91%. Every visitor downloads far fewer bytes.
+- **gzip compression** on all API responses via `compression` middleware (JSON payloads shrink; pre-compressed images auto-skipped).
+- Lazy-load + async-decode on gallery thumbnails.
+- Added deps: `sharp`, `compression` (+ `@types/compression`). New helper `backend/src/lib/imageOptimize.ts`.
+
 ## [Unreleased] — Contact / how-to-buy (2026-09-06)
 - Added a **Contact** page (`/contact`) with all channels: Phone, Viber, Messenger, Telegram, Email + available hours and a "include the project title" note.
 - Central `frontend/src/lib/contact.ts` holds all contact details in ONE place (placeholder values — edit these with the real phone/links/email); empty fields auto-hide.

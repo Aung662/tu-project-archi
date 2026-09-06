@@ -16,11 +16,11 @@ function ContactToBuy() {
       <p className="font-semibold text-slate-100">{tr(t.purchaseContactHeading)}</p>
       <p className="mt-1 text-slate-300">{tr(t.purchaseContactBody)}</p>
       <div className="mt-2 flex flex-wrap gap-2">
-        {CONTACT.phone && (
-          <a href={telHref(CONTACT.phone)} className="rounded-md bg-brand-500/20 px-3 py-1.5 text-xs font-semibold text-brand-100 hover:bg-brand-500/30">
-            📞 {CONTACT.phone}
+        {CONTACT.phones.filter(Boolean).map((phone) => (
+          <a key={phone} href={telHref(phone)} className="rounded-md bg-brand-500/20 px-3 py-1.5 text-xs font-semibold text-brand-100 hover:bg-brand-500/30">
+            📞 {phone}
           </a>
-        )}
+        ))}
         <Link href="/contact" className="rounded-md bg-white/10 px-3 py-1.5 text-xs font-semibold text-slate-100 hover:bg-white/20">
           {tr(t.navContact)} →
         </Link>

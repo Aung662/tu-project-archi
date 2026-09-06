@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import { env, isProd } from './config/env.js';
@@ -14,6 +15,11 @@ export function createApp() {
 
   // Behind a reverse proxy (Render/Railway/Vercel) — needed for secure cookies + rate limit IPs.
   app.set('trust proxy', 1);
+
+  // Gzip every text response (JSON API payloads, HTML errors). Images are stored
+  // pre-compressed (JPEG/WebP) so gzip skips them automatically by content-type,
+  // avoiding wasted CPU on already-compressed bytes.
+  app.use(compression());
 
   // Helmet with an explicit, strict Content-Security-Policy. The API returns
   // JSON (and streams files), so it needs no scripts/styles of its own — lock it

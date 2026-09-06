@@ -49,7 +49,7 @@ export function Gallery({ images, alt }: { images: string[]; alt: string }) {
               aria-label={`Show image ${i + 1}`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt="" className="h-full w-full object-cover" />
+              <img src={src} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
             </button>
           ))}
         </div>

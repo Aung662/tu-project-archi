@@ -8,6 +8,7 @@ import { uploadLimiter } from '../../middleware/rateLimit.js';
 import { prisma } from '../../lib/prisma.js';
 import { BadRequest, NotFound } from '../../lib/errors.js';
 import { imageBufferMatchesMime } from '../../lib/fileSignature.js';
+import { optimizeImage } from '../../lib/imageOptimize.js';
 import { audit } from '../../lib/audit.js';
 import { cloudinaryConfigured } from '../../config/env.js';
 import { uploadVideo, deleteVideo } from '../../lib/cloudinary.js';
@@ -129,6 +130,11 @@ imagesRouter.post(
       }
     }
 
+    // Downscale + re-encode to WebP BEFORE storing. Turns multi-MB phone photos
+    // into a couple hundred KB, so every visitor downloads far less. Done in
+    // parallel across the batch.
+    const optimized = await Promise.all(files.map((f) => optimizeImage(f.buffer, kind)));
+
     // Continue ordering after the current max for this kind.
     const last = await prisma.projectImage.findFirst({
       where: { projectId, kind },
@@ -138,15 +144,15 @@ imagesRouter.post(
     let nextOrder = (last?.sortOrder ?? -1) + 1;
 
     await prisma.$transaction(
-      files.map((f) =>
+      optimized.map((img) =>
         prisma.projectImage.create({
           data: {
             projectId,
-            data: new Uint8Array(f.buffer),
-            mimeType: f.mimetype,
+            data: new Uint8Array(img.data),
+            mimeType: img.mimeType,
             kind,
             sortOrder: nextOrder++,
-            sizeBytes: f.size,
+            sizeBytes: img.sizeBytes,
           },
         }),
       ),
