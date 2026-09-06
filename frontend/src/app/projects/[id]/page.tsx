@@ -10,6 +10,7 @@ import { formatMMK } from '@/lib/format';
 import { downloadProjectFile } from '@/lib/download';
 import { tr, t, levelLabel } from '@/lib/i18n';
 import { PurchasePanel } from '@/components/PurchasePanel';
+import { AdSlot } from '@/components/ads/AdSlot';
 import { ProjectMedia } from '@/components/media/ProjectMedia';
 import { BookmarkButton } from '@/components/BookmarkButton';
 import { SimilarProjects } from '@/components/SimilarProjects';
@@ -171,6 +172,9 @@ export default function ProjectDetailPage() {
             <PurchasePanel projectId={project.id} amountMmk={project.priceMmk} />
           )}
         </div>
+
+        {/* Sidebar ad below the purchase panel */}
+        <AdSlot slot={process.env.NEXT_PUBLIC_AD_SLOT_SIDEBAR} className="mt-4" minHeight={250} />
       </aside>
     </div>
     <SimilarProjects projectId={project.id} />

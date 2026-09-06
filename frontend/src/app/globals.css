@@ -190,6 +190,51 @@ kbd,
     @apply shrink-0 text-lg opacity-90;
   }
 
+  /* Compact raised 3D pill used for browse filter buttons/chips. */
+  .chip3d {
+    @apply relative inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-200 transition-all duration-200;
+    background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 45%, rgba(0, 0, 0, 0.18) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.22),
+      inset 0 -2px 0 rgba(0, 0, 0, 0.28),
+      0 6px 16px -8px rgba(0, 0, 0, 0.7);
+  }
+  .chip3d:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.28),
+      inset 0 -2px 0 rgba(0, 0, 0, 0.32),
+      0 12px 26px -10px rgba(0, 0, 0, 0.8);
+  }
+  .chip3d:active {
+    transform: translateY(0);
+    box-shadow:
+      inset 0 2px 5px rgba(0, 0, 0, 0.4),
+      0 4px 10px -8px rgba(0, 0, 0, 0.8);
+  }
+  .chip3d:focus-visible {
+    outline: none;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.22),
+      0 0 0 3px rgba(129, 140, 248, 0.55);
+  }
+  /* Active / selected state — vivid raised indigo. */
+  .chip3d-active {
+    @apply text-white;
+    background-image: linear-gradient(160deg, #6d8bff 0%, #4453d6 55%, #2a2f9e 100%);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow:
+      inset 0 2px 0 rgba(255, 255, 255, 0.3),
+      inset 0 -3px 0 rgba(0, 0, 0, 0.35),
+      0 10px 24px -8px rgba(80, 90, 220, 0.7);
+  }
+  .chip3d-active:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.06);
+  }
+
   /* Glass card */
   .card {
     position: relative;
@@ -245,6 +290,51 @@ kbd,
     color: transparent;
   }
 
+  /* Premium: animated flowing gradient headline (the "$10k look"). */
+  .text-gradient-animated {
+    background: linear-gradient(120deg, #cdd7ff 0%, #6d8bff 25%, #a56bff 50%, #33e6c4 75%, #6d8bff 100%);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradient-flow 8s ease infinite;
+  }
+
+  /* Premium: glowing halo behind a hero element. */
+  .glow-ring {
+    position: relative;
+  }
+  .glow-ring::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(130deg, rgba(109,139,255,0.8), rgba(165,107,255,0.5), rgba(51,230,196,0.7));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  /* Premium: subtle sheen that sweeps across a card/button. */
+  .sheen {
+    position: relative;
+    overflow: hidden;
+  }
+  .sheen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.14) 50%, transparent 65%);
+    transform: translateX(-130%);
+    transition: transform 0.7s ease;
+  }
+  .sheen:hover::after {
+    transform: translateX(130%);
+  }
+
   /* Thin gradient pill / eyebrow */
   .eyebrow {
     @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide;
@@ -277,6 +367,11 @@ kbd,
 @keyframes shine {
   0% { transform: translateX(-120%); }
   60%, 100% { transform: translateX(120%); }
+}
+@keyframes gradient-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* Nicer scrollbar */

@@ -6,6 +6,7 @@ import { api } from '@/lib/api';
 import type { Paginated, ProjectCard as Card, University } from '@/lib/types';
 import { ProjectCard } from '@/components/ProjectCard';
 import { EmptyState, Alert, SkeletonCard } from '@/components/ui';
+import { AdSlot } from '@/components/ads/AdSlot';
 import { tr, t, levelLabel } from '@/lib/i18n';
 
 export default function BrowsePage() {
@@ -77,8 +78,9 @@ export default function BrowsePage() {
       </div>
 
       {/* Filters */}
-      <div className="card grid gap-4 p-4 md:grid-cols-5">
-        <div className="md:col-span-2">
+      <div className="card space-y-4 p-4">
+        {/* Keyword search */}
+        <div>
           <label className="label flex items-center gap-1.5">
             <span aria-hidden>🔎</span> {tr(t.fKeyword)}
           </label>
@@ -89,103 +91,120 @@ export default function BrowsePage() {
             onChange={(e) => update({ q: e.target.value })}
           />
         </div>
-        <div>
-          <label className="label flex items-center gap-1.5">
-            <span aria-hidden>🏛️</span> {tr(t.fUniversity)}
+
+        {/* Row 1 — University · Department · Year as raised 3D dropdown buttons */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <label className="chip3d w-full cursor-pointer !justify-start">
+            <span aria-hidden>🏛️</span>
+            <span className="shrink-0 text-slate-400">{tr(t.fUniversity)}:</span>
+            <select
+              className="w-full min-w-0 flex-1 cursor-pointer bg-transparent font-semibold text-slate-100 outline-none [&>option]:bg-ink-900 [&>option]:text-slate-100"
+              value={filters.universityId}
+              onChange={(e) => update({ universityId: e.target.value, departmentId: '' })}
+            >
+              <option value="">{tr(t.fAll)}</option>
+              {universities.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.shortName}
+                </option>
+              ))}
+            </select>
           </label>
-          <select
-            className="input"
-            value={filters.universityId}
-            onChange={(e) => update({ universityId: e.target.value, departmentId: '' })}
-          >
-            <option value="">{tr(t.fAll)}</option>
-            {universities.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.shortName}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="label flex items-center gap-1.5">
-            <span aria-hidden>🏢</span> {tr(t.fDepartment)}
+
+          <label className={`chip3d w-full cursor-pointer !justify-start ${!selectedUni ? 'opacity-60' : ''}`}>
+            <span aria-hidden>🏢</span>
+            <span className="shrink-0 text-slate-400">{tr(t.fDepartment)}:</span>
+            <select
+              className="w-full min-w-0 flex-1 cursor-pointer bg-transparent font-semibold text-slate-100 outline-none disabled:cursor-not-allowed [&>option]:bg-ink-900 [&>option]:text-slate-100"
+              value={filters.departmentId}
+              onChange={(e) => update({ departmentId: e.target.value })}
+              disabled={!selectedUni}
+            >
+              <option value="">{tr(t.fAll)}</option>
+              {selectedUni?.departments.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.code} — {d.name}
+                </option>
+              ))}
+            </select>
           </label>
-          <select
-            className="input"
-            value={filters.departmentId}
-            onChange={(e) => update({ departmentId: e.target.value })}
-            disabled={!selectedUni}
-          >
-            <option value="">{tr(t.fAll)}</option>
-            {selectedUni?.departments.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.code} — {d.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="label flex items-center gap-1.5">
-            <span aria-hidden>📅</span> {tr(t.fYear)}
+
+          <label className="chip3d w-full cursor-pointer !justify-start">
+            <span aria-hidden>📅</span>
+            <span className="shrink-0 text-slate-400">{tr(t.fYear)}:</span>
+            <select
+              className="w-full min-w-0 flex-1 cursor-pointer bg-transparent font-semibold text-slate-100 outline-none [&>option]:bg-ink-900 [&>option]:text-slate-100"
+              value={filters.year}
+              onChange={(e) => update({ year: e.target.value })}
+            >
+              <option value="">{tr(t.fAll)}</option>
+              {years.map((y) => (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              ))}
+            </select>
           </label>
-          <select
-            className="input"
-            value={filters.year}
-            onChange={(e) => update({ year: e.target.value })}
-          >
-            <option value="">{tr(t.fAll)}</option>
-            {years.map((y) => (
-              <option key={y} value={y}>
-                {y}
-              </option>
-            ))}
-          </select>
         </div>
 
-        {/* Academic level — horizontal, icon chips (scrollable on mobile) */}
-        <div className="md:col-span-5">
-          <label className="label flex items-center gap-1.5">
-            <span aria-hidden>🎓</span> {tr(t.fLevel)}
-          </label>
-          <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {[
-              { lv: '', icon: '✨' },
-              { lv: 'YEAR_3', icon: '3️⃣' },
-              { lv: 'YEAR_5', icon: '5️⃣' },
-              { lv: 'FINAL_YEAR', icon: '🏆' },
-              { lv: 'OTHER', icon: '📌' },
-            ].map(({ lv, icon }) => {
-              const active = filters.level === lv;
-              return (
-                <button
-                  key={lv || 'all'}
-                  onClick={() => update({ level: lv })}
-                  className={`flex shrink-0 items-center gap-1.5 rounded-xl border px-3.5 py-2 text-sm font-semibold transition ${
-                    active
-                      ? 'border-brand-400/50 bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-md shadow-brand-900/30'
-                      : 'border-white/10 bg-white/5 text-slate-300 hover:border-white/25 hover:bg-white/10'
-                  }`}
-                >
-                  <span aria-hidden>{icon}</span>
-                  <span className="whitespace-nowrap">{lv ? tr(levelLabel[lv]) : tr(t.fAllLevels)}</span>
-                </button>
-              );
-            })}
-          </div>
+        {/* Academic level label */}
+        <label className="label flex items-center gap-1.5">
+          <span aria-hidden>🎓</span> {tr(t.fLevel)}
+        </label>
+
+        {/* Row 2 — All levels · 3rd Year · 5th Year (raised 3D chips) */}
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { lv: '', icon: '✨' },
+            { lv: 'YEAR_3', icon: '3️⃣' },
+            { lv: 'YEAR_5', icon: '5️⃣' },
+          ].map(({ lv, icon }) => {
+            const active = filters.level === lv;
+            return (
+              <button
+                key={lv || 'all'}
+                onClick={() => update({ level: lv })}
+                className={`chip3d w-full ${active ? 'chip3d-active' : ''}`}
+              >
+                <span aria-hidden>{icon}</span>
+                <span className="whitespace-nowrap">{lv ? tr(levelLabel[lv]) : tr(t.fAllLevels)}</span>
+              </button>
+            );
+          })}
         </div>
 
-        {/* Advanced filters (collapsible) */}
-        <div className="md:col-span-5">
+        {/* Row 3 — Final Year · Other · Advanced filters (raised 3D chips) */}
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { lv: 'FINAL_YEAR', icon: '🏆' },
+            { lv: 'OTHER', icon: '📌' },
+          ].map(({ lv, icon }) => {
+            const active = filters.level === lv;
+            return (
+              <button
+                key={lv}
+                onClick={() => update({ level: lv })}
+                className={`chip3d w-full ${active ? 'chip3d-active' : ''}`}
+              >
+                <span aria-hidden>{icon}</span>
+                <span className="whitespace-nowrap">{tr(levelLabel[lv])}</span>
+              </button>
+            );
+          })}
           <button
             type="button"
             onClick={() => setShowAdvanced((s) => !s)}
-            className="text-sm font-medium text-brand-300 hover:text-brand-200"
+            className={`chip3d w-full ${showAdvanced ? 'chip3d-active' : ''}`}
           >
-            {showAdvanced ? '▾ Hide advanced filters' : '▸ Advanced filters'}
+            <span aria-hidden>⚙️</span>
+            <span className="whitespace-nowrap">{showAdvanced ? tr(t.fHideAdvanced) : tr(t.fAdvanced)}</span>
           </button>
+        </div>
 
+        {/* Advanced filters (collapsible — toggled by the chip in Row 3 above) */}
+        <div>
           {showAdvanced && (
-            <div className="mt-3 grid gap-3 rounded-lg bg-white/5 p-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-3 rounded-lg bg-white/5 p-3 sm:grid-cols-2 lg:grid-cols-4">
               <div>
                 <label className="label">Sort by</label>
                 <select className="input" value={filters.sort} onChange={(e) => update({ sort: e.target.value })}>
@@ -232,6 +251,10 @@ export default function BrowsePage() {
       </div>
 
       {error && <Alert kind="error">{error}</Alert>}
+
+      {/* Leaderboard ad between filters and results */}
+      <AdSlot slot={process.env.NEXT_PUBLIC_AD_SLOT_BROWSE} minHeight={90} />
+
       {loading ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-busy="true" aria-live="polite">
           {Array.from({ length: 6 }).map((_, i) => (

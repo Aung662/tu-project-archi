@@ -4,7 +4,7 @@
  * Small, reusable motion primitives built on Framer Motion.
  * Keeps animation logic in one place so pages stay clean.
  */
-import { motion, useMotionValue, useSpring, useTransform, type Variants } from 'framer-motion';
+import { motion, useMotionValue, useScroll, useSpring, useTransform, type Variants } from 'framer-motion';
 import { useRef, type ReactNode } from 'react';
 
 /** Fade + rise in when scrolled into view. */
@@ -118,6 +118,60 @@ export function TiltCard({
           }}
         />
       )}
+    </motion.div>
+  );
+}
+
+/**
+ * Scroll progress bar — a thin gradient bar pinned to the top of the viewport
+ * that fills as the user scrolls. Uses a spring so it feels fluid.
+ */
+export function ScrollProgress() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.3 });
+  return (
+    <motion.div
+      aria-hidden
+      style={{ scaleX }}
+      className="fixed left-0 right-0 top-0 z-[60] h-[3px] origin-left bg-gradient-to-r from-brand-400 via-fuchsia-400 to-emerald-400"
+    />
+  );
+}
+
+/**
+ * Magnetic wrapper — the child gently follows the cursor within a small radius
+ * then springs back. Pointer-only; keyboard/touch users are unaffected.
+ */
+export function Magnetic({
+  children,
+  strength = 0.35,
+  className = '',
+}: {
+  children: ReactNode;
+  strength?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const sx = useSpring(mx, { stiffness: 200, damping: 15, mass: 0.2 });
+  const sy = useSpring(my, { stiffness: 200, damping: 15, mass: 0.2 });
+  function onMove(e: React.MouseEvent<HTMLDivElement>) {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    mx.set((e.clientX - (rect.left + rect.width / 2)) * strength);
+    my.set((e.clientY - (rect.top + rect.height / 2)) * strength);
+  }
+  return (
+    <motion.div
+      ref={ref}
+      onMouseMove={onMove}
+      onMouseLeave={() => { mx.set(0); my.set(0); }}
+      style={{ x: sx, y: sy }}
+      className={`inline-block ${className}`}
+    >
+      {children}
     </motion.div>
   );
 }

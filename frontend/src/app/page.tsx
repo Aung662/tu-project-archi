@@ -9,7 +9,7 @@ import type { SearchResult } from '@/lib/types';
 import { SimilarityMeter, Alert, SkeletonList, EmptyState, LevelBadge } from '@/components/ui';
 import { formatMMK } from '@/lib/format';
 import { tr, t } from '@/lib/i18n';
-import { Reveal, StaggerGrid, StaggerItem, TiltCard } from '@/components/motion';
+import { Reveal, StaggerGrid, StaggerItem, TiltCard, Magnetic } from '@/components/motion';
 
 interface Suggestion {
   id: string;
@@ -124,9 +124,9 @@ export default function HomePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          <span className="eyebrow font-latin">✦ AI Title Similarity</span>
+          <span className="eyebrow font-latin animate-shine">✦ AI Title Similarity</span>
           <h1 className="mx-auto mt-5 max-w-3xl text-4xl font-extrabold leading-tight tracking-tight sm:text-6xl">
-            <span className="text-gradient">{tr(t.heroTitle)}</span>
+            <span className="text-gradient-animated">{tr(t.heroTitle)}</span>
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-300">
             {tr(t.heroSubtitle)}
@@ -202,16 +202,20 @@ export default function HomePage() {
           transition={{ duration: 0.7, delay: 0.3 }}
           className="mt-8 flex flex-col items-stretch justify-center gap-4 sm:flex-row sm:items-center"
         >
-          <Link href="/browse" className="cta3d cta3d-blue group">
-            <span className="cta3d-icon" aria-hidden>🗂️</span>
-            <span className="cta3d-label">{tr(t.projectLibraryCta)}</span>
-            <span className="cta3d-arrow transition-transform group-hover:translate-x-1">→</span>
-          </Link>
-          <Link href="/check" className="cta3d cta3d-plum group">
-            <span className="cta3d-icon" aria-hidden>🛡️</span>
-            <span className="cta3d-label">{tr(t.searchSameTitlesCta)}</span>
-            <span className="cta3d-arrow transition-transform group-hover:translate-x-1">→</span>
-          </Link>
+          <Magnetic>
+            <Link href="/browse" className="cta3d cta3d-blue sheen group">
+              <span className="cta3d-icon" aria-hidden>🗂️</span>
+              <span className="cta3d-label">{tr(t.projectLibraryCta)}</span>
+              <span className="cta3d-arrow transition-transform group-hover:translate-x-1">→</span>
+            </Link>
+          </Magnetic>
+          <Magnetic>
+            <Link href="/check" className="cta3d cta3d-plum sheen group">
+              <span className="cta3d-icon" aria-hidden>🛡️</span>
+              <span className="cta3d-label">{tr(t.searchSameTitlesCta)}</span>
+              <span className="cta3d-arrow transition-transform group-hover:translate-x-1">→</span>
+            </Link>
+          </Magnetic>
         </motion.div>
       </section>
 

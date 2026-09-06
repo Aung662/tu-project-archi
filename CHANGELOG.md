@@ -3,6 +3,19 @@
 All notable changes to **TU Project Archive & Title Similarity Checker**. Grouped by build wave;
 newest first. Dates are the project timeline (Asia/Yangon).
 
+## [Unreleased] — Fix: Render build failure (AI fields missing from schema template) (2026-09-06)
+- **Bug:** the Render build regenerates `schema.prisma` from `schema.template.prisma` via `set-provider.ts`. The AI fields (`aiSummary`, `embedding`, `embeddingHash`) were added to `schema.prisma` but NOT the template, so the build overwrote them → Prisma client lacked the fields → tsc failed with ~20 errors in `ai.service.ts` + `projects.service.ts`.
+- **Fix:** added the three AI fields to `schema.template.prisma` (the source of truth). Verified by regenerating from template + `prisma generate` + `tsc` (EXIT 0), i.e. the exact Render build path.
+
+## [Unreleased] — Monetization + premium motion design (2026-09-06)
+- **Monetization system:** reusable `AdSlot` component + `AdSenseScript` loader, env-driven (`NEXT_PUBLIC_ADS_ENABLED`, `NEXT_PUBLIC_ADSENSE_CLIENT`, `NEXT_PUBLIC_AD_SLOT_*`). Renders real Google AdSense units when configured, a sellable "Advertise here" house banner when ads are on but no AdSense id, and nothing (prod) when off. Slots placed on Browse (leaderboard) and project detail (sidebar). New `docs/MONETIZATION.md` covering AdSense, direct sponsors, paid downloads, memberships, academic services, affiliates.
+- **Premium motion design:** animated flowing gradient headline (`.text-gradient-animated`), `.glow-ring` + `.sheen` sweep utilities, top scroll-progress bar (spring), and magnetic hero CTAs that follow the cursor. Consolidated motion primitives into a single `components/motion.tsx` (added `ScrollProgress`, `Magnetic`).
+
+## [Unreleased] — Browse filters as raised 3D buttons (2026-09-06)
+- New `.chip3d` / `.chip3d-active` CSS: compact embossed 3D pills (top highlight + bottom lip + drop shadow, lift on hover, press-in on active).
+- Browse filters reorganized into rows of 3D buttons: Row 1 = 🏛️ University · 🏢 Department · 📅 Year (dropdowns styled as raised buttons); Row 2 = ✨ All levels · 3️⃣ 3rd Year · 5️⃣ 5th Year; Row 3 = 🏆 Final Year · 📌 Other · ⚙️ Advanced filters. Selected chip shows a vivid raised indigo state. Advanced-filters toggle moved into Row 3.
+- New i18n: fAdvanced / fHideAdvanced.
+
 ## [Unreleased] — UI polish: language pill + browse filter icons (2026-09-06)
 - Language switcher now shows a clearer 🌐 **မြန်မာ / ENG** pill (was a cramped "မြ") with a highlighted brand style.
 - Browse filters redesigned with icons: 🔎 Keyword, 🏛️ University, 🏢 Department, 📅 Year, and a horizontal 🎓 Academic-level chip row (✨/3️⃣/5️⃣/🏆/📌) that scrolls on mobile and highlights the active level with a gradient.

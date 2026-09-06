@@ -383,6 +383,8 @@ export const t = {
   fAbstract: L('အကျဉ်းချုပ်', 'Abstract / Summary'),
   fKeywordsComma: L('သော့ချက်စကားလုံးများ (ကော်မာဖြင့် ခြားပါ)', 'Keywords (comma separated)'),
   fLevel: L('ပညာရေးအဆင့်', 'Academic level'),
+  fAdvanced: L('အဆင့်မြင့် စစ်ထုတ်မှု', 'Advanced filters'),
+  fHideAdvanced: L('စစ်ထုတ်မှု ဖျောက်ရန်', 'Hide filters'),
   fPrice: L('စျေးနှုန်း (ကျပ်)', 'Price (MMK)'),
   fAuthors: L('ရေးသားသူများ', 'Authors'),
   fSupervisor: L('ကြီးကြပ်ဆရာ', 'Supervisor'),

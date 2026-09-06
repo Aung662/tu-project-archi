@@ -12,7 +12,9 @@ import { ThemeProvider, themeInitScript } from '@/context/ThemeContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { WelcomeOverlay } from '@/components/WelcomeOverlay';
 import { ScrollToTop } from '@/components/ScrollToTop';
+import { ScrollProgress } from '@/components/motion';
 import { AiChat } from '@/components/ai/AiChat';
+import { AdSenseScript } from '@/components/ads/AdSenseScript';
 
 // Modern geometric sans for Latin / UI numerals.
 const jakarta = Plus_Jakarta_Sans({
@@ -66,6 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Apply the saved theme before first paint to avoid a flash of the
             wrong theme (FOUC). */}
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <AdSenseScript />
       </head>
       <body>
         {/* Ambient animated background — sits behind everything */}
@@ -80,6 +83,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <LanguageProvider>
         <AuthProvider>
           <BookmarksProvider>
+            <ScrollProgress />
             <div className="relative flex min-h-screen flex-col">
               <Navbar />
               <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">{children}</main>

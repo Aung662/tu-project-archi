@@ -122,6 +122,15 @@ model Project {
   normalizedTitle String
   abstract        String
   keywords        String        @default("") // comma-separated
+
+  // ── AI (optional, populated only when a Gemini key is configured) ──────────
+  // Cached one-sentence TLDR summary generated from the abstract.
+  aiSummary       String?
+  // Cached embedding vector (JSON array of floats) of "title. abstract" used for
+  // semantic search. Stored as text for portability across SQLite/Postgres.
+  embedding       String?
+  // Hash of the text the embedding was built from, so we only re-embed on change.
+  embeddingHash   String?
   year            Int
   level           AcademicLevel @default(FINAL_YEAR)
   authorsText     String        @default("") // free text list of student authors
