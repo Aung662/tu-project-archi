@@ -7,6 +7,7 @@ import type { Paginated, ProjectCard as Card, University } from '@/lib/types';
 import { ProjectCard } from '@/components/ProjectCard';
 import { EmptyState, Alert, SkeletonCard } from '@/components/ui';
 import { AdSlot } from '@/components/ads/AdSlot';
+import { Reveal, StaggerGrid, StaggerItem, Magnetic } from '@/components/motion';
 import { tr, t, levelLabel } from '@/lib/i18n';
 
 export default function BrowsePage() {
@@ -63,22 +64,24 @@ export default function BrowsePage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-3">
+      <Reveal className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-100">{tr(t.browseTitle)}</h1>
+          <h1 className="text-2xl font-bold text-gradient-animated sm:text-3xl">{tr(t.browseTitle)}</h1>
           <p className="text-sm text-slate-400">{tr(t.browseSubtitle)}</p>
         </div>
-        <Link
-          href="/titles"
-          className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10"
-        >
-          <span aria-hidden>📋</span>
-          {tr(t.allTitlesLink)}
-        </Link>
-      </div>
+        <Magnetic strength={0.25}>
+          <Link
+            href="/titles"
+            className="sheen inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10"
+          >
+            <span aria-hidden>📋</span>
+            {tr(t.allTitlesLink)}
+          </Link>
+        </Magnetic>
+      </Reveal>
 
       {/* Filters */}
-      <div className="card space-y-4 p-4">
+      <Reveal delay={0.08} className="card glow-ring space-y-4 p-4">
         {/* Keyword search */}
         <div>
           <label className="label flex items-center gap-1.5">
@@ -248,7 +251,7 @@ export default function BrowsePage() {
             </div>
           )}
         </div>
-      </div>
+      </Reveal>
 
       {error && <Alert kind="error">{error}</Alert>}
 
@@ -263,12 +266,20 @@ export default function BrowsePage() {
         </div>
       ) : data && data.items.length > 0 ? (
         <>
-          <p className="text-sm text-slate-400">{data.total} {tr(t.projectsFound)}</p>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {data.items.map((p) => (
-              <ProjectCard key={p.id} p={p} />
-            ))}
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm font-semibold text-slate-200">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" aria-hidden />
+              {data.total}
+            </span>
+            <span className="text-sm text-slate-400">{tr(t.projectsFound)}</span>
           </div>
+          <StaggerGrid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {data.items.map((p) => (
+              <StaggerItem key={p.id}>
+                <ProjectCard p={p} />
+              </StaggerItem>
+            ))}
+          </StaggerGrid>
           {data.totalPages > 1 && (
             <div className="flex items-center justify-center gap-2 pt-2">
               <button

@@ -54,17 +54,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {tr(t.adminSignedInAs)} <span className="font-medium text-slate-200">{user.name}</span>
         </span>
       </div>
-      <nav className="flex flex-wrap gap-1 border-b border-white/10">
+      <nav className="flex flex-wrap gap-1.5 rounded-2xl border border-white/10 bg-white/[0.03] p-1.5 shadow-inner">
         {TABS.map((tab) => {
           const active = pathname === tab.href;
           return (
             <Link
               key={tab.href}
               href={tab.href}
-              className={`-mb-px border-b-2 px-4 py-2 text-sm font-medium ${
+              aria-current={active ? 'page' : undefined}
+              className={`rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200 ${
                 active
-                  ? 'border-brand-400 text-brand-300'
-                  : 'border-transparent text-slate-400 hover:text-slate-100'
+                  ? 'bg-gradient-to-r from-brand-500 to-brand-400 text-white shadow-glow'
+                  : 'text-slate-300 hover:bg-white/10 hover:text-white'
               }`}
             >
               {tr(tab.label)}
