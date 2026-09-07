@@ -7,12 +7,19 @@ databases:
     databaseName: tu_archive
     plan: free
     postgresMajorVersion: "16"
+    # Singapore is Render's closest free region to Myanmar — keeping the DB and
+    # the API in the same region avoids cross-region query latency.
+    region: singapore
 
 services:
   - type: web
     name: tu-archive-api
     runtime: node
     plan: free
+    # Serve from Singapore (closest free Render region to Myanmar). Default is
+    # Oregon (US west): a Yangon->Oregon round trip is ~250-350ms vs ~40-60ms to
+    # Singapore, so every API call becomes several times faster for local users.
+    region: singapore
     rootDir: backend
     # --include=dev is required: prisma/tsc/tsx are devDependencies and the build
     # needs them even though NODE_ENV=production (which normally skips dev deps).

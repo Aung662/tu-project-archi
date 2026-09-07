@@ -22,8 +22,21 @@ interface Envelope<T> {
   meta?: unknown;
 }
 
+// A single fetch attempt guarded by an AbortController so it can never hang
+// forever (a sleeping free-tier server would otherwise leave the UI spinning
+// indefinitely, which users read as "the site is broken").
+async function fetchWithTimeout(url: string, init: RequestInit, timeoutMs: number) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const res = await fetch(`/api${path}`, {
+  const options: RequestInit = {
     ...init,
     credentials: 'include',
     headers: {
@@ -32,7 +45,40 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
         : {}),
       ...(init.headers || {}),
     },
-  });
+  };
+
+  // GET requests are safe to retry. If the backend was asleep (free tier), the
+  // first hit wakes it and may time out; a couple of quick retries then succeed
+  // once it's warm — far better UX than one long hang or an instant error.
+  const isRetriable = !init.method || init.method.toUpperCase() === 'GET';
+  const maxAttempts = isRetriable ? 3 : 1;
+  const perAttemptTimeout = isRetriable ? 8000 : 20000;
+
+  let res: Response | null = null;
+  let lastErr: unknown = null;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      res = await fetchWithTimeout(`/api${path}`, options, perAttemptTimeout);
+      break; // got a response (any status) — stop retrying
+    } catch (err) {
+      lastErr = err;
+      // Network error or timeout (likely cold start). Back off briefly, retry.
+      if (attempt < maxAttempts) {
+        await new Promise((r) => setTimeout(r, 600 * attempt));
+        continue;
+      }
+    }
+  }
+
+  if (!res) {
+    throw new ApiError(
+      0,
+      'NETWORK',
+      lastErr instanceof DOMException && lastErr.name === 'AbortError'
+        ? 'Request timed out. Please check your connection and try again.'
+        : 'Network error. Please try again.',
+    );
+  }
 
   let json: Envelope<T> | null = null;
   try {
