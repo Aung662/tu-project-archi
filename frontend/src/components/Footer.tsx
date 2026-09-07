@@ -13,6 +13,9 @@ export function Footer() {
           <p>© {new Date().getFullYear()} {tr(t.footerRights)}</p>
         </div>
         <div className="flex items-center gap-4 text-xs">
+          <Link href="/about" className="font-medium text-slate-300 transition hover:text-white">
+            {tr(t.navAbout)}
+          </Link>
           <Link href="/contact" className="font-medium text-slate-300 transition hover:text-white">
             {tr(t.navContact)}
           </Link>

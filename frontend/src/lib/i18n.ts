@@ -72,6 +72,9 @@ export const t = {
   navLogin: L('အကောင့်ဝင်ရန်', 'Login'),
   navLogout: L('ထွက်ရန်', 'Logout'),
   navContact: L('ဆက်သွယ်ရန်', 'Contact'),
+  navAbout: L('ဤဝဘ်ဆိုက်အကြောင်း', 'About this website'),
+  contactAboutValue: L('ရည်ရွယ်ချက် နှင့် တည်ထောင်သူများ', 'Our purpose & the team'),
+  contactAboutCta: L('ကြည့်ရန်', 'View'),
 
   // AI features
   aiAssistant: L('AI လက်ထောက်', 'AI Assistant'),

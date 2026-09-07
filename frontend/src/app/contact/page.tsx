@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { tr, t } from '@/lib/i18n';
 import { CONTACT, telHref, viberHref, telegramHref } from '@/lib/contact';
 
@@ -86,6 +87,27 @@ export default function ContactPage() {
             </span>
           </a>
         ))}
+
+        {/* Fills the empty grid cell: a raised 3D button to the About page. */}
+        <Link
+          href="/about"
+          className="chip3d group !justify-start gap-4 !rounded-xl !p-4"
+        >
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-brand-400/30 to-fuchsia-500/20 text-2xl ring-1 ring-white/10">
+            <span aria-hidden>✦</span>
+          </span>
+          <span className="min-w-0 flex-1 text-left">
+            <span className="block text-xs font-medium uppercase tracking-wide text-slate-400">
+              {tr(t.navAbout)}
+            </span>
+            <span className="block truncate text-sm font-semibold text-slate-100">
+              {tr(t.contactAboutValue)}
+            </span>
+          </span>
+          <span className="shrink-0 rounded-lg bg-white/10 px-3 py-1.5 text-xs font-semibold text-white transition group-hover:bg-white/20">
+            {tr(t.contactAboutCta)}
+          </span>
+        </Link>
       </div>
 
       <div className="rounded-xl border border-amber-400/20 bg-amber-500/5 p-4">
