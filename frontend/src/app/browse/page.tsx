@@ -1,7 +1,8 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { api } from '@/lib/api';
 import type { Paginated, ProjectCard as Card, University } from '@/lib/types';
 import { ProjectCard } from '@/components/ProjectCard';
@@ -11,10 +12,19 @@ import { Reveal, StaggerGrid, StaggerItem, Magnetic } from '@/components/motion'
 import { tr, t, levelLabel } from '@/lib/i18n';
 
 export default function BrowsePage() {
+  return (
+    <Suspense fallback={null}>
+      <BrowseInner />
+    </Suspense>
+  );
+}
+
+function BrowseInner() {
+  const searchParams = useSearchParams();
   const [universities, setUniversities] = useState<University[]>([]);
   const [years, setYears] = useState<number[]>([]);
   const [filters, setFilters] = useState({
-    q: '',
+    q: searchParams.get('q') ?? '',
     universityId: '',
     departmentId: '',
     year: '',

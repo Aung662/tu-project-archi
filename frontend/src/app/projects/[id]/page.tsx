@@ -13,7 +13,11 @@ import { PurchasePanel } from '@/components/PurchasePanel';
 import { AdSlot } from '@/components/ads/AdSlot';
 import { ProjectMedia } from '@/components/media/ProjectMedia';
 import { BookmarkButton } from '@/components/BookmarkButton';
+import { ShareButton } from '@/components/ShareButton';
+import { CitationBox } from '@/components/CitationBox';
 import { SimilarProjects } from '@/components/SimilarProjects';
+import { addRecentlyViewed } from '@/lib/recentlyViewed';
+import Link from 'next/link';
 
 export default function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -30,7 +34,17 @@ export default function ProjectDetailPage() {
     (async () => {
       try {
         const p = await api.get<Card>(`/projects/${id}`);
-        if (active) setProject(p);
+        if (active) {
+          setProject(p);
+          // Remember this visit for the "Recently viewed" strip (local only).
+          addRecentlyViewed({
+            id: p.id,
+            title: p.title,
+            year: p.year,
+            deptCode: p.department.code,
+            uniShort: p.university.shortName,
+          });
+        }
       } catch (err) {
         if (active) setError(err instanceof ApiError ? err.message : tr(t.loadProjectFailed));
       } finally {
@@ -87,7 +101,10 @@ export default function ProjectDetailPage() {
         </div>
         <div className="flex items-start justify-between gap-3">
           <h1 className="text-2xl font-bold leading-tight text-slate-100">{project.title}</h1>
-          <BookmarkButton projectId={project.id} showLabel className="shrink-0 pt-1" />
+          <div className="flex shrink-0 items-center gap-2 pt-1">
+            <ShareButton title={project.title} />
+            <BookmarkButton projectId={project.id} showLabel />
+          </div>
         </div>
 
         <ProjectMedia
@@ -120,9 +137,13 @@ export default function ProjectDetailPage() {
             </h2>
             <div className="flex flex-wrap gap-2">
               {project.keywords.map((k) => (
-                <span key={k} className="badge bg-brand-500/15 text-brand-200 ring-1 ring-brand-400/25">
+                <Link
+                  key={k}
+                  href={`/browse?q=${encodeURIComponent(k)}`}
+                  className="badge bg-brand-500/15 text-brand-200 ring-1 ring-brand-400/25 transition hover:bg-brand-500/30 hover:text-brand-100"
+                >
                   {k}
-                </span>
+                </Link>
               ))}
             </div>
           </section>
@@ -136,6 +157,9 @@ export default function ProjectDetailPage() {
           {project.authorsText && <Meta label={tr(t.metaAuthors)} value={project.authorsText} />}
           {project.supervisorName && <Meta label={tr(t.metaSupervisor)} value={project.supervisorName} />}
         </dl>
+
+        {/* Cite this project — IEEE / APA / MLA, one-click copy */}
+        <CitationBox project={project} />
       </article>
 
       {/* Purchase / access panel */}

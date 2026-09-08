@@ -10,6 +10,7 @@ import { SimilarityMeter, Alert, SkeletonList, EmptyState, LevelBadge } from '@/
 import { formatMMK } from '@/lib/format';
 import { tr, t } from '@/lib/i18n';
 import { Reveal, StaggerGrid, StaggerItem, TiltCard, Magnetic } from '@/components/motion';
+import { RecentlyViewed } from '@/components/RecentlyViewed';
 
 interface Suggestion {
   id: string;
@@ -284,6 +285,9 @@ export default function HomePage() {
           )}
         </section>
       )}
+
+      {/* ── Recently viewed (default landing state) ──────────── */}
+      {!result && !loading && <RecentlyViewed />}
 
       {/* ── Feature cards (default landing state) ────────────── */}
       {!result && !loading && (

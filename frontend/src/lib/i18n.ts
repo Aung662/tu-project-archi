@@ -241,6 +241,17 @@ export const t = {
   back: L('နောက်သို့', 'Back'),
   abstract: L('အကျဉ်းချုပ်', 'Abstract / Summary'),
   keywords: L('သော့ချက်စကားလုံးများ', 'Keywords'),
+  // ── Cite this project ──────────────────────────────────
+  citeTitle: L('ဤပရောဂျက်ကို ကိုးကားရန်', 'Cite this project'),
+  citeHint: L('ပုံစံရွေးပြီး ကူးယူပါ — thesis/proposal အတွက်', 'Pick a style and copy it for your thesis or proposal'),
+  citeCopy: L('ကူးယူရန်', 'Copy'),
+  citeCopied: L('ကူးယူပြီးပါပြီ', 'Copied!'),
+  // ── Share ──────────────────────────────────────────────
+  shareLabel: L('မျှဝေရန်', 'Share'),
+  shareCopied: L('လင့်ခ် ကူးယူပြီးပါပြီ', 'Link copied!'),
+  // ── Recently viewed ────────────────────────────────────
+  recentlyViewed: L('မကြာသေးမီက ကြည့်ရှုခဲ့သည်', 'Recently viewed'),
+  recentlyViewedClear: L('ရှင်းလင်းရန်', 'Clear'),
   metaUniversity: L('တက္ကသိုလ်', 'University'),
   metaDepartment: L('ဌာန', 'Department'),
   metaLevel: L('ပညာရေးအဆင့်', 'Academic level'),
