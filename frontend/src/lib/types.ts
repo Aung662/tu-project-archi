@@ -42,6 +42,8 @@ export interface ProjectCard {
   hasConsent?: boolean;
   /** One-sentence AI summary of the abstract (present only when AI is enabled). */
   aiSummary?: string | null;
+  /** How many times the detail page has been viewed (popularity signal). */
+  viewCount?: number;
   university: UniversityLite;
   department: DepartmentLite;
   createdAt: string;
@@ -197,4 +199,31 @@ export interface DashboardData {
   series: { date: string; views: number; uniques: number; searches: number; checks: number }[];
   byUniversity: { label: string; value: number }[];
   topPaths: { path: string; count: number }[];
+}
+
+// ── Public archive stats (/stats page) ───────────────────────────────────────
+export interface PublicStats {
+  totals: { projects: number; universities: number; departments: number; withFile: number };
+  byYear: { label: string; value: number }[];
+  byLevel: { label: string; value: number }[];
+  byUniversity: { label: string; value: number }[];
+  byDepartment: { label: string; value: number }[];
+  topViewed: { id: string; title: string; year: number; viewCount: number; deptCode: string }[];
+  generatedAt: string;
+}
+
+// ── Ratings & reviews ────────────────────────────────────────────────────────
+export interface ReviewItem {
+  id: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+  authorName: string;
+}
+export interface ReviewSummary {
+  average: number;
+  count: number;
+  distribution: number[]; // [1★,2★,3★,4★,5★]
+  mine: { id: string; rating: number; comment: string; createdAt: string } | null;
+  reviews: ReviewItem[];
 }

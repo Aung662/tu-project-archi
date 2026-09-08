@@ -15,6 +15,7 @@ import { ProjectMedia } from '@/components/media/ProjectMedia';
 import { BookmarkButton } from '@/components/BookmarkButton';
 import { ShareButton } from '@/components/ShareButton';
 import { CitationBox } from '@/components/CitationBox';
+import { ReviewSection } from '@/components/ReviewSection';
 import { SimilarProjects } from '@/components/SimilarProjects';
 import { addRecentlyViewed } from '@/lib/recentlyViewed';
 import Link from 'next/link';
@@ -98,6 +99,11 @@ export default function ProjectDetailPage() {
           <span className="badge bg-white/10 text-slate-300">
             {project.university.shortName} · {project.department.code}
           </span>
+          {(project.viewCount ?? 0) > 0 && (
+            <span className="badge bg-white/10 text-slate-400">
+              👁 {project.viewCount}
+            </span>
+          )}
         </div>
         <div className="flex items-start justify-between gap-3">
           <h1 className="text-2xl font-bold leading-tight text-slate-100">{project.title}</h1>
@@ -160,6 +166,9 @@ export default function ProjectDetailPage() {
 
         {/* Cite this project — IEEE / APA / MLA, one-click copy */}
         <CitationBox project={project} />
+
+        {/* Ratings & reviews */}
+        <ReviewSection projectId={project.id} />
       </article>
 
       {/* Purchase / access panel */}

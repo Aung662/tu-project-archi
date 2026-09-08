@@ -8,6 +8,8 @@ import {
   getProjectDetail,
   getSimilarProjects,
   autocompleteTitles,
+  recordProjectView,
+  getTrendingProjects,
 } from './projects.service.js';
 
 export const projectsRouter = Router();
@@ -49,6 +51,16 @@ projectsRouter.get(
   }),
 );
 
+// GET /api/projects/trending — most-viewed published projects
+projectsRouter.get(
+  '/trending',
+  validate({ query: z.object({ limit: z.coerce.number().int().min(1).max(12).optional() }) }),
+  asyncHandler(async (req, res) => {
+    const limit = (req.query.limit as unknown as number) ?? 6;
+    res.json(ok(await getTrendingProjects(limit)));
+  }),
+);
+
 // GET /api/projects/:id — public detail (published only for non-admins)
 projectsRouter.get(
   '/:id',
@@ -56,7 +68,10 @@ projectsRouter.get(
   validate({ params: z.object({ id: z.string().min(1) }) }),
   asyncHandler(async (req, res) => {
     const isAdmin = req.user?.role === 'ADMIN';
-    res.json(ok(await getProjectDetail(params(req).id, { isAdmin })));
+    const detail = await getProjectDetail(params(req).id, { isAdmin });
+    // Count the view (best-effort, deduped) only for the public published view.
+    if (!isAdmin) recordProjectView(params(req).id, req.ip);
+    res.json(ok(detail));
   }),
 );
 

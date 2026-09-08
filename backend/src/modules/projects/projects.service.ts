@@ -33,6 +33,7 @@ const listSelect = {
   hasConsent: true,
   fileStorageKey: true,
   aiSummary: true,
+  viewCount: true,
   createdAt: true,
   university: { select: { id: true, name: true, shortName: true } },
   department: { select: { id: true, name: true, code: true } },
@@ -61,6 +62,7 @@ function toPublicCard(p: any) {
     status: p.status,
     hasFile: Boolean(p.fileStorageKey),
     aiSummary: p.aiSummary ?? null,
+    viewCount: p.viewCount ?? 0,
     university: p.university,
     department: p.department,
     createdAt: p.createdAt,
@@ -170,6 +172,30 @@ export async function browseProjects(params: BrowseParams) {
   };
 }
 
+/**
+ * Best-effort view counter. Increments a project's viewCount at most once per
+ * (project, ip) per calendar day so refreshes / bots don't inflate the number.
+ * De-dup is tracked in-process (a Set that resets daily) — good enough for a
+ * popularity signal without a dedicated table. Never throws.
+ */
+let viewDedup = new Set<string>();
+let viewDedupDay = new Date().toISOString().slice(0, 10);
+export function recordProjectView(id: string, ip?: string) {
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    if (today !== viewDedupDay) {
+      viewDedup = new Set();
+      viewDedupDay = today;
+    }
+    const key = `${id}::${ip ?? 'anon'}`;
+    if (viewDedup.has(key)) return;
+    viewDedup.add(key);
+    void prisma.project.update({ where: { id }, data: { viewCount: { increment: 1 } } }).catch(() => {});
+  } catch {
+    /* never let view counting affect the response */
+  }
+}
+
 export async function getProjectDetail(id: string, opts: { isAdmin?: boolean } = {}) {
   const p = await prisma.project.findUnique({ where: { id }, select: listSelect });
   if (!p) throw NotFound('Project not found');
@@ -243,6 +269,20 @@ export async function getSimilarProjects(id: string, limit = 4) {
   }
 
   return chosen.slice(0, limit).map(toPublicCard);
+}
+
+/**
+ * Trending: the most-viewed published projects. Falls back to newest when view
+ * counts are all zero (fresh deployment), so the row is never empty.
+ */
+export async function getTrendingProjects(limit = 6) {
+  const rows = await prisma.project.findMany({
+    where: { status: 'PUBLISHED' },
+    select: listSelect,
+    orderBy: [{ viewCount: 'desc' }, { createdAt: 'desc' }],
+    take: Math.min(12, Math.max(1, limit)),
+  });
+  return rows.map(toPublicCard);
 }
 
 /**

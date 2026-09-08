@@ -86,6 +86,7 @@ model User {
   auditLogs         AuditLog[]
   bookmarks         Bookmark[]
   resetTokens       PasswordResetToken[]
+  reviews           Review[]
 }
 
 // ── Saved projects (bookmarks / favourites) ──────────────────────────────────
@@ -152,6 +153,10 @@ model Project {
   fileSizeBytes   Int?
   fileMimeType    String?
 
+  // Popularity: incremented once per detail view (best-effort, deduped per IP/day
+  // in the service layer). Drives the "Trending" / "Most viewed" surfaces.
+  viewCount       Int           @default(0)
+
   submittedBy      User?        @relation("SubmittedBy", fields: [submittedById], references: [id])
   submittedById    String?
 
@@ -160,6 +165,7 @@ model Project {
   images           ProjectImage[]
   videos           ProjectVideo[]
   bookmarks        Bookmark[]
+  reviews          Review[]
 
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
@@ -170,6 +176,25 @@ model Project {
   @@index([level])
   @@index([status])
   @@index([normalizedTitle])
+  @@index([viewCount])
+}
+
+// ── Ratings & reviews (students rate/review published projects) ───────────────
+// One review per user per project (enforced by a unique pair). Rating is 1..5.
+// A short optional comment lets students leave useful notes for their peers.
+model Review {
+  id        String   @id @default(cuid())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  rating    Int      // 1..5 (validated in the service/route)
+  comment   String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, projectId])
+  @@index([projectId])
 }
 
 // ── Public project images (gallery + 360° spin frames) ───────────────────────
