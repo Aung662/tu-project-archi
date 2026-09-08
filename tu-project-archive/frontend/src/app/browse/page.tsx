@@ -6,6 +6,8 @@ import { useSearchParams } from 'next/navigation';
 import { api } from '@/lib/api';
 import type { Paginated, ProjectCard as Card, University } from '@/lib/types';
 import { ProjectCard } from '@/components/ProjectCard';
+import { SavedSearches } from '@/components/SavedSearches';
+import type { SavedSearch } from '@/lib/savedSearches';
 import { EmptyState, Alert, SkeletonCard } from '@/components/ui';
 import { AdSlot } from '@/components/ads/AdSlot';
 import { Reveal, StaggerGrid, StaggerItem, Magnetic } from '@/components/motion';
@@ -263,6 +265,35 @@ function BrowseInner() {
         </div>
       </Reveal>
 
+      {/* Saved searches — save the current filters and re-run past ones (localStorage) */}
+      <SavedSearches
+        current={{
+          q: filters.q,
+          universityId: filters.universityId,
+          departmentId: filters.departmentId,
+          level: filters.level,
+          year: filters.year,
+        }}
+        label={buildSearchLabel({
+          q: filters.q,
+          uniShort: selectedUni?.shortName,
+          deptCode: selectedUni?.departments.find((d) => d.id === filters.departmentId)?.code,
+          level: filters.level ? tr(levelLabel[filters.level]) : '',
+          year: filters.year,
+        })}
+        onRun={(s: SavedSearch) =>
+          setFilters((f) => ({
+            ...f,
+            q: s.q,
+            universityId: s.universityId,
+            departmentId: s.departmentId,
+            level: s.level,
+            year: s.year,
+            page: 1,
+          }))
+        }
+      />
+
       {error && <Alert kind="error">{error}</Alert>}
 
       {/* Leaderboard ad between filters and results */}
@@ -317,4 +348,22 @@ function BrowseInner() {
       )}
     </div>
   );
+}
+
+/** Build a short human label for a saved search from its active parts. */
+function buildSearchLabel(parts: {
+  q?: string;
+  uniShort?: string;
+  deptCode?: string;
+  level?: string;
+  year?: string;
+}): string {
+  const bits = [
+    parts.q?.trim(),
+    parts.uniShort,
+    parts.deptCode,
+    parts.level,
+    parts.year,
+  ].filter(Boolean);
+  return bits.length ? bits.join(' · ') : 'Search';
 }

@@ -12,6 +12,7 @@ import { tr, t } from '@/lib/i18n';
 import { Reveal, StaggerGrid, StaggerItem, TiltCard, Magnetic } from '@/components/motion';
 import { RecentlyViewed } from '@/components/RecentlyViewed';
 import { TrendingProjects } from '@/components/TrendingProjects';
+import { NewArrivals } from '@/components/NewArrivals';
 
 interface Suggestion {
   id: string;
@@ -289,6 +290,7 @@ export default function HomePage() {
 
       {/* ── Recently viewed + Trending (default landing state) ── */}
       {!result && !loading && <RecentlyViewed />}
+      {!result && !loading && <NewArrivals limit={3} />}
       {!result && !loading && <TrendingProjects limit={3} />}
 
       {/* ── Feature cards (default landing state) ────────────── */}

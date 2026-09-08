@@ -14,8 +14,10 @@ import { tr, t, type Label } from '@/lib/i18n';
 const PRIMARY: { href: string; label: Label; icon: string }[] = [
   { href: '/', label: t.navSearch, icon: '🔎' },
   { href: '/browse', label: t.navBrowse, icon: '🗂️' },
+  { href: '/new', label: t.navNew, icon: '✨' },
   { href: '/titles', label: t.navTitles, icon: '📋' },
   { href: '/topics', label: t.navTopics, icon: '🏷️' },
+  { href: '/toolkit', label: t.navToolkit, icon: '🧰' },
   { href: '/check', label: t.navCheck, icon: '✨' },
   { href: '/contact', label: t.navContact, icon: '✉️' },
 ];
@@ -139,6 +141,8 @@ export function Navbar() {
       {menuOpen && (
         <div className="border-t border-white/10 bg-ink-900/95 backdrop-blur-xl sm:hidden">
           <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-3">
+            <MobileLink href="/notes" onClick={() => setMenuOpen(false)}>{tr(t.navNotes)}</MobileLink>
+            <MobileLink href="/compare" onClick={() => setMenuOpen(false)}>{tr(t.navCompare)}</MobileLink>
             {user ? (
               <>
                 {user.role === 'ADMIN' && (

@@ -13,8 +13,10 @@ import { PurchasePanel } from '@/components/PurchasePanel';
 import { AdSlot } from '@/components/ads/AdSlot';
 import { ProjectMedia } from '@/components/media/ProjectMedia';
 import { BookmarkButton } from '@/components/BookmarkButton';
+import { CompareButton } from '@/components/CompareButton';
 import { ShareButton } from '@/components/ShareButton';
 import { CitationBox } from '@/components/CitationBox';
+import { NoteEditor } from '@/components/NoteEditor';
 import { ReviewSection } from '@/components/ReviewSection';
 import { SimilarProjects } from '@/components/SimilarProjects';
 import { addRecentlyViewed } from '@/lib/recentlyViewed';
@@ -110,6 +112,7 @@ export default function ProjectDetailPage() {
           <div className="no-print flex shrink-0 items-center gap-2 pt-1">
             <ShareButton title={project.title} />
             <BookmarkButton projectId={project.id} showLabel />
+            <CompareButton projectId={project.id} title={project.title} showLabel />
             <button
               onClick={() => window.print()}
               title={tr(t.printLabel)}
@@ -178,6 +181,11 @@ export default function ProjectDetailPage() {
         <CitationBox project={project} />
 
         {/* Ratings & reviews */}
+        {/* Private research note (localStorage) */}
+        <div className="no-print">
+          <NoteEditor projectId={project.id} title={project.title} />
+        </div>
+
         <div className="no-print">
           <ReviewSection projectId={project.id} />
         </div>

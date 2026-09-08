@@ -12,6 +12,7 @@ import { ThemeProvider, themeInitScript } from '@/context/ThemeContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { WelcomeOverlay } from '@/components/WelcomeOverlay';
 import { ScrollToTop } from '@/components/ScrollToTop';
+import { CompareBar } from '@/components/CompareBar';
 import { ScrollProgress } from '@/components/motion';
 import { AiChat } from '@/components/ai/AiChat';
 import { AdSenseScript } from '@/components/ads/AdSenseScript';
@@ -90,6 +91,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Footer />
             </div>
             <WelcomeOverlay />
+            <CompareBar />
             <AiChat />
             <ScrollToTop />
             <InstallPrompt />

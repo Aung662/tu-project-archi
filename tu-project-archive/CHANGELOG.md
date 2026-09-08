@@ -3,6 +3,27 @@
 All notable changes to **TU Project Archive & Title Similarity Checker**. Grouped by build wave;
 newest first. Dates are the project timeline (Asia/Yangon).
 
+## [Unreleased] — Retention tools: Research Notes, Compare, Saved Searches (2026-09-08)
+- **Research Notes** — a private, per-project note editor on the project detail page and a dedicated `/notes` page that collects them all. Stored in localStorage (no login, private to the device), so students can jot literature-review notes while browsing and return to continue. Auto-loads, shows char count + "saved" confirmation; empty text deletes the note.
+- **Compare projects** — an "Add to compare" control on every project card and the detail page (up to 3), a floating Compare bar that follows the student across the site, and a `/compare` page showing the selected projects side by side across level, year, school, price/availability, keywords and abstract — for weighing directions for their own thesis. localStorage-backed.
+- **Saved searches** — a "Save this search" button on Browse plus a strip of previously saved searches that re-run with one tap (query + university + department + level + year). De-duplicated, capped at 12, localStorage-backed; only appears when a query is meaningful.
+- **Architecture:** all three are client-side (localStorage) by design — zero DB migrations, no risk to the existing schema, work offline in the PWA, and usable without an account. Live cross-tab/‌in-tab sync via custom events. Reuses the existing card/motion/brand design so nothing about the look changes.
+- Footer + mobile-nav links (Notes, Compare); fully internationalized (Burmese-first). FE `tsc` EXIT 0; all pages live-verified 200 with no console/compile errors.
+
+## [Unreleased] — Components Toolkit: 186 hardware/software icons, downloadable (2026-09-08)
+- **New `/toolkit` page** — a browsable, searchable library of **186 building blocks** (120 hardware + 66 software) that modern student engineering projects use: Arduino/ESP32/Raspberry Pi/STM32/PLC/…, every common sensor, motor/driver, display, comms, power, passive, I/O, industrial & robotics part, plus languages, AI/ML, databases, web/mobile, dev tools & CAD/EDA software.
+- **Downloadable icons (SVG + PNG), fully offline** — each component has a brand-neutral, original inline-SVG glyph tinted by its category colour. Students can download any icon as a crisp vector **.svg** or a rasterized **512×512 .png** (canvas-rendered client-side, graceful SVG fallback). No copyrighted logos, no network calls — safe to ship and works in the offline PWA.
+- **Search + 16 category filters** with live counts, split into Hardware and Software sections. Same design language (brand gradient chips, glow, cards) so it blends into the existing UI without disrupting it.
+- **Architecture:** static client-side catalogue (`data/components.ts` + `data/glyphs.ts`) — instant, zero backend load; a single glyph library powers both the on-screen icon and the downloaded file so they're pixel-identical. Category hex values are kept in sync with their Tailwind classes.
+- Navbar (🧰 Components) + footer links; fully internationalized (Burmese-first). FE `tsc` EXIT 0; live-verified (186 icons + 186 SVG/186 PNG buttons render, downloads produce well-formed files, no page regressions).
+
+## [Unreleased] — New Arrivals feed + NEW badge (student retention) (2026-09-08)
+- **New Arrivals (`/new`):** a dedicated page listing the most recently added published projects (newest first), with academic-level filter chips (All / 3rd / 5th / Final / Other) showing live counts. A retention surface — students come back to see what's freshly uploaded.
+- **Home "✨ New arrivals" row:** shows the 3 latest projects with a "View all new →" link, placed between Recently viewed and Trending.
+- **"NEW" badge on project cards:** any project added within the last 14 days gets a mint gradient NEW badge on its thumbnail (shared `isNewProject` helper), so fresh work stands out everywhere cards appear (home, browse, search, library).
+- **Backend:** new cached-free `GET /api/projects/latest?limit=1..24` (published only, ordered by `createdAt` desc). Route registered before `/:id` so it isn't swallowed by the param route.
+- Fully internationalized (Burmese-first, English fallback); FE + BE `tsc` EXIT 0; endpoint + pages live-verified end-to-end (ordering, limit validation 400 on >24, home + /new render).
+
 ## [Unreleased] — Student research tools: Explore by Topic, Bibliography export, Print/PDF (2026-09-08)
 - **Explore by Topic (`/topics`):** a keyword cloud aggregated across every published project — chip font size scales with how many projects use each term, so hot topics stand out. Each chip links straight into Browse pre-filtered by that keyword. Backed by a new cached `GET /api/stats/topics` (top-40 keywords, stop-word filtered, counted once per project, 60s in-process cache). Linked from the navbar and footer.
 - **Bibliography export (Library):** turns a student's saved projects into a ready-to-paste reference list in IEEE / APA / MLA — the literature-review power tool. Switch style live, **Copy all** to clipboard, or **Download .txt**. Pure client-side, reuses the shared `formatCitation` engine via a minimal `Citable` shape. Bookmarks API now returns `authorsText` + `supervisorName` so citations are complete.

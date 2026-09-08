@@ -13,8 +13,20 @@ export function Footer() {
           <p>© {new Date().getFullYear()} {tr(t.footerRights)}</p>
         </div>
         <div className="flex items-center gap-4 text-xs">
+          <Link href="/new" className="font-medium text-slate-300 transition hover:text-white">
+            {tr(t.navNew)}
+          </Link>
           <Link href="/topics" className="font-medium text-slate-300 transition hover:text-white">
             {tr(t.navTopics)}
+          </Link>
+          <Link href="/toolkit" className="font-medium text-slate-300 transition hover:text-white">
+            {tr(t.navToolkit)}
+          </Link>
+          <Link href="/notes" className="font-medium text-slate-300 transition hover:text-white">
+            {tr(t.navNotes)}
+          </Link>
+          <Link href="/compare" className="font-medium text-slate-300 transition hover:text-white">
+            {tr(t.navCompare)}
           </Link>
           <Link href="/stats" className="font-medium text-slate-300 transition hover:text-white">
             {tr(t.navStats)}

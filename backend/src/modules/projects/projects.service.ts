@@ -287,6 +287,21 @@ export async function getTrendingProjects(limit = 6) {
 }
 
 /**
+ * New arrivals: the most recently added published projects (newest first).
+ * Powers the "New arrivals" home row and the dedicated /new page. This is a
+ * retention surface — students come back to see what's freshly uploaded.
+ */
+export async function getLatestProjects(limit = 6) {
+  const rows = await prisma.project.findMany({
+    where: { status: 'PUBLISHED' },
+    select: listSelect,
+    orderBy: { createdAt: 'desc' },
+    take: Math.min(24, Math.max(1, limit)),
+  });
+  return rows.map(toPublicCard);
+}
+
+/**
  * Lightweight title autocomplete for the search box. Returns published project
  * titles that contain the query (case-insensitive), most recent first.
  */

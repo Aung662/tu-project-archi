@@ -6,9 +6,20 @@ import { formatMMK } from '@/lib/format';
 import { tr, t } from '@/lib/i18n';
 import { LevelBadge } from './ui';
 import { BookmarkButton } from './BookmarkButton';
+import { CompareButton } from './CompareButton';
 import { ProjectThumb } from './ProjectThumb';
 
+/** A project counts as "new" if it was added within the last 14 days. */
+const NEW_WINDOW_MS = 14 * 24 * 60 * 60 * 1000;
+export function isNewProject(createdAt?: string): boolean {
+  if (!createdAt) return false;
+  const added = new Date(createdAt).getTime();
+  if (Number.isNaN(added)) return false;
+  return Date.now() - added <= NEW_WINDOW_MS;
+}
+
 export function ProjectCard({ p }: { p: Card }) {
+  const isNew = isNewProject(p.createdAt);
   return (
     <Link
       href={`/projects/${p.id}`}
@@ -27,17 +38,29 @@ export function ProjectCard({ p }: { p: Card }) {
         ) : (
           <ProjectThumb p={p} />
         )}
-        {(p.spin?.length ?? 0) >= 2 && (
-          <span className="absolute left-2 top-2 rounded-full bg-black/55 px-2 py-0.5 text-[11px] font-semibold text-white backdrop-blur">
-            360°
-          </span>
-        )}
+        <div className="absolute left-2 top-2 flex items-center gap-1.5">
+          {isNew && (
+            <span className="rounded-full bg-gradient-to-r from-mint-500 to-mint-400 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-ink-900 shadow-glow">
+              {tr(t.newBadge)}
+            </span>
+          )}
+          {(p.spin?.length ?? 0) >= 2 && (
+            <span className="rounded-full bg-black/55 px-2 py-0.5 text-[11px] font-semibold text-white backdrop-blur">
+              360°
+            </span>
+          )}
+        </div>
         {(p.imageCount ?? 0) > 1 && (
           <span className="absolute bottom-2 right-2 rounded-full bg-black/55 px-2 py-0.5 text-[11px] font-medium text-white backdrop-blur">
             🖼 {p.imageCount}
           </span>
         )}
-        <div className="absolute right-2 top-2">
+        <div className="absolute right-2 top-2 flex items-center gap-1.5">
+          <CompareButton
+            projectId={p.id}
+            title={p.title}
+            className="grid h-8 w-8 place-items-center rounded-full bg-black/45 backdrop-blur"
+          />
           <BookmarkButton
             projectId={p.id}
             className="grid h-8 w-8 place-items-center rounded-full bg-black/45 backdrop-blur"

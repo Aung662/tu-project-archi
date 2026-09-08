@@ -10,6 +10,7 @@ import {
   autocompleteTitles,
   recordProjectView,
   getTrendingProjects,
+  getLatestProjects,
 } from './projects.service.js';
 
 export const projectsRouter = Router();
@@ -58,6 +59,16 @@ projectsRouter.get(
   asyncHandler(async (req, res) => {
     const limit = (req.query.limit as unknown as number) ?? 6;
     res.json(ok(await getTrendingProjects(limit)));
+  }),
+);
+
+// GET /api/projects/latest — most recently added published projects (new arrivals)
+projectsRouter.get(
+  '/latest',
+  validate({ query: z.object({ limit: z.coerce.number().int().min(1).max(24).optional() }) }),
+  asyncHandler(async (req, res) => {
+    const limit = (req.query.limit as unknown as number) ?? 6;
+    res.json(ok(await getLatestProjects(limit)));
   }),
 );
 
