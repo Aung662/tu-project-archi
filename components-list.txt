@@ -1,0 +1,236 @@
+TU PROJECT ARCHIVE — COMPONENTS TOOLKIT
+Full catalogue of hardware & software components in the website
+Generated: 2026-09-08
+
+Total components: 186   |   With real photo/logo: 186   |   Glyph icon only: 0
+Legend:  [IMG] = real photo or logo   [icon] = brand-neutral SVG glyph
+==============================================================================
+
+##############################################################################
+### HARDWARE
+##############################################################################
+
+── Boards & MCUs  (ဘုတ်များ / MCU)  —  16 items ──
+   1. [IMG]  Arduino Uno  —  ATmega328P 8-bit beginner board  (atmega, avr)
+   2. [IMG]  Arduino Nano  —  Compact breadboard-friendly Uno  (atmega)
+   3. [IMG]  Arduino Mega 2560  —  Many-pin board for big projects  (atmega2560)
+   4. [IMG]  ESP32  —  Dual-core Wi-Fi + Bluetooth MCU  (wifi, ble)
+   5. [IMG]  ESP8266  —  Low-cost Wi-Fi microcontroller  (nodemcu, wifi)
+   6. [IMG]  ESP32-CAM  —  ESP32 with an onboard camera  (camera, wifi)
+   7. [IMG]  Raspberry Pi 4  —  Linux single-board computer  (sbc, linux)
+   8. [IMG]  Raspberry Pi Pico  —  RP2040 dual-core microcontroller  (rp2040)
+   9. [IMG]  STM32 (Blue Pill)  —  32-bit ARM Cortex-M MCU  (arm, cortex)
+  10. [IMG]  Arduino Pro Mini  —  Ultra-small low-power board  (atmega)
+  11. [IMG]  NodeMCU  —  ESP8266 dev board with USB  (esp8266, wifi)
+  12. [IMG]  NVIDIA Jetson Nano  —  GPU board for edge AI  (ai, gpu, edge)
+  13. [IMG]  Orange Pi  —  Alternative Linux SBC  (sbc)
+  14. [IMG]  ATtiny85  —  Tiny 8-pin microcontroller  (avr)
+  15. [IMG]  Teensy 4.0  —  High-performance ARM board  (arm)
+  16. [IMG]  micro:bit  —  Education MCU with LED matrix  (education)
+
+── Sensors  (အာရုံခံကိရိယာများ)  —  27 items ──
+   1. [IMG]  DHT11 / DHT22  —  Temperature & humidity sensor  (humidity, temperature)
+   2. [IMG]  DS18B20  —  Waterproof digital temperature probe  (temperature, 1-wire)
+   3. [IMG]  LM35  —  Analog temperature sensor  (temperature)
+   4. [IMG]  HC-SR04  —  Ultrasonic distance sensor  (ultrasonic, distance)
+   5. [IMG]  PIR Motion (HC-SR501)  —  Passive infrared motion detector  (motion, infrared)
+   6. [IMG]  LDR (Photoresistor)  —  Light-dependent resistor  (light)
+   7. [IMG]  BH1750  —  Digital ambient light sensor  (light, lux)
+   8. [IMG]  MQ-2 Gas  —  Smoke & flammable gas sensor  (gas, smoke)
+   9. [IMG]  MQ-135 Air Quality  —  Air-quality / CO2 gas sensor  (air, gas)
+  10. [IMG]  MQ-7 CO  —  Carbon-monoxide gas sensor  (co, gas)
+  11. [IMG]  Soil Moisture  —  Measures soil water content  (soil, agriculture)
+  12. [IMG]  Rain Sensor  —  Detects rainfall / water drops  (rain, water)
+  13. [IMG]  Water Level Sensor  —  Detects water height / presence  (water, level)
+  14. [IMG]  Water Flow (YF-S201)  —  Measures liquid flow rate  (flow, water)
+  15. [IMG]  Flame Sensor  —  Detects fire / IR flame  (fire, flame)
+  16. [IMG]  MPU-6050 IMU  —  3-axis gyro + accelerometer  (imu, gyro, accelerometer)
+  17. [IMG]  HMC5883L  —  3-axis digital compass  (magnetometer, compass)
+  18. [IMG]  BMP280 / BME280  —  Pressure, temp & humidity  (pressure, barometer)
+  19. [IMG]  Load Cell + HX711  —  Weight / force measurement  (weight, hx711)
+  20. [IMG]  IR Obstacle Sensor  —  Infrared proximity detection  (infrared, obstacle)
+  21. [IMG]  TCS3200 Color  —  Detects RGB colour  (color, rgb)
+  22. [IMG]  MAX30100 Pulse  —  Heart-rate & SpO2 sensor  (pulse, health, spo2)
+  23. [IMG]  pH Sensor  —  Measures liquid acidity/alkalinity  (ph, water)
+  24. [IMG]  ACS712 Current  —  Measures AC/DC current  (current, acs712)
+  25. [IMG]  Voltage Sensor  —  Voltage divider measurement  (voltage)
+  26. [IMG]  Vibration (SW-420)  —  Detects vibration / knocks  (vibration)
+  27. [IMG]  LiDAR (TF-Luna)  —  Laser distance / mapping  (lidar, laser)
+
+── Actuators & Motors  (မော်တာ / အက်ချူရေတာ)  —  14 items ──
+   1. [IMG]  DC Motor  —  Basic geared/plain DC motor  (motor)
+   2. [IMG]  Servo (SG90/MG996)  —  Angle-controlled servo motor  (servo, sg90)
+   3. [IMG]  Stepper (28BYJ-48)  —  Precise step-by-step motor  (stepper)
+   4. [IMG]  NEMA 17 Stepper  —  CNC/3D-printer stepper motor  (stepper, cnc)
+   5. [IMG]  L298N Driver  —  Dual H-bridge motor driver  (driver, h-bridge)
+   6. [IMG]  L293D Driver  —  Motor driver IC  (driver)
+   7. [IMG]  A4988 Driver  —  Stepper motor driver  (stepper, driver)
+   8. [IMG]  Relay Module  —  Switch high-voltage loads  (relay, switch)
+   9. [IMG]  Solenoid Valve  —  Electrically controlled valve  (valve, water)
+  10. [IMG]  Water Pump  —  Small DC liquid pump  (pump, water)
+  11. [IMG]  Continuous Servo  —  360° rotation servo  (servo)
+  12. [IMG]  BLDC + ESC  —  Brushless motor for drones  (brushless, drone, esc)
+  13. [IMG]  Linear Actuator  —  Push/pull linear motion  (linear)
+  14. [IMG]  Buzzer  —  Active/passive sound alert  (sound, alarm)
+
+── Displays  (မျက်နှာပြင်များ)  —  8 items ──
+   1. [IMG]  LCD 16×2  —  Character LCD (I2C option)  (lcd, character)
+   2. [IMG]  LCD 20×4  —  Larger character LCD  (lcd)
+   3. [IMG]  OLED 0.96" (SSD1306)  —  Small I2C graphic display  (oled, ssd1306)
+   4. [IMG]  TFT Touch Display  —  Colour graphical touchscreen  (tft, touch)
+   5. [IMG]  7-Segment Display  —  Numeric LED display  (seven segment)
+   6. [IMG]  LED Matrix (MAX7219)  —  8×8 dot-matrix display  (matrix, max7219)
+   7. [IMG]  NeoPixel (WS2812)  —  Addressable RGB LEDs  (ws2812, rgb)
+   8. [IMG]  E-Paper Display  —  Low-power e-ink screen  (e-ink, epaper)
+
+── Connectivity  (ဆက်သွယ်ရေး)  —  11 items ──
+   1. [IMG]  HC-05 Bluetooth  —  Classic Bluetooth serial module  (bluetooth)
+   2. [IMG]  BLE Module  —  Bluetooth Low Energy  (ble, bluetooth)
+   3. [IMG]  nRF24L01  —  2.4GHz RF transceiver  (rf, wireless)
+   4. [IMG]  LoRa Module  —  Long-range low-power radio  (lora, wireless)
+   5. [IMG]  SIM800L GSM  —  GSM/GPRS cellular module  (gsm, sms)
+   6. [IMG]  SIM900 GSM  —  GSM module for calls/SMS  (gsm)
+   7. [IMG]  NEO-6M GPS  —  Satellite positioning module  (gps, location)
+   8. [IMG]  RFID RC522  —  13.56MHz RFID reader/writer  (rfid, nfc)
+   9. [IMG]  Fingerprint (R307)  —  Optical fingerprint scanner  (biometric, fingerprint)
+  10. [IMG]  Ethernet (W5100)  —  Wired network module  (ethernet, lan)
+  11. [IMG]  Wi-Fi Module  —  Wireless networking  (wifi)
+
+── Power  (ပါဝါ)  —  9 items ──
+   1. [IMG]  Li-ion 18650  —  Rechargeable lithium cell  (battery, 18650)
+   2. [IMG]  LiPo Battery  —  Lightweight rechargeable pack  (battery, lipo)
+   3. [IMG]  TP4056 Charger  —  Li-ion charging module  (charger)
+   4. [IMG]  Buck Converter (LM2596)  —  Step-down DC-DC regulator  (dc-dc, step-down)
+   5. [IMG]  Boost Converter  —  Step-up DC-DC regulator  (dc-dc, step-up)
+   6. [IMG]  Voltage Regulator (7805)  —  Linear 5V regulator  (7805, ldo)
+   7. [IMG]  AMS1117 3.3V  —  Low-dropout 3.3V regulator  (ldo)
+   8. [IMG]  Solar Panel  —  Photovoltaic power source  (solar, renewable)
+   9. [IMG]  Power Bank / UPS  —  Backup power module  (ups, power)
+
+── Passive & Discrete  (အခြေခံ အီလက်ထရွန်နစ်)  —  9 items ──
+   1. [IMG]  Resistor  —  Limits current  (ohm)
+   2. [IMG]  Capacitor  —  Stores charge / filters  (farad)
+   3. [IMG]  LED  —  Light-emitting diode  (light)
+   4. [IMG]  Diode  —  One-way current flow  (1n4007)
+   5. [IMG]  Transistor (BJT/MOSFET)  —  Switch / amplify signals  (bjt, mosfet)
+   6. [IMG]  Potentiometer  —  Variable resistor knob  (pot, variable)
+   7. [IMG]  Crystal Oscillator  —  Clock frequency reference  (oscillator, clock)
+   8. [IMG]  Fuse  —  Over-current protection  (protection)
+   9. [IMG]  Inductor  —  Stores energy in field  (coil)
+
+── Input / Output  (အင်ပွတ် / အောက်ပွတ်)  —  12 items ──
+   1. [IMG]  Push Button  —  Momentary tactile switch  (button)
+   2. [IMG]  Toggle Switch  —  On/off mechanical switch  (switch)
+   3. [IMG]  Matrix Keypad 4×4  —  Membrane input keypad  (keypad)
+   4. [IMG]  Joystick Module  —  2-axis analog joystick  (joystick)
+   5. [IMG]  Rotary Encoder  —  Rotational input with clicks  (encoder)
+   6. [IMG]  Breadboard  —  Solderless prototyping board  (prototype)
+   7. [IMG]  Jumper Wires  —  Dupont connection wires  (wires, dupont)
+   8. [IMG]  PCB / Perfboard  —  Printed circuit board  (pcb)
+   9. [IMG]  MicroSD Module  —  Storage for data logging  (sd, storage)
+  10. [IMG]  RTC (DS3231)  —  Real-time clock module  (clock, ds3231)
+  11. [IMG]  Speaker / DFPlayer  —  Audio output / MP3 module  (audio, sound)
+  12. [IMG]  USB-TTL (CP2102)  —  Serial programming adapter  (ftdi, serial)
+
+── Industrial / Automation  (စက်မှု အလိုအလျောက်စနစ်)  —  8 items ──
+   1. [IMG]  PLC  —  Programmable logic controller  (plc, automation)
+   2. [IMG]  HMI Panel  —  Operator touch interface  (hmi, scada)
+   3. [IMG]  VFD / Motor Drive  —  Variable-frequency motor drive  (vfd, inverter)
+   4. [IMG]  Contactor  —  Heavy-duty power switch  (contactor)
+   5. [IMG]  Proximity Switch  —  Inductive/capacitive detector  (proximity)
+   6. [IMG]  Industrial Encoder  —  Rotary position feedback  (encoder)
+   7. [IMG]  SCADA Gateway  —  Supervisory control system  (scada, modbus)
+   8. [IMG]  Industrial Sensor  —  4-20mA process sensor  (4-20ma)
+
+── Robotics  (ရိုဘော့တစ်)  —  6 items ──
+   1. [IMG]  Robotic Arm  —  Multi-joint manipulator  (arm, manipulator)
+   2. [IMG]  Gripper  —  End-effector claw  (gripper, claw)
+   3. [IMG]  Robot Wheel + Motor  —  Drive wheel for mobile robots  (wheel, chassis)
+   4. [IMG]  IMU / Balance  —  Orientation for balance bots  (imu, balance)
+   5. [IMG]  LiDAR Scanner  —  SLAM / mapping sensor  (slam, lidar)
+   6. [IMG]  Depth Camera  —  3D vision for robots  (depth, vision)
+
+##############################################################################
+### SOFTWARE
+##############################################################################
+
+── Languages  (ပရိုဂရမ်းမင်း ဘာသာစကား)  —  10 items ──
+   1. [IMG]  Python  —  General-purpose, great for AI/data  (language)
+   2. [IMG]  C / C++  —  Embedded & performance code  (language, arduino)
+   3. [IMG]  Java  —  Android & enterprise apps  (language)
+   4. [IMG]  JavaScript  —  Web & full-stack scripting  (language, js)
+   5. [IMG]  TypeScript  —  Typed JavaScript for big apps  (language, ts)
+   6. [IMG]  C#  —  .NET apps & Unity games  (language, dotnet)
+   7. [IMG]  PHP  —  Server-side web scripting  (language)
+   8. [IMG]  Dart  —  Language behind Flutter  (language, flutter)
+   9. [IMG]  Kotlin  —  Modern Android language  (language, android)
+  10. [IMG]  MATLAB  —  Numerical computing & DSP  (simulation, dsp)
+
+── AI / ML  (AI / စက်သင်ယူမှု)  —  10 items ──
+   1. [IMG]  TensorFlow  —  Deep-learning framework  (ml, deep learning)
+   2. [IMG]  PyTorch  —  Research-friendly DL framework  (ml, deep learning)
+   3. [IMG]  Keras  —  High-level neural-net API  (ml)
+   4. [IMG]  scikit-learn  —  Classic machine learning  (ml)
+   5. [IMG]  OpenCV  —  Computer-vision library  (vision, image)
+   6. [IMG]  YOLO  —  Real-time object detection  (detection, vision)
+   7. [IMG]  MediaPipe  —  On-device ML pipelines  (vision, hands, pose)
+   8. [IMG]  TensorFlow Lite  —  ML on microcontrollers/mobile  (edge, tinyml)
+   9. [IMG]  Transformers / LLMs  —  NLP & large language models  (nlp, llm)
+  10. [IMG]  Pandas / NumPy  —  Data analysis & arrays  (data, analysis)
+
+── Data & Backend  (ဒေတာ / Backend)  —  13 items ──
+   1. [IMG]  MySQL  —  Popular relational database  (sql, database)
+   2. [IMG]  PostgreSQL  —  Advanced open SQL database  (sql, database)
+   3. [IMG]  SQLite  —  Embedded file database  (sql, database)
+   4. [IMG]  MongoDB  —  NoSQL document database  (nosql, database)
+   5. [IMG]  Firebase  —  Realtime DB, auth & hosting  (baas, realtime)
+   6. [IMG]  Redis  —  In-memory cache/store  (cache)
+   7. [IMG]  Node.js  —  JavaScript backend runtime  (backend)
+   8. [IMG]  Express  —  Minimal Node web framework  (backend, api)
+   9. [IMG]  Django  —  Batteries-included Python web  (backend, python)
+  10. [IMG]  Flask  —  Lightweight Python web  (backend, python, api)
+  11. [IMG]  Laravel  —  Elegant PHP web framework  (backend, php)
+  12. [IMG]  Spring Boot  —  Java enterprise backend  (backend, java)
+  13. [IMG]  MQTT  —  Lightweight IoT messaging  (iot, broker)
+
+── Web & Mobile  (ဝဘ် / မိုဘိုင်း)  —  9 items ──
+   1. [IMG]  React  —  Component-based UI library  (frontend, ui)
+   2. [IMG]  Next.js  —  Full-stack React framework  (frontend, ssr)
+   3. [IMG]  Vue.js  —  Progressive UI framework  (frontend)
+   4. [IMG]  Angular  —  Full-featured web framework  (frontend)
+   5. [IMG]  Tailwind CSS  —  Utility-first CSS framework  (css, styling)
+   6. [IMG]  Flutter  —  Cross-platform mobile UI  (mobile, dart)
+   7. [IMG]  React Native  —  Native apps with React  (mobile)
+   8. [IMG]  Android SDK  —  Native Android development  (mobile)
+   9. [IMG]  Bootstrap  —  Responsive CSS toolkit  (css)
+
+── Dev Tools & Cloud  (ဖန်တီးရေး ကိရိယာ / Cloud)  —  12 items ──
+   1. [IMG]  Git  —  Version control system  (vcs)
+   2. [IMG]  GitHub  —  Code hosting & collaboration  (vcs, repo)
+   3. [IMG]  VS Code  —  Popular code editor  (editor, ide)
+   4. [IMG]  Arduino IDE  —  Program Arduino boards  (ide, embedded)
+   5. [IMG]  PlatformIO  —  Pro embedded dev toolchain  (embedded, ide)
+   6. [IMG]  Docker  —  Containerize apps  (container, devops)
+   7. [IMG]  Linux  —  Open-source OS for servers/SBCs  (os)
+   8. [IMG]  Cloud (AWS/GCP/Azure)  —  Hosting & cloud services  (cloud, hosting)
+   9. [IMG]  Postman  —  API testing tool  (api, testing)
+  10. [IMG]  Node-RED  —  Flow-based IoT wiring  (iot, flow)
+  11. [IMG]  Blynk / IoT Dashboard  —  IoT app dashboards  (iot, dashboard)
+  12. [IMG]  ThingSpeak  —  IoT data analytics cloud  (iot, cloud)
+
+── CAD / EDA / Sim  (CAD / EDA / တုပစမ်း)  —  12 items ──
+   1. [IMG]  Proteus  —  Circuit simulation + PCB  (simulation, circuit)
+   2. [IMG]  Fritzing  —  Beginner breadboard/PCB design  (pcb, circuit)
+   3. [IMG]  KiCad  —  Open-source PCB design  (pcb, eda)
+   4. [IMG]  Eagle / Altium  —  Professional PCB EDA  (pcb, eda)
+   5. [IMG]  Multisim  —  SPICE circuit simulation  (simulation, spice)
+   6. [IMG]  SolidWorks  —  3D mechanical CAD  (cad, 3d)
+   7. [IMG]  Fusion 360  —  CAD/CAM design & CNC  (cad, 3d)
+   8. [IMG]  AutoCAD  —  2D/3D drafting  (cad, drafting)
+   9. [IMG]  Blender  —  3D modelling & animation  (3d, modeling)
+  10. [IMG]  Simulink  —  Model-based system simulation  (simulation, matlab)
+  11. [IMG]  LabVIEW  —  Graphical instrumentation  (daq, instrumentation)
+  12. [IMG]  Tinkercad  —  Online circuits & 3D design  (simulation, beginner)
+
+==============================================================================
+End of list — 186 components across 16 categories.

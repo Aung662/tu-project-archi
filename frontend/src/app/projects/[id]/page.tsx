@@ -14,12 +14,14 @@ import { AdSlot } from '@/components/ads/AdSlot';
 import { ProjectMedia } from '@/components/media/ProjectMedia';
 import { BookmarkButton } from '@/components/BookmarkButton';
 import { CompareButton } from '@/components/CompareButton';
+import { CollectionButton } from '@/components/CollectionButton';
 import { ShareButton } from '@/components/ShareButton';
 import { CitationBox } from '@/components/CitationBox';
 import { NoteEditor } from '@/components/NoteEditor';
 import { ReviewSection } from '@/components/ReviewSection';
 import { SimilarProjects } from '@/components/SimilarProjects';
 import { addRecentlyViewed } from '@/lib/recentlyViewed';
+import { recordDownload } from '@/lib/downloadHistory';
 import Link from 'next/link';
 
 export default function ProjectDetailPage() {
@@ -74,6 +76,16 @@ export default function ProjectDetailPage() {
     const result = await downloadProjectFile(id, project?.title || 'project');
     if (result.ok) {
       setDownloadError(null);
+      // Log the successful download for the private on-device history page.
+      if (project) {
+        recordDownload({
+          id: project.id,
+          title: project.title,
+          year: project.year,
+          deptCode: project.department.code,
+          uniShort: project.university.shortName,
+        });
+      }
       return;
     }
     setDownloadError(
@@ -113,6 +125,14 @@ export default function ProjectDetailPage() {
             <ShareButton title={project.title} />
             <BookmarkButton projectId={project.id} showLabel />
             <CompareButton projectId={project.id} title={project.title} showLabel />
+            <CollectionButton
+              projectId={project.id}
+              title={project.title}
+              year={project.year}
+              deptCode={project.department.code}
+              uniShort={project.university.shortName}
+              showLabel
+            />
             <button
               onClick={() => window.print()}
               title={tr(t.printLabel)}

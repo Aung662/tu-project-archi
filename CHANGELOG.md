@@ -10,6 +10,68 @@ newest first. Dates are the project timeline (Asia/Yangon).
 - **Architecture:** all three are client-side (localStorage) by design — zero DB migrations, no risk to the existing schema, work offline in the PWA, and usable without an account. Live cross-tab/‌in-tab sync via custom events. Reuses the existing card/motion/brand design so nothing about the look changes.
 - Footer + mobile-nav links (Notes, Compare); fully internationalized (Burmese-first). FE `tsc` EXIT 0; all pages live-verified 200 with no console/compile errors.
 
+## [Unreleased] — Components Toolkit: 100% COMPLETE (batch 19 — final) (2026-09-08)
+- **Final 8 logos added (186/186 total).** CAD/EDA/Sim: Multisim, SolidWorks, Fusion 360, AutoCAD, Blender, Simulink, LabVIEW, Tinkercad.
+- **Every one of the 186 toolkit components now has a real product photo (hardware) or brand logo (software), plus a datasheet-style specification table.** No component falls back to a glyph anymore. Clickable detail view live-verified.
+
+## [Unreleased] — Components Toolkit: cloud/tools + EDA logos (batch 18) (2026-09-08)
+- **10 logos added (178 total):** VS Code, AWS/Cloud, Postman, Node-RED, Blynk, ThingSpeak (dev tools — category complete) + Proteus, Fritzing, KiCad, Eagle (CAD/EDA). Only 8 CAD/EDA/Sim logos remain.
+
+## [Unreleased] — Components Toolkit: mobile + dev-tools logos (batch 17) (2026-09-08)
+- **9 logos added (168 total):** Flutter, Android, Bootstrap (web/mobile — category complete) + Git, GitHub, Arduino IDE, PlatformIO, Docker, Linux (dev tools). VS Code deferred (per-turn image limit) — next batch.
+
+## [Unreleased] — Components Toolkit: backend + web logos (batch 16) (2026-09-08)
+- **9 logos added (159 total):** Laravel, Spring Boot, MQTT (backend) + React, Next.js, Vue, Angular, Tailwind, React Native (web/mobile). Flutter deferred (per-turn image limit) — next batch.
+
+## [Unreleased] — Components Toolkit: Data & Backend logos (batch 15) (2026-09-08)
+- **10 data/backend logos added (150 total):** MySQL, PostgreSQL, SQLite, MongoDB, Firebase, Redis, Node.js, Express, Django, Flask (Data & Backend category; Laravel/Spring/MQTT next).
+
+## [Unreleased] — Components Toolkit: AI/ML logos (batch 14) (2026-09-08)
+- **10 AI/ML logos added (140 total):** TensorFlow, PyTorch, Keras, scikit-learn, OpenCV, YOLO, MediaPipe, TensorFlow Lite, Hugging Face, Pandas/NumPy (AI/ML category).
+
+## [Unreleased] — Components Toolkit: software logos (batch 13) (2026-09-08)
+- **10 software language logos added (130 total):** Python, C/C++, Java, JavaScript, TypeScript, C#, PHP, Dart, Kotlin, MATLAB (Languages category). Software logos are AI-rendered brand marks.
+
+## [Unreleased] — Components Toolkit: HARDWARE 100% photographed (batch 12) (2026-09-08)
+- **Final 9 hardware photos added (120 total):** SW-420 vibration, e-paper display, BLE (HM-10), SIM900 GSM, W5100 Ethernet, ESP-01 Wi-Fi, jumper wires, perfboard PCB, industrial process sensor. **Every one of the 120 hardware components now has a real product photo.** Remaining glyph fallbacks are the 66 software/tool entries.
+
+## [Unreleased] — Components Toolkit: real product photos (batch 11) (2026-09-08)
+- **10 more real photos added (111 total):** Arduino Pro Mini, Orange Pi, ATtiny85, Teensy 4.0 (boards) + HMI panel, VFD drive, contactor, proximity switch, industrial encoder, SCADA gateway (industrial — category now fully photographed). Same graceful glyph fallback for the rest.
+
+## [Unreleased] — Components Toolkit: specification detail view + photos (batch 10) (2026-09-08)
+- **NEW: component detail view.** Clicking any card opens a modal with a large product photo (or glyph fallback) and a datasheet-style **specification table** — 186/186 components covered (`componentSpecs.ts`). Esc/backdrop closes; SVG/PNG downloads available inside.
+- **10 more real photos added (101 total):** MQ-7 CO, pH sensor, voltage sensor, TF-Luna LiDAR (sensors) + robotic arm, gripper, robot wheel, IMU, 360° LiDAR scanner, depth camera (robotics — category now fully photographed).
+
+## [Unreleased] — Components Toolkit: real product photos (batch 9) (2026-09-08)
+- **10 more real photos added (91 total):** LiPo battery, MT3608 boost, LM7805 LDO, AMS1117, UPS module (power) + solenoid, continuous servo, brushless DC motor, linear actuator (actuators) + industrial PLC (industrial). Same graceful glyph fallback for the rest.
+
+## [Unreleased] — Components Toolkit: real product photos (batch 8) (2026-09-08)
+- **10 more real photos added (81 total):** electrolytic capacitor, 1N4007 diode, 2N2222 transistor, quartz crystal, glass fuse, power inductor, toggle switch, KY-040 rotary encoder, 8-ohm speaker, USB-TTL adapter (passives & basics). Same graceful glyph fallback for the rest.
+
+## [Unreleased] — Components Toolkit: real product photos (batch 7) (2026-09-08)
+- **10 more real photos added (71 total):** BH1750 light, water level, flow, HMC5883L compass, TCS3200 color, MAX30102 heart rate, ACS712 current (sensors) + L293D driver (actuator) + 20x4 LCD, 8x8 LED matrix (displays). Same graceful glyph fallback for the rest.
+
+## [Unreleased] — Components Toolkit: real product photos (batch 6) (2026-09-08)
+- **10 more real photos added (61 total):** Jetson Nano, BBC micro:bit (boards) + MQ-135, rain sensor, flame sensor, load cell (sensors) + water pump, A4988 driver (actuators) + nRF24L01, optical fingerprint scanner (connectivity). Same graceful glyph fallback for the rest.
+
+## [Unreleased] — Components Toolkit: real product photos (batch 5) (2026-09-08)
+- **10 more real photos added (51 total):** Arduino Mega (board) + LM35, LDR photoresistor, BMP280, IR obstacle sensor (sensors) + NEMA 17 stepper (actuator) + TFT display, NeoPixel RGB ring (displays) + LoRa SX1278 (connectivity) + TP4056 charger (power). Same graceful glyph fallback for the rest.
+
+## [Unreleased] — Components Toolkit: real product photos (batch 4) (2026-09-08)
+- **10 more real photos added (41 total):** push button, potentiometer, LED, buzzer, breadboard, resistor, keypad, joystick (passives & I/O) + DS3231 RTC, micro SD card module (modules). Same graceful glyph fallback for the rest.
+
+## [Unreleased] — Components Toolkit: real product photos (batch 3) (2026-09-08)
+- **10 more real photos added (31 total):** 16x2 LCD, OLED SSD1306, 4-digit 7-segment (displays) + HC-05 Bluetooth, NEO-6M GPS, RFID RC522, SIM800L GSM (connectivity) + 18650 Li-ion, LM2596 buck converter, solar panel (power). Same graceful glyph fallback for the rest.
+
+## [Unreleased] — Components Toolkit: real product photos (batch 2) (2026-09-08)
+- **10 more real photos added (21 total):** PIR motion, MPU-6050, soil moisture, MQ-2 gas, DS18B20 (sensors) + SG90 servo, relay module, L298N driver, 28BYJ-48 stepper, DC gear motor (actuators). Same graceful glyph fallback for the remaining components.
+
+## [Unreleased] — Components Toolkit: real product photos (batch 1) (2026-09-08)
+- **Real product images** are now shown for components instead of the generic glyph. Each toolkit tile shows a photo when one is registered (`data/componentPhotos.ts`), and **gracefully falls back to the brand-neutral SVG glyph** when no photo exists or the image fails to load — so the 186-item grid always stays complete and on-brand.
+- **First 11 photos added:** Arduino Uno, Arduino Nano, ESP32, ESP8266, ESP32-CAM, NodeMCU, Raspberry Pi 4, Raspberry Pi Pico, STM32 (boards) + DHT11, HC-SR04 (sensors). Served from `/public/components`, `object-contain` on white so they sit cleanly in the tile.
+- Images are AI-generated realistic renders (watermark-free, no third-party copyright/trademark, consistent studio style) — deliberately chosen over web/stock photos, which were often watermarked, AI-faked, or wrong parts. Icon downloads (SVG/PNG) still use the vector glyph and work for every component.
+- Remaining components will get photos in later batches (image generation is capped at 10 per turn). FE `tsc` EXIT 0; photos live-verified (HTTP 200 + rendered in the grid).
+
 ## [Unreleased] — Components Toolkit: 186 hardware/software icons, downloadable (2026-09-08)
 - **New `/toolkit` page** — a browsable, searchable library of **186 building blocks** (120 hardware + 66 software) that modern student engineering projects use: Arduino/ESP32/Raspberry Pi/STM32/PLC/…, every common sensor, motor/driver, display, comms, power, passive, I/O, industrial & robotics part, plus languages, AI/ML, databases, web/mobile, dev tools & CAD/EDA software.
 - **Downloadable icons (SVG + PNG), fully offline** — each component has a brand-neutral, original inline-SVG glyph tinted by its category colour. Students can download any icon as a crisp vector **.svg** or a rasterized **512×512 .png** (canvas-rendered client-side, graceful SVG fallback). No copyrighted logos, no network calls — safe to ship and works in the offline PWA.

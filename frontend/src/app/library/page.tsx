@@ -11,6 +11,7 @@ import { BibliographyExport } from '@/components/BibliographyExport';
 import { Alert, Spinner, EmptyState, StatusBadge } from '@/components/ui';
 import { formatDate, formatMMK } from '@/lib/format';
 import { downloadProjectFile } from '@/lib/download';
+import { recordDownload } from '@/lib/downloadHistory';
 import { tr, t } from '@/lib/i18n';
 
 export default function LibraryPage() {
@@ -41,10 +42,11 @@ export default function LibraryPage() {
       .finally(() => setLoading(false));
   }, [user]);
 
-  async function download(projectId: string, title: string) {
+  async function download(projectId: string, title: string, year?: number) {
     const result = await downloadProjectFile(projectId, title);
     if (result.ok) {
       setDlError(null);
+      recordDownload({ id: projectId, title, year });
       return;
     }
     setDlError(result.reason === 'forbidden' ? tr(t.dlNoLonger) : tr(t.dlFailedRetry));
@@ -76,7 +78,7 @@ export default function LibraryPage() {
                   <p className="text-xs text-slate-400">{p.project.year}</p>
                 </div>
                 {p.project.hasFile && (
-                  <button onClick={() => download(p.project.id, p.project.title)} className="btn-primary">
+                  <button onClick={() => download(p.project.id, p.project.title, p.project.year)} className="btn-primary">
                     {tr(t.download)}
                   </button>
                 )}

@@ -143,6 +143,8 @@ export function Navbar() {
           <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-3">
             <MobileLink href="/notes" onClick={() => setMenuOpen(false)}>{tr(t.navNotes)}</MobileLink>
             <MobileLink href="/compare" onClick={() => setMenuOpen(false)}>{tr(t.navCompare)}</MobileLink>
+            <MobileLink href="/collections" onClick={() => setMenuOpen(false)}>{tr(t.navCollections)}</MobileLink>
+            <MobileLink href="/history" onClick={() => setMenuOpen(false)}>{tr(t.navHistory)}</MobileLink>
             {user ? (
               <>
                 {user.role === 'ADMIN' && (
