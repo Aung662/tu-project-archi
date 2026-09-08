@@ -5,6 +5,7 @@ import type { ComponentItem, Category } from '@/data/components';
 import { ComponentIcon } from './ComponentIcon';
 import { photoFor } from '@/data/componentPhotos';
 import { specsFor } from '@/data/componentSpecs';
+import { guideFor, type Difficulty } from '@/data/componentGuide';
 import { downloadSvg, downloadPng } from '@/lib/iconDownload';
 import { tr, t, getLang } from '@/lib/i18n';
 
@@ -29,7 +30,31 @@ export function ComponentDetail({
   const photo = photoFor(item.id);
   const showPhoto = Boolean(photo) && imgOk;
   const specs = specsFor(item.id);
+  const guide = guideFor(item.id);
+  const [copied, setCopied] = useState(false);
   const catLabel = getLang() === 'my' ? category.labelMy : category.labelEn;
+
+  const diffLabel: Record<Difficulty, string> = {
+    beginner: tr(t.guideDiffBeginner),
+    intermediate: tr(t.guideDiffIntermediate),
+    advanced: tr(t.guideDiffAdvanced),
+  };
+  const diffColor: Record<Difficulty, string> = {
+    beginner: 'text-mint-300 bg-mint-300/10',
+    intermediate: 'text-amber-300 bg-amber-300/10',
+    advanced: 'text-rose-300 bg-rose-300/10',
+  };
+
+  async function copyCode() {
+    if (!guide?.code) return;
+    try {
+      await navigator.clipboard.writeText(guide.code.code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      /* clipboard blocked — ignore */
+    }
+  }
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -104,12 +129,21 @@ export function ComponentDetail({
           {/* Info */}
           <div className="flex flex-col gap-4 p-6">
             <div>
-              <span
-                className={`inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-xs font-medium ${category.color}`}
-              >
-                <span aria-hidden>●</span>
-                <span className="text-slate-300">{catLabel}</span>
-              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                <span
+                  className={`inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-xs font-medium ${category.color}`}
+                >
+                  <span aria-hidden>●</span>
+                  <span className="text-slate-300">{catLabel}</span>
+                </span>
+                {guide?.difficulty && (
+                  <span
+                    className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${diffColor[guide.difficulty]}`}
+                  >
+                    {diffLabel[guide.difficulty]}
+                  </span>
+                )}
+              </div>
               <h2 className="mt-2 text-2xl font-bold text-slate-100">{item.name}</h2>
               <p className="mt-1 text-sm text-slate-400">{item.blurb}</p>
             </div>
@@ -146,6 +180,161 @@ export function ComponentDetail({
                 <p className="text-sm text-slate-500">{tr(t.toolkitNoSpecs)}</p>
               )}
             </div>
+
+            {/* ── Usage guide (only when authored) ─────────────────────── */}
+            {guide?.whatFor && (
+              <section>
+                <h3 className="mb-1.5 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                  {tr(t.guideWhatFor)}
+                </h3>
+                <p className="text-sm leading-relaxed text-slate-300">{tr(guide.whatFor)}</p>
+              </section>
+            )}
+
+            {guide?.useCases && guide.useCases.length > 0 && (
+              <section>
+                <h3 className="mb-1.5 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                  {tr(t.guideUseCases)}
+                </h3>
+                <ul className="space-y-1">
+                  {guide.useCases.map((u, i) => (
+                    <li key={i} className="flex gap-2 text-sm text-slate-300">
+                      <span className={`mt-0.5 shrink-0 ${category.color}`} aria-hidden>
+                        ▹
+                      </span>
+                      <span>{tr(u)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {guide?.pinout && guide.pinout.length > 0 && (
+              <section>
+                <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                  {tr(t.guidePinout)}
+                </h3>
+                <div className="overflow-hidden rounded-xl border border-white/10">
+                  <table className="w-full text-left text-sm">
+                    <tbody>
+                      {guide.pinout.map((row, i) => (
+                        <tr key={row.pin} className={i % 2 === 0 ? 'bg-white/[0.02]' : ''}>
+                          <th
+                            scope="row"
+                            className="w-1/3 border-b border-white/5 px-3 py-2 align-top font-mono text-xs font-medium text-slate-300"
+                          >
+                            {row.pin}
+                          </th>
+                          <td className="border-b border-white/5 px-3 py-2 align-top text-slate-400">
+                            {tr(row.desc)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            )}
+
+            {guide?.wiring && (
+              <section>
+                <h3 className="mb-1.5 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                  {tr(t.guideWiring)}
+                </h3>
+                <p className="rounded-lg border border-amber-300/20 bg-amber-300/[0.05] px-3 py-2 text-sm leading-relaxed text-amber-100/90">
+                  {tr(guide.wiring)}
+                </p>
+              </section>
+            )}
+
+            {guide?.code && (
+              <section>
+                <div className="mb-2 flex items-center justify-between">
+                  <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                    {tr(t.guideCode)}
+                  </h3>
+                  <button
+                    onClick={copyCode}
+                    className="rounded-md border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[11px] text-slate-300 transition hover:bg-white/10 hover:text-white"
+                  >
+                    {copied ? tr(t.guideCodeCopied) : `⧉ ${tr(t.guideCodeCopy)}`}
+                  </button>
+                </div>
+                <div className="overflow-hidden rounded-xl border border-white/10 bg-black/40">
+                  <div className="border-b border-white/5 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-slate-500">
+                    {guide.code.lang}
+                  </div>
+                  <pre className="overflow-x-auto px-3 py-2.5 font-mono text-xs leading-relaxed text-slate-200">
+                    <code>{guide.code.code}</code>
+                  </pre>
+                </div>
+              </section>
+            )}
+
+            {guide?.cautions && guide.cautions.length > 0 && (
+              <section>
+                <h3 className="mb-1.5 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                  {tr(t.guideCautions)}
+                </h3>
+                <ul className="space-y-1">
+                  {guide.cautions.map((c, i) => (
+                    <li key={i} className="flex gap-2 text-sm text-rose-200/80">
+                      <span className="mt-0.5 shrink-0" aria-hidden>
+                        ⚠
+                      </span>
+                      <span>{tr(c)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {(guide?.alternatives?.length || guide?.libraries?.length || guide?.price) && (
+              <section className="grid gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-3 text-sm">
+                {guide.price && (
+                  <div>
+                    <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      {tr(t.guidePrice)}
+                    </span>
+                    <p className="mt-0.5 text-slate-200">{guide.price}</p>
+                  </div>
+                )}
+                {guide.libraries && guide.libraries.length > 0 && (
+                  <div>
+                    <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      {tr(t.guideLibraries)}
+                    </span>
+                    <div className="mt-1 flex flex-wrap gap-1.5">
+                      {guide.libraries.map((lib) => (
+                        <span
+                          key={lib}
+                          className="rounded-md bg-white/[0.06] px-2 py-0.5 font-mono text-[11px] text-slate-300"
+                        >
+                          {lib}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {guide.alternatives && guide.alternatives.length > 0 && (
+                  <div>
+                    <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      {tr(t.guideAlternatives)}
+                    </span>
+                    <div className="mt-1 flex flex-wrap gap-1.5">
+                      {guide.alternatives.map((alt) => (
+                        <span
+                          key={alt}
+                          className="rounded-md border border-white/10 px-2 py-0.5 text-[11px] text-slate-300"
+                        >
+                          {alt}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </section>
+            )}
 
             {/* Tags */}
             {item.tags && item.tags.length > 0 && (
