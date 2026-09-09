@@ -17,17 +17,27 @@ export default function AdminOverview() {
   if (!data) return <Spinner />;
 
   const { totals } = data;
+  const scoped = Boolean(data.scoped);
   const cards = [
     { label: tr(t.statTotalProjects), value: totals.projects, hint: `${totals.published} ${tr(t.statPublished)}` },
     { label: 'Page views', value: totals.totalPageViews, hint: 'All time' },
     { label: tr(t.statPendingPayments), value: totals.pendingPayments, hint: tr(t.statNeedReview), warn: totals.pendingPayments > 0 },
-    { label: tr(t.statUsers), value: totals.users },
+    // "Users" is a platform-wide metric — hide it for department-scoped admins.
+    ...(scoped ? [] : [{ label: tr(t.statUsers), value: totals.users }]),
     { label: 'Searches', value: totals.totalSearches, hint: `${totals.totalChecks} title checks` },
     { label: tr(t.statAccessGrants), value: totals.purchases, hint: tr(t.statFilesUnlocked) },
   ];
 
   return (
     <div className="space-y-6">
+      {scoped && (
+        <div className="flex flex-wrap items-center gap-2 rounded-xl border border-brand-400/40 bg-brand-500/10 px-4 py-3 text-sm">
+          <span className="rounded-full bg-brand-500/30 px-2.5 py-0.5 text-xs font-semibold text-brand-100">
+            {tr(t.dashScopedBadge)}
+          </span>
+          <span className="text-slate-300">{tr(t.dashScopedNote)}</span>
+        </div>
+      )}
       {/* KPI cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((c) => (

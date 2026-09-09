@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { COMPONENTS, CATEGORIES, type CategoryKey } from '@/data/components';
 import { ComponentCard } from '@/components/ComponentCard';
+import { ComponentDetail } from '@/components/ComponentDetail';
 import { EmptyState } from '@/components/ui';
 import { Reveal } from '@/components/motion';
 import { tr, t, getLang } from '@/lib/i18n';
@@ -34,6 +35,14 @@ export default function ToolkitPage() {
 
   const hardwareItems = filtered.filter((c) => catById[c.category].group === 'hardware');
   const softwareItems = filtered.filter((c) => catById[c.category].group === 'software');
+
+  // Detail modal state. We keep the SELECTED ID and derive its position from the
+  // ordered list actually shown on screen (hardware first, then software) so the
+  // ‹ / › arrows page through exactly what the user sees, respecting filters.
+  const ordered = useMemo(() => [...hardwareItems, ...softwareItems], [hardwareItems, softwareItems]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selIndex = selectedId ? ordered.findIndex((c) => c.id === selectedId) : -1;
+  const selected = selIndex >= 0 ? ordered[selIndex] : null;
 
   const catLabel = (c: (typeof CATEGORIES)[number]) => (getLang() === 'my' ? c.labelMy : c.labelEn);
 
@@ -85,7 +94,7 @@ export default function ToolkitPage() {
           </h2>
           <Grid>
             {hardwareItems.map((item) => (
-              <ComponentCard key={item.id} item={item} category={catById[item.category]} />
+              <ComponentCard key={item.id} item={item} category={catById[item.category]} onOpen={() => setSelectedId(item.id)} />
             ))}
           </Grid>
         </section>
@@ -102,10 +111,23 @@ export default function ToolkitPage() {
           </h2>
           <Grid>
             {softwareItems.map((item) => (
-              <ComponentCard key={item.id} item={item} category={catById[item.category]} />
+              <ComponentCard key={item.id} item={item} category={catById[item.category]} onOpen={() => setSelectedId(item.id)} />
             ))}
           </Grid>
         </section>
+      )}
+
+      {selected && (
+        <ComponentDetail
+          item={selected}
+          category={catById[selected.category]}
+          onClose={() => setSelectedId(null)}
+          onPrev={() => selIndex > 0 && setSelectedId(ordered[selIndex - 1].id)}
+          onNext={() => selIndex < ordered.length - 1 && setSelectedId(ordered[selIndex + 1].id)}
+          hasPrev={selIndex > 0}
+          hasNext={selIndex < ordered.length - 1}
+          position={{ index: selIndex, total: ordered.length }}
+        />
       )}
     </div>
   );

@@ -64,6 +64,8 @@ model Department {
   university   University @relation(fields: [universityId], references: [id], onDelete: Cascade)
   universityId String
   projects     Project[]
+  // Admins scoped to this department (see User.adminDepartmentId).
+  admins       User[]     @relation("DeptAdmins")
   createdAt    DateTime   @default(now())
 
   @@unique([universityId, code])
@@ -78,6 +80,13 @@ model User {
   role           Role             @default(STUDENT)
   // Optional admin scope note (e.g. "Y.T.U EC dept") — pure metadata, not authZ.
   adminScope     String?
+  // Department-scoped admin binding. This is REAL authorization data (not a note):
+  //   role=ADMIN + adminDepartmentId = null  → SUPER-ADMIN (full platform access)
+  //   role=ADMIN + adminDepartmentId set      → DEPARTMENT ADMIN (scoped to that dept)
+  // A department admin may create/edit/delete ONLY projects in their department,
+  // may READ others, and only ever sees their own department's dashboard.
+  adminDepartment   Department?    @relation("DeptAdmins", fields: [adminDepartmentId], references: [id], onDelete: SetNull)
+  adminDepartmentId String?
   createdAt      DateTime         @default(now())
 
   submittedProjects Project[]      @relation("SubmittedBy")
@@ -87,6 +96,9 @@ model User {
   bookmarks         Bookmark[]
   resetTokens       PasswordResetToken[]
   reviews           Review[]
+  kitOrders         KitOrder[]     @relation("KitBuyer")
+
+  @@index([adminDepartmentId])
 }
 
 // ── Saved projects (bookmarks / favourites) ──────────────────────────────────
@@ -113,6 +125,60 @@ model PasswordResetToken {
   createdAt DateTime @default(now())
 
   @@index([userId])
+}
+
+// ── Website Kits (paid, downloadable "build-a-website" guide bundles) ─────────
+// Each kit is a website TYPE (portfolio, e-commerce, blog, …) shipped as a zip
+// containing step-by-step build instructions + ready-to-use AI prompts. Kits are
+// SOLD: the zip lives in PRIVATE storage and is only downloadable after a manual
+// KPay payment has been approved (same trust model as paid project files —
+// never served from a public static URL).
+model WebsiteKit {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  title          String
+  titleMy        String   @default("")
+  summary        String   @default("")
+  summaryMy      String   @default("")
+  priceMmk       Int      @default(0)
+  fileName       String?
+  fileStorageKey String?
+  fileSizeBytes  Int?
+  published      Boolean  @default(true)
+  sortOrder      Int      @default(0)
+  downloadCount  Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  orders KitOrder[]
+
+  @@index([published])
+  @@index([sortOrder])
+}
+
+// A purchase order for a website kit. Mirrors PaymentOrder: create → upload
+// proof → admin approves → access granted. Access = an APPROVED order exists for
+// (userId, kitId).
+model KitOrder {
+  id            String        @id @default(cuid())
+  kit           WebsiteKit    @relation(fields: [kitId], references: [id], onDelete: Cascade)
+  kitId         String
+  user          User          @relation("KitBuyer", fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  amountMmk     Int
+  method        String        @default("KPay")
+  txnRef        String        @default("")
+  proofKey      String?
+  status        PaymentStatus @default(PENDING)
+  reviewNote    String?
+  reviewedById  String?
+  reviewedAt    DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([kitId])
+  @@index([userId])
+  @@index([status])
 }
 
 // ── Core: Projects ───────────────────────────────────────────────────────────

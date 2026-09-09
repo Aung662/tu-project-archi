@@ -76,39 +76,40 @@ function BrowseInner() {
 
   return (
     <div className="space-y-6">
-      <Reveal className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-gradient-animated sm:text-3xl">{tr(t.browseTitle)}</h1>
-          <p className="text-sm text-slate-400">{tr(t.browseSubtitle)}</p>
-        </div>
-        <Magnetic strength={0.25}>
-          <Link
-            href="/titles"
-            className="sheen inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10"
-          >
-            <span aria-hidden>📋</span>
-            {tr(t.allTitlesLink)}
-          </Link>
-        </Magnetic>
+      <Reveal>
+        <h1 className="text-2xl font-bold text-gradient-animated sm:text-3xl">{tr(t.browseTitle)}</h1>
+        <p className="text-sm text-slate-400">{tr(t.browseSubtitle)}</p>
       </Reveal>
 
       {/* Filters */}
       <Reveal delay={0.08} className="card glow-ring space-y-4 p-4">
-        {/* Keyword search */}
-        <div>
-          <label className="label flex items-center gap-1.5">
-            <span aria-hidden>🔎</span> {tr(t.fKeyword)}
-          </label>
-          <input
-            className="input"
-            placeholder={tr(t.fKeywordPlaceholder)}
-            value={filters.q}
-            onChange={(e) => update({ q: e.target.value })}
-          />
+        {/* Top row — "View all titles" button next to the Keyword search */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+          <Magnetic strength={0.25} className="sm:shrink-0">
+            <Link
+              href="/titles"
+              className="sheen inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/10 sm:w-auto"
+            >
+              <span aria-hidden>📋</span>
+              {tr(t.allTitlesLink)}
+            </Link>
+          </Magnetic>
+          <div className="flex-1">
+            <label className="label flex items-center gap-1.5">
+              <span aria-hidden>🔎</span> {tr(t.fKeyword)}
+            </label>
+            <input
+              className="input"
+              placeholder={tr(t.fKeywordPlaceholder)}
+              value={filters.q}
+              onChange={(e) => update({ q: e.target.value })}
+            />
+          </div>
         </div>
 
-        {/* Row 1 — University · Department · Year as raised 3D dropdown buttons */}
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        {/* Row 1 — University · Department side by side on one row (kept side-by-side
+            even on mobile, per the requested layout) */}
+        <div className="grid grid-cols-2 gap-3">
           <label className="chip3d w-full cursor-pointer !justify-start">
             <span aria-hidden>🏛️</span>
             <span className="shrink-0 text-slate-400">{tr(t.fUniversity)}:</span>
@@ -143,77 +144,68 @@ function BrowseInner() {
               ))}
             </select>
           </label>
-
-          <label className="chip3d w-full cursor-pointer !justify-start">
-            <span aria-hidden>📅</span>
-            <span className="shrink-0 text-slate-400">{tr(t.fYear)}:</span>
-            <select
-              className="w-full min-w-0 flex-1 cursor-pointer bg-transparent font-semibold text-slate-100 outline-none [&>option]:bg-ink-900 [&>option]:text-slate-100"
-              value={filters.year}
-              onChange={(e) => update({ year: e.target.value })}
-            >
-              <option value="">{tr(t.fAll)}</option>
-              {years.map((y) => (
-                <option key={y} value={y}>
-                  {y}
-                </option>
-              ))}
-            </select>
-          </label>
         </div>
 
-        {/* Academic level label */}
-        <label className="label flex items-center gap-1.5">
-          <span aria-hidden>🎓</span> {tr(t.fLevel)}
-        </label>
-
-        {/* Row 2 — All levels · 3rd Year · 5th Year (raised 3D chips) */}
-        <div className="grid grid-cols-3 gap-2">
-          {[
-            { lv: '', icon: '✨' },
-            { lv: 'YEAR_3', icon: '3️⃣' },
-            { lv: 'YEAR_5', icon: '5️⃣' },
-          ].map(({ lv, icon }) => {
-            const active = filters.level === lv;
-            return (
-              <button
-                key={lv || 'all'}
-                onClick={() => update({ level: lv })}
-                className={`chip3d w-full ${active ? 'chip3d-active' : ''}`}
+        {/* Row 2 — Year and Academic level side by side (side-by-side on all sizes) */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {/* Year picker */}
+          <div>
+            <label className="label flex items-center gap-1.5">
+              <span aria-hidden>📅</span> {tr(t.fYear)}
+            </label>
+            <label className="chip3d w-full cursor-pointer !justify-start">
+              <span aria-hidden>📅</span>
+              <span className="shrink-0 text-slate-400">{tr(t.fYear)}:</span>
+              <select
+                className="w-full min-w-0 flex-1 cursor-pointer bg-transparent font-semibold text-slate-100 outline-none [&>option]:bg-ink-900 [&>option]:text-slate-100"
+                value={filters.year}
+                onChange={(e) => update({ year: e.target.value })}
               >
-                <span aria-hidden>{icon}</span>
-                <span className="whitespace-nowrap">{lv ? tr(levelLabel[lv]) : tr(t.fAllLevels)}</span>
-              </button>
-            );
-          })}
-        </div>
+                <option value="">{tr(t.fAll)}</option>
+                {years.map((y) => (
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
 
-        {/* Row 3 — Final Year · Other · Advanced filters (raised 3D chips) */}
-        <div className="grid grid-cols-3 gap-2">
-          {[
-            { lv: 'FINAL_YEAR', icon: '🏆' },
-            { lv: 'OTHER', icon: '📌' },
-          ].map(({ lv, icon }) => {
-            const active = filters.level === lv;
-            return (
+          {/* Academic level chips */}
+          <div>
+            <label className="label flex items-center gap-1.5">
+              <span aria-hidden>🎓</span> {tr(t.fLevel)}
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { lv: '', icon: '✨' },
+                { lv: 'YEAR_3', icon: '3️⃣' },
+                { lv: 'YEAR_5', icon: '5️⃣' },
+                { lv: 'FINAL_YEAR', icon: '🏆' },
+                { lv: 'OTHER', icon: '📌' },
+              ].map(({ lv, icon }) => {
+                const active = filters.level === lv;
+                return (
+                  <button
+                    key={lv || 'all'}
+                    onClick={() => update({ level: lv })}
+                    className={`chip3d w-full ${active ? 'chip3d-active' : ''}`}
+                  >
+                    <span aria-hidden>{icon}</span>
+                    <span className="whitespace-nowrap">{lv ? tr(levelLabel[lv]) : tr(t.fAllLevels)}</span>
+                  </button>
+                );
+              })}
               <button
-                key={lv}
-                onClick={() => update({ level: lv })}
-                className={`chip3d w-full ${active ? 'chip3d-active' : ''}`}
+                type="button"
+                onClick={() => setShowAdvanced((s) => !s)}
+                className={`chip3d w-full ${showAdvanced ? 'chip3d-active' : ''}`}
               >
-                <span aria-hidden>{icon}</span>
-                <span className="whitespace-nowrap">{tr(levelLabel[lv])}</span>
+                <span aria-hidden>⚙️</span>
+                <span className="whitespace-nowrap">{showAdvanced ? tr(t.fHideAdvanced) : tr(t.fAdvanced)}</span>
               </button>
-            );
-          })}
-          <button
-            type="button"
-            onClick={() => setShowAdvanced((s) => !s)}
-            className={`chip3d w-full ${showAdvanced ? 'chip3d-active' : ''}`}
-          >
-            <span aria-hidden>⚙️</span>
-            <span className="whitespace-nowrap">{showAdvanced ? tr(t.fHideAdvanced) : tr(t.fAdvanced)}</span>
-          </button>
+            </div>
+          </div>
         </div>
 
         {/* Advanced filters (collapsible — toggled by the chip in Row 3 above) */}

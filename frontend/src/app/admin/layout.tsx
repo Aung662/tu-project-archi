@@ -7,14 +7,17 @@ import { useAuth } from '@/context/AuthContext';
 import { Spinner, Alert } from '@/components/ui';
 import { tr, t } from '@/lib/i18n';
 
+// `super` tabs are cross-department management surfaces the backend restricts
+// to super-admins; department-scoped admins never see them.
 const TABS = [
-  { href: '/admin', label: t.tabOverview },
-  { href: '/admin/projects', label: t.tabProjects },
-  { href: '/admin/schools', label: t.tabSchools },
-  { href: '/admin/payments', label: t.tabPayments },
-  { href: '/admin/users', label: t.tabUsers },
-  { href: '/admin/analytics', label: t.tabAnalytics },
-  { href: '/admin/audit', label: t.tabAudit },
+  { href: '/admin', label: t.tabOverview, super: false },
+  { href: '/admin/projects', label: t.tabProjects, super: false },
+  { href: '/admin/schools', label: t.tabSchools, super: true },
+  { href: '/admin/payments', label: t.tabPayments, super: false },
+  { href: '/admin/kits', label: t.tabKits, super: true },
+  { href: '/admin/users', label: t.tabUsers, super: true },
+  { href: '/admin/analytics', label: t.tabAnalytics, super: true },
+  { href: '/admin/audit', label: t.tabAudit, super: true },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -36,6 +39,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   const onDashboardHome = pathname === '/admin';
+  // Super-admin = ADMIN with no department binding. Department admins only see
+  // the non-super tabs (the backend enforces this regardless of the UI).
+  const isSuperAdmin = !user.adminDepartmentId;
+  const visibleTabs = TABS.filter((tab) => !tab.super || isSuperAdmin);
 
   return (
     <div className="space-y-6">
@@ -55,7 +62,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </span>
       </div>
       <nav className="flex flex-wrap gap-1.5 rounded-2xl border border-white/10 bg-white/[0.03] p-1.5 shadow-inner">
-        {TABS.map((tab) => {
+        {visibleTabs.map((tab) => {
           const active = pathname === tab.href;
           return (
             <Link

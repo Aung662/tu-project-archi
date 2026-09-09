@@ -332,6 +332,13 @@ export interface UpsertProjectInput {
   hasConsent?: boolean;
 }
 
+/** Fetch just a project's departmentId (for admin scope checks). Throws if missing. */
+export async function getProjectDepartmentId(id: string): Promise<string> {
+  const p = await prisma.project.findUnique({ where: { id }, select: { departmentId: true } });
+  if (!p) throw NotFound('Project not found');
+  return p.departmentId;
+}
+
 async function assertDeptBelongsToUni(universityId: string, departmentId: string) {
   const dept = await prisma.department.findUnique({ where: { id: departmentId } });
   if (!dept || dept.universityId !== universityId) {

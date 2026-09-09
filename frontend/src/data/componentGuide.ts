@@ -2340,6 +2340,21 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('short / over-discharge ဆို မီးလောင် / ပေါက်ကွဲနိုင်', 'Shorting / over-discharging can cause fire or explosion'),
       L('အတု cell များ capacity လိမ် — genuine ဝယ်ပါ', 'Fake cells lie about capacity — buy genuine'),
     ],
+    code: {
+      lang: 'Arduino C++',
+      code: `// 18650 Li-ion battery voltage test (via 2x voltage divider)
+// Battery+ --[100k]--A0--[100k]-- GND   (halves the voltage so it's <5V)
+const int PIN = A0;
+void setup(){ Serial.begin(9600); }
+void loop(){
+  int raw = analogRead(PIN);
+  float vAtPin = raw * 5.0 / 1023.0;
+  float vBatt  = vAtPin * 2.0;            // undo the divider
+  Serial.print("Battery: "); Serial.print(vBatt, 2); Serial.println(" V");
+  if (vBatt < 3.2) Serial.println("  -> LOW! recharge / protect");
+  delay(1000);
+}`,
+    },
     libraries: [],
   },
 
@@ -2368,6 +2383,19 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('ဖောင်း / ပေါက် / လောင်လွယ် — balance charge မဖြစ်မနေ', 'Can swell / puncture / ignite — balance charging is mandatory'),
       L('3.0V အောက် မချရ — cell ပျက်', 'Never discharge below ~3.0V/cell — it ruins the cell'),
     ],
+    code: {
+      lang: 'Arduino C++',
+      code: `// LiPo cell voltage monitor (via 2x voltage divider on A0)
+// LiPo+ --[100k]--A0--[100k]-- GND
+const int PIN = A0;
+void setup(){ Serial.begin(9600); }
+void loop(){
+  float v = analogRead(PIN) * 5.0 / 1023.0 * 2.0;
+  Serial.print("LiPo: "); Serial.print(v,2); Serial.println(" V");
+  // 4.2=full  3.7=nominal  3.0=empty (stop discharging!)
+  delay(1000);
+}`,
+    },
     libraries: [],
   },
 
@@ -2425,6 +2453,18 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('output ကို အရင်မချိန်ဘဲ load တပ်ရင် ပျက်နိုင်', 'Connecting a load before setting the output can damage it'),
       L('input > output ဖြစ်မှ အလုပ်လုပ် (step-down သာ)', 'Only works when input > output (step-down only)'),
     ],
+    code: {
+      lang: 'Arduino C++',
+      code: `// Buck converter OUTPUT voltage check (via 2x divider on A0)
+// Buck OUT+ --[100k]--A0--[100k]-- GND ; share GND with Arduino
+const int PIN = A0;
+void setup(){ Serial.begin(9600); }
+void loop(){
+  float vout = analogRead(PIN) * 5.0 / 1023.0 * 2.0;
+  Serial.print("Buck Vout: "); Serial.print(vout,2); Serial.println(" V");
+  delay(500);   // turn the trim-pot until you read the target voltage
+}`,
+    },
     libraries: [],
   },
 
@@ -2453,6 +2493,18 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('input current = output ထက်များ — battery drain မြန်', 'Input current exceeds output — battery drains faster'),
       L('rated power ကို မကျော်ရ', 'Do not exceed the rated power'),
     ],
+    code: {
+      lang: 'Arduino C++',
+      code: `// Boost converter OUTPUT check. Output can exceed 5V, so use a 3x divider:
+// Boost OUT+ --[200k]--A0--[100k]-- GND ; common GND
+const int PIN = A0;
+void setup(){ Serial.begin(9600); }
+void loop(){
+  float vout = analogRead(PIN) * 5.0 / 1023.0 * 3.0;
+  Serial.print("Boost Vout: "); Serial.print(vout,2); Serial.println(" V");
+  delay(500);
+}`,
+    },
     libraries: [],
   },
 
@@ -2482,6 +2534,18 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('efficiency နိမ့် — 12V→5V မှာ heat များ', 'Low efficiency — lots of heat on 12V→5V'),
       L('1A ကျော်ရင် buck converter သုံးသင့်', 'Above ~1A, prefer a buck converter'),
     ],
+    code: {
+      lang: 'Arduino C++',
+      code: `// LDO regulator output test (e.g. 3.3V). Direct read is safe if <5V.
+// LDO OUT --> A0 ; common GND
+const int PIN = A0;
+void setup(){ Serial.begin(9600); }
+void loop(){
+  float v = analogRead(PIN) * 5.0 / 1023.0;
+  Serial.print("LDO out: "); Serial.print(v,2); Serial.println(" V");
+  delay(500);
+}`,
+    },
     libraries: [],
   },
 
@@ -2511,6 +2575,19 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('current ကန့်သတ် (~800mA) — ESP32 peak မှာ ဆွဲမနိုင်တတ်', 'Limited current (~800mA) — may sag on ESP32 peaks'),
       L('capacitor မပါရင် oscillate', 'Without caps it can oscillate'),
     ],
+    code: {
+      lang: 'Arduino C++',
+      code: `// AMS1117-3.3 output test. 3.3V < 5V so read A0 directly.
+// AMS1117 OUT --> A0 ; common GND
+const int PIN = A0;
+void setup(){ Serial.begin(9600); }
+void loop(){
+  float v = analogRead(PIN) * 5.0 / 1023.0;
+  Serial.print("AMS1117 out: "); Serial.print(v,2);
+  Serial.println(v > 3.0 && v < 3.6 ? " V  OK" : " V  CHECK!");
+  delay(500);
+}`,
+    },
     libraries: [],
   },
 
@@ -2538,6 +2615,18 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('battery သို့ တိုက်ရိုက် မချိတ်ရ — controller လို', 'Never wire straight to a battery — a controller is required'),
       L('output က နေရောင်အလိုက် အတက်အကျ ကြီး', 'Output swings widely with sunlight'),
     ],
+    code: {
+      lang: 'Arduino C++',
+      code: `// Small solar-panel open-circuit voltage logger (via 3x divider on A0)
+// Panel+ --[200k]--A0--[100k]-- GND ; common GND. Keep panel <~15V.
+const int PIN = A0;
+void setup(){ Serial.begin(9600); }
+void loop(){
+  float v = analogRead(PIN) * 5.0 / 1023.0 * 3.0;
+  Serial.print("Solar Voc: "); Serial.print(v,2); Serial.println(" V");
+  delay(1000);   // shade/expose the panel and watch the value change
+}`,
+    },
     libraries: [],
   },
 
@@ -2627,6 +2716,24 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('electrolytic polarity ပြောင်းပြန်ဆို ပေါက်ကွဲ', 'Reversed electrolytic polarity causes it to burst'),
       L('voltage rating ကို supply ထက် မြင့်အောင် ရွေး', 'Pick a voltage rating above your supply'),
     ],
+    code: {
+      lang: 'Arduino C++',
+      code: `// Capacitor value tester by RC charge time.
+// 5V --[10k R]--A0--[ CAP ]-- GND.  C = t / R
+const int PIN = A0, CHARGE = 8;
+const float R = 10000.0;              // 10k ohm
+void setup(){ Serial.begin(9600); pinMode(CHARGE, OUTPUT); }
+void loop(){
+  digitalWrite(CHARGE, LOW); delay(500);          // discharge
+  unsigned long t0 = micros();
+  digitalWrite(CHARGE, HIGH);
+  while (analogRead(PIN) < 647) {}                 // 63.2% of 1023
+  float t = (micros() - t0) / 1e6;                 // seconds
+  Serial.print("C = "); Serial.print(t / R * 1e6, 1);
+  Serial.println(" uF");
+  delay(1000);
+}`,
+    },
     libraries: [],
   },
 
@@ -2687,6 +2794,21 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('band direction မှားရင် အလုပ်မလုပ် / ပျက်', 'Wrong band direction means it fails to work / dies'),
       L('current rating ကို load နဲ့ ကိုက်ညီစေ', 'Match the current rating to the load'),
     ],
+    code: {
+      lang: 'Arduino C++',
+      code: `// Diode forward-drop / orientation test.
+// 5V --[1k R]--(A0)--|>|-- GND  (band = cathode toward GND)
+const int PIN = A0;
+void setup(){ Serial.begin(9600); }
+void loop(){
+  float vDrop = analogRead(PIN) * 5.0 / 1023.0;    // voltage across the diode
+  Serial.print("Vf ~ "); Serial.print(vDrop,2); Serial.print(" V  ");
+  if (vDrop > 4.5)      Serial.println("open/reversed");
+  else if (vDrop < 0.1) Serial.println("shorted");
+  else                  Serial.println("conducting OK (~0.7 Si / ~0.3 Schottky)");
+  delay(800);
+}`,
+    },
     libraries: [],
   },
 
@@ -2774,6 +2896,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('load capacitor မပါ / မှားရင် oscillate မဖြစ်', 'Wrong / missing load caps stop it oscillating'),
       L('trace ကို တိုအောင်ထား — stray capacitance', 'Keep traces short — stray capacitance matters'),
     ],
+    code: {
+      lang: 'Arduino C++',
+      code: `// Frequency counter to verify an oscillator/crystal output.
+// Feed the (3.3-5V logic-level) clock into pin D5.
+volatile unsigned long edges = 0;
+void isr(){ edges++; }
+void setup(){ Serial.begin(9600); pinMode(5, INPUT);
+  attachInterrupt(digitalPinToInterrupt(5), isr, RISING); }
+void loop(){
+  edges = 0; delay(1000);                 // count for 1 second
+  Serial.print(edges); Serial.println(" Hz");
+  // Note: an MCU maxes out ~a few hundred kHz; use for low-freq clocks.
+}`,
+    },
     libraries: [],
   },
 
@@ -2801,6 +2937,19 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('rating နည်းလွန်းရင် မကြာခဏ ဖြတ်; များလွန်းရင် မကာကွယ်', 'Too low nuisance-trips; too high fails to protect'),
       L('ကွဲပြီး fuse ကို wire နဲ့ မ bypass ရ', 'Never bypass a blown fuse with wire'),
     ],
+    code: {
+      lang: 'Arduino C++',
+      code: `// Fuse continuity (blown/intact) test.
+// 5V --[ FUSE ]--(D2 with INPUT_PULLUP is NOT used here)
+// Wire: 5V --[FUSE]-- D2 ;  D2 reads HIGH if fuse conducts, else LOW via 10k to GND
+const int PIN = 2;
+void setup(){ Serial.begin(9600); pinMode(PIN, INPUT); }  // 10k pulldown on D2
+void loop(){
+  int intact = digitalRead(PIN);          // HIGH = current passes
+  Serial.println(intact ? "Fuse: INTACT" : "Fuse: BLOWN / open");
+  delay(700);
+}`,
+    },
     libraries: [],
   },
 
@@ -3000,6 +3149,19 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('current များ / voltage မြင့် project မသင့်', 'Not for high-current / high-voltage projects'),
       L('contact ချောင်ရင် intermittent fault', 'Loose contacts cause intermittent faults'),
     ],
+    code: {
+      lang: 'Arduino C++',
+      code: `// Breadboard sanity test: blink an LED wired through the board.
+// D13 -->[220 ohm]--> LED(+) ... LED(-) --> GND rail
+// Use it to confirm your power rails and rows actually connect.
+void setup(){ pinMode(13, OUTPUT); Serial.begin(9600); }
+void loop(){
+  digitalWrite(13, HIGH); Serial.println("LED on  - row OK?");
+  delay(500);
+  digitalWrite(13, LOW);  Serial.println("LED off");
+  delay(500);
+}`,
+    },
     libraries: [],
   },
 
@@ -3023,6 +3185,18 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('ဈေးပေါ wire များ ခြေထောက် ပြတ်လွယ်', 'Cheap wires break internally at the ends'),
       L('current များ project မသင့်', 'Not for high-current projects'),
     ],
+    code: {
+      lang: 'Arduino C++',
+      code: `// Jumper-wire continuity tester (find broken wires).
+// Put one end of the wire in D2, the other in GND.
+const int PIN = 2;
+void setup(){ Serial.begin(9600); pinMode(PIN, INPUT_PULLUP); }
+void loop(){
+  bool ok = (digitalRead(PIN) == LOW);    // LOW = wire connects D2->GND
+  Serial.println(ok ? "Wire: GOOD (continuous)" : "Wire: BROKEN / open");
+  delay(500);
+}`,
+    },
     libraries: [],
   },
 
@@ -3051,6 +3225,18 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('ဂဟေဆော် အပူ များရင် pad ခွာ / component ပျက်', 'Too much soldering heat lifts pads / kills parts'),
       L('custom PCB က mistake ပြင်ရ ခက်', 'Mistakes on a custom PCB are hard to fix'),
     ],
+    code: {
+      lang: 'Arduino C++',
+      code: `// PCB net continuity self-test.
+// Probe two points of a net: one to D2, one to GND.
+const int PIN = 2;
+void setup(){ Serial.begin(9600); pinMode(PIN, INPUT_PULLUP); }
+void loop(){
+  bool connected = (digitalRead(PIN) == LOW);
+  Serial.println(connected ? "Net: connected" : "Net: open (check trace/solder)");
+  delay(400);
+}`,
+    },
     libraries: ['KiCad', 'EasyEDA'],
   },
 

@@ -9,14 +9,27 @@ import {
   browseProjects,
   createProject,
   deleteProject,
+  getProjectDepartmentId,
   getProjectDetail,
   updateProject,
 } from '../projects/projects.service.js';
-import { approveOrder, getOrderForReview, listOrders, rejectOrder } from '../payments/payments.service.js';
+import {
+  assertCanWriteProjectInDept,
+  manageableProjectWhere,
+  requireSuperAdmin,
+  resolveAdminScope,
+} from '../../lib/adminScope.js';
+import {
+  approveOrder,
+  getOrderForReview,
+  getOrderProjectDepartmentId,
+  listOrders,
+  rejectOrder,
+} from '../payments/payments.service.js';
 import { privateFileExists, streamPrivateFile } from '../../lib/storage.js';
 import { contentDispositionAttachment } from '../../lib/http.js';
 import { extname } from 'node:path';
-import { NotFound } from '../../lib/errors.js';
+import { BadRequest, NotFound } from '../../lib/errors.js';
 import {
   createDepartment,
   createUniversity,
@@ -35,26 +48,44 @@ adminRouter.use(requireAuth, requireAdmin);
 // ── Dashboard stats ────────────────────────────────────────────────────────
 adminRouter.get(
   '/stats',
-  asyncHandler(async (_req, res) => {
+  asyncHandler(async (req, res) => {
+    // Department admins get numbers scoped to their department; super-admins get
+    // platform-wide totals.
+    const scope = await resolveAdminScope(req.user!.sub);
+    const dep = scope.departmentId ?? undefined;
+    const projWhere = dep ? { departmentId: dep } : {};
+    const orderWhere = (extra: object) =>
+      dep ? { ...extra, project: { departmentId: dep } } : extra;
+
     const [projects, published, pendingPayments, users, purchases] = await Promise.all([
-      prisma.project.count(),
-      prisma.project.count({ where: { status: 'PUBLISHED' } }),
-      prisma.paymentOrder.count({ where: { status: 'PENDING' } }),
-      prisma.user.count(),
-      prisma.purchaseAccess.count(),
+      prisma.project.count({ where: projWhere }),
+      prisma.project.count({ where: { ...projWhere, status: 'PUBLISHED' } }),
+      prisma.paymentOrder.count({ where: orderWhere({ status: 'PENDING' }) }),
+      // User count is a platform-wide metric only meaningful to super-admins.
+      dep ? Promise.resolve(0) : prisma.user.count(),
+      prisma.purchaseAccess.count(dep ? { where: { project: { departmentId: dep } } } : undefined),
     ]);
-    res.json(ok({ projects, published, pendingPayments, users, purchases }));
+    res.json(ok({ projects, published, pendingPayments, users, purchases, scoped: Boolean(dep) }));
   }),
 );
 
 // ── Rich dashboard: totals + 14-day time series + top pages/projects ─────────
 adminRouter.get(
   '/dashboard',
-  asyncHandler(async (_req, res) => {
+  asyncHandler(async (req, res) => {
     const DAYS = 14;
     const since = new Date();
     since.setDate(since.getDate() - (DAYS - 1));
     since.setHours(0, 0, 0, 0);
+
+    // Department admins get project/payment/purchase figures scoped to their
+    // department; super-admins get platform-wide figures.
+    const scope = await resolveAdminScope(req.user!.sub);
+    const dep = scope.departmentId ?? undefined;
+    const projWhere = dep ? { departmentId: dep } : {};
+    const pendWhere = dep
+      ? { status: 'PENDING' as const, project: { departmentId: dep } }
+      : { status: 'PENDING' as const };
 
     const [
       projects,
@@ -70,11 +101,11 @@ adminRouter.get(
       byUniversityRaw,
       topPathsRaw,
     ] = await Promise.all([
-      prisma.project.count(),
-      prisma.project.count({ where: { status: 'PUBLISHED' } }),
-      prisma.paymentOrder.count({ where: { status: 'PENDING' } }),
-      prisma.user.count(),
-      prisma.purchaseAccess.count(),
+      prisma.project.count({ where: projWhere }),
+      prisma.project.count({ where: { ...projWhere, status: 'PUBLISHED' } }),
+      prisma.paymentOrder.count({ where: pendWhere }),
+      dep ? Promise.resolve(0) : prisma.user.count(),
+      prisma.purchaseAccess.count(dep ? { where: { project: { departmentId: dep } } } : undefined),
       prisma.pageView.count(),
       prisma.searchLog.count({ where: { kind: 'SEARCH' } }),
       prisma.searchLog.count({ where: { kind: 'CHECK' } }),
@@ -89,6 +120,7 @@ adminRouter.get(
       prisma.project.groupBy({
         by: ['universityId'],
         _count: { _all: true },
+        ...(dep ? { where: { departmentId: dep } } : {}),
       }),
       prisma.pageView.groupBy({
         by: ['path'],
@@ -144,6 +176,7 @@ adminRouter.get(
 
     res.json(
       ok({
+        scoped: Boolean(dep),
         totals: {
           projects,
           published,
@@ -186,15 +219,29 @@ adminRouter.get(
       pageSize: z.coerce.number().int().min(1).max(50).default(20),
       q: z.string().max(200).optional(),
       status: z.enum(['DRAFT', 'PUBLISHED', 'ARCHIVED']).optional(),
+      // "mine" limits the list to the admin's own department (super-admins can
+      // still opt in to filter their view). Department admins are always scoped.
+      mine: z.enum(['true', 'false']).optional(),
     }),
   }),
   asyncHandler(async (req, res) => {
     const q = req.query as any;
-    const result = await browseProjects({ ...q, includeUnpublished: true });
+    // A "mine" flag scopes the list to the admin's manageable (editable) set:
+    //   super-admin → everything; department admin → their department only.
+    const scope = await resolveAdminScope(req.user!.sub);
+    const onlyMine = q.mine === 'true' || q.mine === true;
+    const deptFilter = onlyMine || !scope.isSuperAdmin ? manageableProjectWhere(scope) : {};
+    const result = await browseProjects({
+      ...q,
+      includeUnpublished: true,
+      ...(deptFilter.departmentId ? { departmentId: deptFilter.departmentId } : {}),
+    });
     res.json(ok(result));
   }),
 );
 
+// Read access is intentionally OPEN to any admin (department admins may READ
+// other departments' projects — they just cannot modify them).
 adminRouter.get(
   '/projects/:id',
   validate({ params: z.object({ id: z.string().min(1) }) }),
@@ -207,6 +254,9 @@ adminRouter.post(
   '/projects',
   validate({ body: upsertSchema }),
   asyncHandler(async (req, res) => {
+    // A department admin may only create projects INSIDE their own department.
+    const scope = await resolveAdminScope(req.user!.sub);
+    assertCanWriteProjectInDept(scope, req.body.departmentId);
     const created = await createProject(req.body, req.user!.sub);
     await audit({ actorId: req.user!.sub, action: 'PROJECT_CREATED', entityType: 'Project', entityId: created.id });
     res.status(201).json(ok(created));
@@ -217,6 +267,11 @@ adminRouter.put(
   '/projects/:id',
   validate({ params: z.object({ id: z.string().min(1) }), body: upsertSchema.partial() }),
   asyncHandler(async (req, res) => {
+    const scope = await resolveAdminScope(req.user!.sub);
+    // Must be allowed to write the project's CURRENT department...
+    assertCanWriteProjectInDept(scope, await getProjectDepartmentId(params(req).id));
+    // ...and, if moving it to another department, that TARGET department too.
+    if (req.body.departmentId) assertCanWriteProjectInDept(scope, req.body.departmentId);
     const updated = await updateProject(params(req).id, req.body);
     await audit({
       actorId: req.user!.sub,
@@ -232,6 +287,8 @@ adminRouter.delete(
   '/projects/:id',
   validate({ params: z.object({ id: z.string().min(1) }) }),
   asyncHandler(async (req, res) => {
+    const scope = await resolveAdminScope(req.user!.sub);
+    assertCanWriteProjectInDept(scope, await getProjectDepartmentId(params(req).id));
     const result = await deleteProject(params(req).id);
     await audit({ actorId: req.user!.sub, action: 'PROJECT_DELETED', entityType: 'Project', entityId: params(req).id });
     res.json(ok(result));
@@ -243,7 +300,9 @@ adminRouter.get(
   '/payments',
   validate({ query: z.object({ status: z.enum(['PENDING', 'APPROVED', 'REJECTED']).optional() }) }),
   asyncHandler(async (req, res) => {
-    res.json(ok(await listOrders((req.query as any).status)));
+    // Department admins see only orders for their department's projects.
+    const scope = await resolveAdminScope(req.user!.sub);
+    res.json(ok(await listOrders((req.query as any).status, scope.departmentId ?? undefined)));
   }),
 );
 
@@ -254,6 +313,8 @@ adminRouter.post(
     body: z.object({ note: z.string().max(500).optional() }).default({}),
   }),
   asyncHandler(async (req, res) => {
+    const scope = await resolveAdminScope(req.user!.sub);
+    assertCanWriteProjectInDept(scope, await getOrderProjectDepartmentId(params(req).id));
     res.json(ok(await approveOrder(req.user!.sub, params(req).id, req.body?.note)));
   }),
 );
@@ -265,6 +326,8 @@ adminRouter.post(
     body: z.object({ note: z.string().max(500).optional() }).default({}),
   }),
   asyncHandler(async (req, res) => {
+    const scope = await resolveAdminScope(req.user!.sub);
+    assertCanWriteProjectInDept(scope, await getOrderProjectDepartmentId(params(req).id));
     res.json(ok(await rejectOrder(req.user!.sub, params(req).id, req.body?.note)));
   }),
 );
@@ -276,6 +339,8 @@ adminRouter.get(
   '/payments/:id/proof',
   validate({ params: z.object({ id: z.string().min(1) }) }),
   asyncHandler(async (req, res) => {
+    const scope = await resolveAdminScope(req.user!.sub);
+    assertCanWriteProjectInDept(scope, await getOrderProjectDepartmentId(params(req).id));
     const order = await getOrderForReview(params(req).id);
     if (!order.proofKey) throw NotFound('No payment proof uploaded for this order');
     if (!privateFileExists(order.proofKey)) throw NotFound('Stored proof file is missing');
@@ -299,6 +364,7 @@ const universityBody = z.object({
 
 adminRouter.post(
   '/universities',
+  requireSuperAdmin,
   validate({ body: universityBody }),
   asyncHandler(async (req, res) => {
     const created = await createUniversity(req.body);
@@ -309,6 +375,7 @@ adminRouter.post(
 
 adminRouter.put(
   '/universities/:id',
+  requireSuperAdmin,
   validate({ params: z.object({ id: z.string().min(1) }), body: universityBody.partial() }),
   asyncHandler(async (req, res) => {
     const updated = await updateUniversity(params(req).id, req.body);
@@ -319,6 +386,7 @@ adminRouter.put(
 
 adminRouter.delete(
   '/universities/:id',
+  requireSuperAdmin,
   validate({ params: z.object({ id: z.string().min(1) }) }),
   asyncHandler(async (req, res) => {
     const result = await deleteUniversity(params(req).id);
@@ -335,6 +403,7 @@ const departmentBody = z.object({
 
 adminRouter.post(
   '/departments',
+  requireSuperAdmin,
   validate({ body: departmentBody }),
   asyncHandler(async (req, res) => {
     const created = await createDepartment(req.body);
@@ -345,6 +414,7 @@ adminRouter.post(
 
 adminRouter.put(
   '/departments/:id',
+  requireSuperAdmin,
   validate({
     params: z.object({ id: z.string().min(1) }),
     body: z.object({ name: z.string().min(2).max(200).optional(), code: z.string().min(1).max(20).optional() }),
@@ -358,6 +428,7 @@ adminRouter.put(
 
 adminRouter.delete(
   '/departments/:id',
+  requireSuperAdmin,
   validate({ params: z.object({ id: z.string().min(1) }) }),
   asyncHandler(async (req, res) => {
     const result = await deleteDepartment(params(req).id);
@@ -369,10 +440,22 @@ adminRouter.delete(
 // ── Users management ─────────────────────────────────────────────────────────
 adminRouter.get(
   '/users',
+  requireSuperAdmin,
   asyncHandler(async (_req, res) => {
     const users = await prisma.user.findMany({
       orderBy: { createdAt: 'desc' },
-      select: { id: true, email: true, name: true, role: true, adminScope: true, createdAt: true },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        adminScope: true,
+        adminDepartmentId: true,
+        adminDepartment: {
+          select: { id: true, name: true, code: true, university: { select: { shortName: true } } },
+        },
+        createdAt: true,
+      },
     });
     res.json(ok(users));
   }),
@@ -380,17 +463,65 @@ adminRouter.get(
 
 adminRouter.put(
   '/users/:id/role',
+  requireSuperAdmin,
   validate({
     params: z.object({ id: z.string().min(1) }),
-    body: z.object({ role: z.enum(['STUDENT', 'STAFF', 'ADMIN']) }),
+    body: z.object({
+      role: z.enum(['STUDENT', 'STAFF', 'ADMIN']),
+      // Optional: bind an ADMIN to a department (department-scoped admin).
+      //   null / omitted with role=ADMIN → SUPER-ADMIN (platform-wide)
+      //   a department id with role=ADMIN → DEPARTMENT ADMIN
+      // Ignored (forced null) for non-ADMIN roles.
+      adminDepartmentId: z.string().min(1).nullable().optional(),
+    }),
   }),
   asyncHandler(async (req, res) => {
+    const targetId = params(req).id;
+    const { role, adminDepartmentId } = req.body as {
+      role: 'STUDENT' | 'STAFF' | 'ADMIN';
+      adminDepartmentId?: string | null;
+    };
+
+    // Only ADMINs may carry a department binding; clear it for other roles.
+    let deptId: string | null = role === 'ADMIN' ? adminDepartmentId ?? null : null;
+
+    if (deptId) {
+      const dept = await prisma.department.findUnique({ where: { id: deptId } });
+      if (!dept) throw NotFound('Department not found');
+    }
+
+    // Safety valve: never allow removing the LAST super-admin (an ADMIN with no
+    // department). Otherwise nobody could manage the platform. This covers both
+    // demotion (role change) and scoping the last super-admin to a department.
+    const willBeSuperAdmin = role === 'ADMIN' && deptId === null;
+    if (!willBeSuperAdmin) {
+      const target = await prisma.user.findUnique({
+        where: { id: targetId },
+        select: { role: true, adminDepartmentId: true },
+      });
+      const targetIsSuperNow = target?.role === 'ADMIN' && target.adminDepartmentId === null;
+      if (targetIsSuperNow) {
+        const superAdmins = await prisma.user.count({
+          where: { role: 'ADMIN', adminDepartmentId: null },
+        });
+        if (superAdmins <= 1) {
+          throw BadRequest('Cannot remove the last super-admin; promote another super-admin first');
+        }
+      }
+    }
+
     const updated = await prisma.user.update({
-      where: { id: params(req).id },
-      data: { role: req.body.role },
-      select: { id: true, email: true, role: true },
+      where: { id: targetId },
+      data: { role, adminDepartmentId: deptId },
+      select: { id: true, email: true, role: true, adminDepartmentId: true },
     });
-    await audit({ actorId: req.user!.sub, action: 'USER_ROLE_CHANGED', entityType: 'User', entityId: params(req).id, metadata: { role: req.body.role } });
+    await audit({
+      actorId: req.user!.sub,
+      action: 'USER_ROLE_CHANGED',
+      entityType: 'User',
+      entityId: targetId,
+      metadata: { role, adminDepartmentId: deptId },
+    });
     res.json(ok(updated));
   }),
 );
@@ -398,6 +529,7 @@ adminRouter.put(
 // ── Audit log ────────────────────────────────────────────────────────────────
 adminRouter.get(
   '/audit',
+  requireSuperAdmin,
   asyncHandler(async (_req, res) => {
     const logs = await prisma.auditLog.findMany({
       orderBy: { createdAt: 'desc' },
@@ -426,6 +558,7 @@ function sendCsv(res: import('express').Response, filename: string, csv: string)
 
 adminRouter.get(
   '/reports/search-logs.csv',
+  requireSuperAdmin,
   validate({ query: z.object({ kind: z.enum(['SEARCH', 'CHECK']).optional() }) }),
   asyncHandler(async (req, res) => {
     const q = req.query as { kind?: 'SEARCH' | 'CHECK' };
@@ -453,6 +586,7 @@ adminRouter.get(
 
 adminRouter.get(
   '/reports/duplicate-risks.csv',
+  requireSuperAdmin,
   asyncHandler(async (_req, res) => {
     // Title checks that were flagged as duplicate/near-duplicate risks.
     const logs = await prisma.searchLog.findMany({
@@ -477,8 +611,10 @@ adminRouter.get(
 
 adminRouter.get(
   '/reports/projects.csv',
-  asyncHandler(async (_req, res) => {
+  asyncHandler(async (req, res) => {
+    const scope = await resolveAdminScope(req.user!.sub);
     const projects = await prisma.project.findMany({
+      where: scope.departmentId ? { departmentId: scope.departmentId } : {},
       orderBy: [{ year: 'desc' }, { createdAt: 'desc' }],
       include: { university: true, department: true },
       take: 5000,
@@ -504,6 +640,7 @@ adminRouter.get(
 // ── Search analytics ─────────────────────────────────────────────────────────
 adminRouter.get(
   '/search-logs',
+  requireSuperAdmin,
   validate({
     query: z.object({
       kind: z.enum(['SEARCH', 'CHECK']).optional(),

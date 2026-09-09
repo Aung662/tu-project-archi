@@ -64,6 +64,14 @@ const EnvSchema = z.object({
     .string()
     .default('Transfer via KBZPay/Wave and upload the screenshot + transaction id.'),
 
+  // KPay merchant details shown on the website-kit checkout screen. These are
+  // PLACEHOLDERS — set the real values via environment variables in production.
+  // (Kept configurable so no real payee number is ever committed to the repo.)
+  KPAY_NUMBER: z.string().default('09-XXX-XXX-XXX'),
+  KPAY_NAME: z.string().default('TU Project Archive'),
+  // Default kit price (MMK) used when a kit has no explicit price.
+  DEFAULT_KIT_PRICE_MMK: z.coerce.number().int().nonnegative().default(10000),
+
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(900_000),
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(300),
   AUTH_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(20),

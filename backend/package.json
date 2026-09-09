@@ -8,10 +8,11 @@
     "prisma:migrate": "npm run db:provider && prisma migrate dev",
     "prisma:push": "npm run db:provider && prisma db push",
     "seed": "tsx prisma/seed.ts",
+    "seed:kits": "tsx prisma/seed-kits.ts",
     "dev": "tsx watch src/server.ts",
     "build": "npm run db:provider && prisma generate && tsc -p tsconfig.json",
     "setup:postgres": "tsx scripts/setup-postgres.ts",
-    "deploy:release": "npm run db:provider && prisma db push --skip-generate --accept-data-loss && npm run setup:postgres && tsx prisma/seed.ts",
+    "deploy:release": "npm run db:provider && prisma db push --skip-generate --accept-data-loss && npm run setup:postgres && tsx prisma/seed.ts && tsx prisma/seed-kits.ts",
     "start": "node dist/server.js",
     "test": "vitest run",
     "test:watch": "vitest"

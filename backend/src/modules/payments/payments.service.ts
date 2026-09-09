@@ -62,6 +62,16 @@ export async function getOrderForReview(orderId: string) {
   return order;
 }
 
+/** Fetch the department id of the project an order belongs to (for scope checks). */
+export async function getOrderProjectDepartmentId(orderId: string): Promise<string> {
+  const order = await prisma.paymentOrder.findUnique({
+    where: { id: orderId },
+    select: { project: { select: { departmentId: true } } },
+  });
+  if (!order) throw NotFound('Order not found');
+  return order.project.departmentId;
+}
+
 export async function listMyOrders(userId: string) {
   return prisma.paymentOrder.findMany({
     where: { userId },
@@ -93,9 +103,13 @@ export async function listMyPurchases(userId: string) {
 }
 
 /** Admin: list orders with optional status filter. */
-export async function listOrders(status?: string) {
+export async function listOrders(status?: string, departmentId?: string) {
   const rows = await prisma.paymentOrder.findMany({
-    where: status ? { status: status as any } : {},
+    where: {
+      ...(status ? { status: status as any } : {}),
+      // Department admins only ever see orders for THEIR department's projects.
+      ...(departmentId ? { project: { departmentId } } : {}),
+    },
     orderBy: { createdAt: 'desc' },
     include: {
       project: { select: { id: true, title: true } },

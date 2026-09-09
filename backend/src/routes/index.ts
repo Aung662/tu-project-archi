@@ -13,6 +13,7 @@ import { universitiesRouter } from '../modules/universities/universities.routes.
 import { aiRouter } from '../modules/ai/ai.routes.js';
 import { statsRouter } from '../modules/stats/stats.routes.js';
 import { reviewsRouter } from '../modules/reviews/reviews.routes.js';
+import { kitsRouter } from '../modules/kits/kits.routes.js';
 
 export const apiRouter = Router();
 
@@ -21,7 +22,7 @@ apiRouter.get('/', (_req, res) => {
     ok({
       name: 'TU Project Archive & Title Similarity Checker API',
       version: '1.0.0',
-      endpoints: ['/auth', '/projects', '/search', '/ai', '/files', '/images', '/analytics', '/bookmarks', '/payments', '/stats', '/reviews', '/admin', '/universities'],
+      endpoints: ['/auth', '/projects', '/search', '/ai', '/files', '/images', '/analytics', '/bookmarks', '/payments', '/stats', '/reviews', '/kits', '/admin', '/universities'],
     }),
   );
 });
@@ -38,4 +39,5 @@ apiRouter.use('/bookmarks', bookmarksRouter);
 apiRouter.use('/payments', paymentsRouter);
 apiRouter.use('/stats', statsRouter);
 apiRouter.use('/reviews', reviewsRouter);
+apiRouter.use('/kits', kitsRouter);
 apiRouter.use('/admin', adminRouter);

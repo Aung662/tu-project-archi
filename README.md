@@ -28,6 +28,17 @@ manual MMK payment verification. Admins manage records, files, payments, and acc
   [Enabling video uploads](#-enabling-video-uploads-cloudinary).
 - **Bookmarks** — signed-in users can save projects to *My Library*.
 - **Manual MMK purchase flow** — create order → upload payment proof → admin verifies → access granted.
+- **Department-scoped admins (RBAC)** — a *super-admin* manages the whole platform, while a
+  *department admin* can create/edit/delete **only their own department's** projects (and payments),
+  may **read** other departments, and sees only their **own** dashboard. Enforced server-side (the DB
+  is the source of truth); super-admins bind/rescope admins from the Users tab. The last super-admin
+  can never be demoted.
+- **Website Kits (paid downloadable guides)** — a storefront of ready-to-build website types
+  (portfolio, landing page, e-commerce, blog, admin dashboard, restaurant, SaaS, event). Each kit is
+  a zip of a step-by-step build **guide + a full AI-prompt pack**, sold via a **KPay-gated** flow:
+  buyer creates an order → pays via KPay → uploads proof → (super-)admin approves → the **private**
+  zip becomes downloadable. Zips are never served from a public URL. KPay payee details are
+  configurable via `KPAY_NUMBER` / `KPAY_NAME`.
 - **Protected paid files** — streamed only after a server-side `PurchaseAccess` check; never a public URL.
 - **Consent gate** — a project can't be published unless author consent is recorded.
 - **Password reset** — single-use, hashed, 30-minute tokens (emailed in prod; returned in dev where

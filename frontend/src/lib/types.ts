@@ -9,7 +9,57 @@ export interface User {
   name: string;
   role: Role;
   adminScope?: string | null;
+  /**
+   * Department binding for admins:
+   *   role=ADMIN + adminDepartmentId = null → SUPER-ADMIN (full platform access)
+   *   role=ADMIN + adminDepartmentId set     → DEPARTMENT ADMIN (scoped)
+   */
+  adminDepartmentId?: string | null;
   createdAt: string;
+}
+
+// ── Website Kits (paid downloadable build guides) ────────────────────────────
+export interface WebsiteKit {
+  id: string;
+  slug: string;
+  title: string;
+  titleMy: string;
+  summary: string;
+  summaryMy: string;
+  priceMmk: number;
+  fileName: string | null;
+  fileSizeBytes: number | null;
+  hasFile: boolean;
+  published: boolean;
+  sortOrder: number;
+  downloadCount: number;
+}
+
+export interface KitPaymentInfo {
+  kpayNumber: string;
+  kpayName: string;
+  instructions: string;
+}
+
+export interface KitOrder {
+  id: string;
+  kitId: string;
+  amountMmk: number;
+  method: string;
+  txnRef: string;
+  status: PaymentStatus;
+  createdAt: string;
+  kit?: { id: string; slug: string; title: string; titleMy: string; priceMmk: number };
+}
+
+/** A user row as returned by the admin users list (includes resolved dept). */
+export interface AdminUser extends User {
+  adminDepartment?: {
+    id: string;
+    name: string;
+    code: string;
+    university: { shortName: string };
+  } | null;
 }
 
 export interface UniversityLite {
@@ -193,6 +243,8 @@ export interface SearchAnalytics {
 }
 
 export interface DashboardData {
+  /** True when the figures are scoped to a single department (dept admin view). */
+  scoped?: boolean;
   totals: {
     projects: number;
     published: number;

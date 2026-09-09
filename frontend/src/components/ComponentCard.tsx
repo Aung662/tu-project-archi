@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import type { ComponentItem, Category } from '@/data/components';
 import { ComponentIcon } from './ComponentIcon';
-import { ComponentDetail } from './ComponentDetail';
 import { photoFor } from '@/data/componentPhotos';
 import { downloadSvg, downloadPng } from '@/lib/iconDownload';
 import { tr, t } from '@/lib/i18n';
@@ -13,11 +12,22 @@ import { tr, t } from '@/lib/i18n';
  * the component (see componentPhotos.ts); otherwise — or if that image fails to
  * load — it falls back to the brand-neutral tinted SVG glyph, so the grid stays
  * complete and on-brand. Hover reveals SVG/PNG icon downloads (client-side).
+ *
+ * The detail view is owned by the parent page (ToolkitPage) so a single modal
+ * can page forward/backward through the whole filtered list; clicking a card
+ * just reports itself upward via `onOpen`.
  */
-export function ComponentCard({ item, category }: { item: ComponentItem; category: Category }) {
+export function ComponentCard({
+  item,
+  category,
+  onOpen,
+}: {
+  item: ComponentItem;
+  category: Category;
+  onOpen: () => void;
+}) {
   const [busy, setBusy] = useState(false);
   const [imgOk, setImgOk] = useState(true);
-  const [open, setOpen] = useState(false);
   const photo = photoFor(item.id);
   const showPhoto = Boolean(photo) && imgOk;
 
@@ -38,7 +48,7 @@ export function ComponentCard({ item, category }: { item: ComponentItem; categor
     <>
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={onOpen}
         title={tr(t.toolkitViewDetails)}
         className="card group relative flex w-full flex-col items-center gap-2 p-4 text-center transition hover:-translate-y-0.5 hover:ring-1 hover:ring-white/20"
       >
@@ -104,10 +114,6 @@ export function ComponentCard({ item, category }: { item: ComponentItem; categor
           </span>
         </div>
       </button>
-
-      {open && (
-        <ComponentDetail item={item} category={category} onClose={() => setOpen(false)} />
-      )}
     </>
   );
 }

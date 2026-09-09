@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { ComponentItem, Category } from '@/data/components';
 import { ComponentIcon } from './ComponentIcon';
 import { photoFor } from '@/data/componentPhotos';
@@ -11,19 +11,38 @@ import { tr, t, getLang } from '@/lib/i18n';
 
 /**
  * Full-screen detail view for a single toolkit component. Opened by clicking a
- * ComponentCard. Shows a large product photo (or the brand-neutral glyph when no
- * photo is registered) alongside a datasheet-style specification table, plus the
- * SVG/PNG icon downloads. Esc or a backdrop click closes it; body scroll is
- * locked while open for a focused reading experience.
+ * ComponentCard; the parent page owns which item is shown so the same modal can
+ * page through the whole filtered list. Shows a product photo (or the
+ * brand-neutral glyph when no photo is registered) with a datasheet-style spec
+ * table, usage guide and icon downloads.
+ *
+ * Navigation:
+ *  • ‹ / › arrow buttons (and ←/→ keys) step one component at a time.
+ *  • A back button (top-left) and a right-swipe gesture both close the view —
+ *    matching the phone "back" affordance. A left-swipe jumps to the next item.
+ *  • Esc or a backdrop click also closes. Body scroll is locked while open.
+ *
+ * The layout is mobile-first: on phones it is a single column with a
+ * height-capped visual (no giant empty square), expanding to two columns on md+.
  */
 export function ComponentDetail({
   item,
   category,
   onClose,
+  onPrev,
+  onNext,
+  hasPrev = false,
+  hasNext = false,
+  position,
 }: {
   item: ComponentItem;
   category: Category;
   onClose: () => void;
+  onPrev?: () => void;
+  onNext?: () => void;
+  hasPrev?: boolean;
+  hasNext?: boolean;
+  position?: { index: number; total: number };
 }) {
   const [imgOk, setImgOk] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -56,9 +75,18 @@ export function ComponentDetail({
     }
   }
 
+  // New item shown → reset the "photo failed to load" flag and scroll to top.
+  const scrollRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    setImgOk(true);
+    scrollRef.current?.scrollTo({ top: 0 });
+  }, [item.id]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
+      else if (e.key === 'ArrowLeft' && hasPrev) onPrev?.();
+      else if (e.key === 'ArrowRight' && hasNext) onNext?.();
     };
     window.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
@@ -66,7 +94,25 @@ export function ComponentDetail({
       window.removeEventListener('keydown', onKey);
       document.body.style.overflow = '';
     };
-  }, [onClose]);
+  }, [onClose, onPrev, onNext, hasPrev, hasNext]);
+
+  // ── Touch swipe: right-swipe = back (close), left-swipe = next component.
+  const touch = useRef<{ x: number; y: number } | null>(null);
+  function onTouchStart(e: React.TouchEvent) {
+    const t0 = e.touches[0];
+    touch.current = { x: t0.clientX, y: t0.clientY };
+  }
+  function onTouchEnd(e: React.TouchEvent) {
+    if (!touch.current) return;
+    const t0 = e.changedTouches[0];
+    const dx = t0.clientX - touch.current.x;
+    const dy = t0.clientY - touch.current.y;
+    touch.current = null;
+    // Only treat mostly-horizontal, deliberate swipes as navigation.
+    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    if (dx > 0) onClose(); // swipe right → go back
+    else if (hasNext) onNext?.(); // swipe left → next
+  }
 
   async function png() {
     setBusy(true);
@@ -82,29 +128,96 @@ export function ComponentDetail({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/80 p-4 backdrop-blur-sm sm:items-center"
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/80 p-0 backdrop-blur-sm sm:items-center sm:p-4"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-label={item.name}
     >
-      <div
-        className="card relative my-auto w-full max-w-3xl overflow-hidden p-0"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Close */}
+      {/* Desktop side arrows — sit outside the card, hidden on small screens
+          where the on-header arrows + swipe are used instead. */}
+      {hasPrev && (
         <button
-          onClick={onClose}
-          aria-label={tr(t.toolkitClose)}
-          className="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-full bg-black/40 text-lg text-white transition hover:bg-black/70"
+          onClick={(e) => {
+            e.stopPropagation();
+            onPrev?.();
+          }}
+          aria-label={tr(t.toolkitPrev)}
+          className="fixed left-3 top-1/2 z-[60] hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-black/50 text-2xl text-white transition hover:bg-black/80 lg:grid"
         >
-          ✕
+          ‹
         </button>
+      )}
+      {hasNext && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onNext?.();
+          }}
+          aria-label={tr(t.toolkitNext)}
+          className="fixed right-3 top-1/2 z-[60] hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-black/50 text-2xl text-white transition hover:bg-black/80 lg:grid"
+        >
+          ›
+        </button>
+      )}
+
+      <div
+        ref={scrollRef}
+        className="card relative my-0 max-h-[100dvh] w-full max-w-3xl overflow-y-auto rounded-none p-0 sm:my-auto sm:max-h-[92vh] sm:rounded-2xl"
+        onClick={(e) => e.stopPropagation()}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        {/* Sticky top bar: back + position counter + prev/next + close.
+            Always reachable while scrolling long content. */}
+        <div className="sticky top-0 z-20 flex items-center justify-between gap-2 border-b border-white/10 bg-ink-900/85 px-3 py-2 backdrop-blur-md">
+          <button
+            onClick={onClose}
+            aria-label={tr(t.toolkitBack)}
+            className="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-1.5 text-xs font-medium text-slate-200 transition hover:bg-white/10"
+          >
+            <span aria-hidden>←</span> {tr(t.toolkitBack)}
+          </button>
+
+          <div className="flex items-center gap-1.5">
+            {position && (
+              <span className="mr-1 font-latin text-[11px] tabular-nums text-slate-500">
+                {position.index + 1}/{position.total}
+              </span>
+            )}
+            <button
+              onClick={onPrev}
+              disabled={!hasPrev}
+              aria-label={tr(t.toolkitPrev)}
+              className="grid h-8 w-8 place-items-center rounded-full bg-white/[0.05] text-lg text-white transition hover:bg-white/15 disabled:opacity-30"
+            >
+              ‹
+            </button>
+            <button
+              onClick={onNext}
+              disabled={!hasNext}
+              aria-label={tr(t.toolkitNext)}
+              className="grid h-8 w-8 place-items-center rounded-full bg-white/[0.05] text-lg text-white transition hover:bg-white/15 disabled:opacity-30"
+            >
+              ›
+            </button>
+            {/* ✕ is a desktop convenience; on phones the ← Back button and the
+                right-swipe gesture are the single, clear way out (no duplicate). */}
+            <button
+              onClick={onClose}
+              aria-label={tr(t.toolkitClose)}
+              className="hidden h-8 w-8 place-items-center rounded-full bg-white/[0.05] text-base text-white transition hover:bg-white/15 sm:grid"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
 
         <div className="grid gap-0 md:grid-cols-[1fr_1.1fr]">
-          {/* Visual */}
+          {/* Visual — capped height on phones so it never leaves a huge blank
+              square; a true square only on md+ where it sits beside the info. */}
           <div className="flex flex-col">
-            <div className="relative flex aspect-square items-center justify-center bg-white p-6">
+            <div className="relative flex h-44 items-center justify-center bg-white p-6 sm:h-56 md:aspect-square md:h-auto">
               {showPhoto ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -115,7 +228,7 @@ export function ComponentDetail({
                 />
               ) : (
                 <div className={`grid h-full w-full place-items-center ${category.color}`}>
-                  <ComponentIcon glyph={item.glyph} title={item.name} className="h-32 w-32" />
+                  <ComponentIcon glyph={item.glyph} title={item.name} className="h-24 w-24 md:h-32 md:w-32" />
                 </div>
               )}
             </div>
@@ -127,7 +240,7 @@ export function ComponentDetail({
           </div>
 
           {/* Info */}
-          <div className="flex flex-col gap-4 p-6">
+          <div className="flex flex-col gap-4 p-5 sm:p-6">
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <span
@@ -366,6 +479,13 @@ export function ComponentDetail({
                 ⬇ {busy ? '…' : tr(t.toolkitDownloadPng)}
               </button>
             </div>
+
+            {/* Swipe / arrow hint — phones only */}
+            {(hasPrev || hasNext) && (
+              <p className="-mt-1 text-center text-[10px] text-slate-500 lg:hidden">
+                {tr(t.toolkitSwipeHint)}
+              </p>
+            )}
           </div>
         </div>
       </div>

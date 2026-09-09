@@ -45,6 +45,7 @@ const publicUser = (u: {
   name: string;
   role: string;
   adminScope: string | null;
+  adminDepartmentId?: string | null;
   createdAt: Date;
 }) => ({
   id: u.id,
@@ -52,6 +53,9 @@ const publicUser = (u: {
   name: u.name,
   role: u.role,
   adminScope: u.adminScope,
+  // Present so the frontend can distinguish a SUPER-ADMIN (null) from a
+  // DEPARTMENT ADMIN (set). Authorization itself is always enforced server-side.
+  adminDepartmentId: u.adminDepartmentId ?? null,
   createdAt: u.createdAt,
 });
 

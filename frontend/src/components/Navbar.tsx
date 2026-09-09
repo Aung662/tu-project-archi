@@ -14,11 +14,12 @@ import { tr, t, type Label } from '@/lib/i18n';
 const PRIMARY: { href: string; label: Label; icon: string }[] = [
   { href: '/', label: t.navSearch, icon: '🔎' },
   { href: '/browse', label: t.navBrowse, icon: '🗂️' },
-  { href: '/new', label: t.navNew, icon: '✨' },
+  { href: '/new', label: t.navNew, icon: '🆕' },
   { href: '/titles', label: t.navTitles, icon: '📋' },
   { href: '/topics', label: t.navTopics, icon: '🏷️' },
   { href: '/toolkit', label: t.navToolkit, icon: '🧰' },
-  { href: '/check', label: t.navCheck, icon: '✨' },
+  { href: '/kits', label: t.navKits, icon: '🌐' },
+  { href: '/check', label: t.navCheck, icon: '🛡️' },
   { href: '/contact', label: t.navContact, icon: '✉️' },
 ];
 
