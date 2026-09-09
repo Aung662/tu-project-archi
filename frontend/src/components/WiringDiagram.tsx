@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { buildWiring, WIRE_KIND_LABEL, type WireConn } from '@/lib/wiring';
 import type { PinRow } from '@/data/componentGuide';
-import { tr, t, getLang } from '@/lib/i18n';
+import { t, getLang, type Lang } from '@/lib/i18n';
 
 /**
  * WiringDiagram — an auto-generated, self-contained SVG showing how a component
@@ -19,12 +19,15 @@ import { tr, t, getLang } from '@/lib/i18n';
 export function WiringDiagram({
   pinout,
   componentName,
+  lang,
 }: {
   pinout: PinRow[] | undefined;
   componentName: string;
+  /** Optional language override (e.g. the in-modal toggle). Defaults to global. */
+  lang?: Lang;
 }) {
   const conns = useMemo(() => buildWiring(pinout), [pinout]);
-  const my = getLang() === 'my';
+  const my = (lang ?? getLang()) === 'my';
 
   if (conns.length === 0) return null;
 
@@ -109,7 +112,7 @@ export function WiringDiagram({
         ))}
       </div>
       <p className="border-t border-white/10 px-3 py-1.5 text-[10px] leading-relaxed text-slate-500">
-        {tr(t.guideWiringAuto)}
+        {my ? t.guideWiringAuto.my : t.guideWiringAuto.en}
       </p>
     </div>
   );

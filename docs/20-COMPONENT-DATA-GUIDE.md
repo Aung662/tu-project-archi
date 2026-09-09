@@ -55,6 +55,27 @@ Guidelines:
 
 Coverage today: **120/120 hardware components have a `code` block.** Keep it 100%.
 
+## Q&A presentation + in-modal language toggle
+
+The component detail modal presents every field as a plain-language **question**
+so a student can scan it like an FAQ:
+
+- *What is it? What is it for?* → `whatFor`
+- *Where can you use it?* → `useCases`
+- *How do you connect it? (Pinout)* → `pinout`
+- *How do you wire it? (Diagram)* → auto wiring SVG
+- *How do you use it? (Test code)* → `code`
+- *How much does it cost?* → `price`
+- *What can you use instead?* → `alternatives`
+- *Which libraries do you need?* → `libraries`
+- *What should you watch out for?* → `cautions`
+
+The modal has its **own 🌐 မြန်မာ/ENG toggle** (top-right of the header). It sets a
+local `viewLang` and every guide string is read through a local `tr()` bound to
+it — so a reader flips a single component's language **without** the global
+switcher (which would remount the app and close the modal). The choice persists
+as you page between components with ‹ / ›.
+
 ## The detail view (how data renders)
 
 - `frontend/src/app/toolkit/page.tsx` owns the grid **and** the single shared
@@ -88,3 +109,31 @@ To improve a specific diagram, refine the token classification in
 `lib/wiring.ts` (add the token to the right `classify()` bucket). The diagram
 appears automatically in `ComponentDetail` above the starter code; boards are
 skipped because they *are* the Arduino.
+
+## Downloadable test sketches (per component)
+
+Every component's authored `code` sample can be saved to a real file, not just
+copied. In `ComponentDetail` the code panel offers **⧉ Copy** *and* **⬇ Download
+file**. The download path lives in `frontend/src/lib/codeDownload.ts`:
+
+- `extForLang(lang)` maps the catalogue's human `code.lang` label to a file
+  extension — `Arduino C++`→`.ino`, `MicroPython`/`Python`→`.py`,
+  `TypeScript`→`.ts`, `Node-RED / config`/`Workflow`→`.json`, etc.; anything
+  unrecognised falls back to `.txt` (always safe).
+- `codeFilename(name, lang)` slugifies the component name; Arduino sketches get a
+  `_test` suffix (`dht22_test.ino`) so it's obvious this is a bring-up sketch and
+  the base name is a valid Arduino sketch/folder name.
+- `downloadCode()` streams a Blob → anchor download (client-side, offline-safe).
+
+So a student browsing a sensor can grab `component_test.ino`, open it in the
+Arduino IDE, and verify the hardware immediately.
+
+## Parts-list / BOM export (from favourites)
+
+`frontend/src/lib/bomExport.ts` turns a student's starred components into a
+spreadsheet-ready **Bill of Materials CSV** (`⬇ Export parts list (CSV)` next to
+the ★ Favourites chip on `/toolkit`). Columns: `#, Component, Category, Qty,
+Est. price, Notes`. It reuses `lib/csv.ts` for identical quoting to the admin
+import, follows catalogue order (stable output), and prefixes a UTF-8 BOM so
+Excel renders Burmese/price text correctly. The price comes from each guide's
+`price` field. Filename: `parts-list-YYYY-MM-DD.csv`.

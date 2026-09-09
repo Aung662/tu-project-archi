@@ -14,7 +14,8 @@ import {
 } from '@/lib/componentCompare';
 import { isFavorite, toggleFavorite, COMPONENT_FAVORITES_EVENT } from '@/lib/componentFavorites';
 import { downloadSvg, downloadPng } from '@/lib/iconDownload';
-import { tr, t, getLang } from '@/lib/i18n';
+import { downloadCode } from '@/lib/codeDownload';
+import { t, getLang, type Label, type Lang } from '@/lib/i18n';
 
 /**
  * Full-screen detail view for a single toolkit component. Opened by clicking a
@@ -60,7 +61,18 @@ export function ComponentDetail({
   const [copied, setCopied] = useState(false);
   const [inCompare, setInCompare] = useState(false);
   const [fav, setFav] = useState(false);
-  const catLabel = getLang() === 'my' ? category.labelMy : category.labelEn;
+
+  // In-modal language override. Defaults to the app's current language, but a
+  // reader can flip မြန်မာ / ENG right here to read a component's full details in
+  // the other language WITHOUT the global toggle (which would remount the app and
+  // close this modal). Every guide string below is read through `tr()`, which
+  // respects this local choice.
+  const [viewLang, setViewLang] = useState<Lang>(getLang());
+  const tr = (label: Label | undefined | null): string => {
+    if (!label) return '';
+    return label[viewLang] ?? label.en;
+  };
+  const catLabel = viewLang === 'my' ? category.labelMy : category.labelEn;
 
   // Keep the compare toggle in sync with the store (and across item changes).
   useEffect(() => {
@@ -235,6 +247,17 @@ export function ComponentDetail({
           </div>
 
           <div className="flex items-center gap-1.5">
+            {/* In-modal language switch — read this component's full details in
+                မြန်မာ or English without leaving the modal. */}
+            <button
+              onClick={() => setViewLang((l) => (l === 'my' ? 'en' : 'my'))}
+              aria-label="Toggle language"
+              title={viewLang === 'my' ? 'Read in English' : 'မြန်မာဖြင့် ဖတ်ရန်'}
+              className="inline-flex h-8 items-center gap-1 rounded-full border border-brand-400/30 bg-brand-500/15 px-2.5 text-xs font-bold text-brand-100 transition hover:bg-brand-500/25"
+            >
+              <span aria-hidden>🌐</span>
+              {viewLang === 'my' ? 'ENG' : 'မြန်မာ'}
+            </button>
             {position && (
               <span className="mr-1 font-latin text-[11px] tabular-nums text-slate-500">
                 {position.index + 1}/{position.total}
@@ -422,22 +445,30 @@ export function ComponentDetail({
                 <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500">
                   {tr(t.guideWiringDiagram)}
                 </h3>
-                <WiringDiagram pinout={guide.pinout} componentName={item.name} />
+                <WiringDiagram pinout={guide.pinout} componentName={item.name} lang={viewLang} />
               </section>
             )}
 
             {guide?.code && (
               <section>
-                <div className="mb-2 flex items-center justify-between">
+                <div className="mb-2 flex items-center justify-between gap-2">
                   <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
                     {tr(t.guideCode)}
                   </h3>
-                  <button
-                    onClick={copyCode}
-                    className="rounded-md border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[11px] text-slate-300 transition hover:bg-white/10 hover:text-white"
-                  >
-                    {copied ? tr(t.guideCodeCopied) : `⧉ ${tr(t.guideCodeCopy)}`}
-                  </button>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={copyCode}
+                      className="rounded-md border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[11px] text-slate-300 transition hover:bg-white/10 hover:text-white"
+                    >
+                      {copied ? tr(t.guideCodeCopied) : `⧉ ${tr(t.guideCodeCopy)}`}
+                    </button>
+                    <button
+                      onClick={() => guide.code && downloadCode(item.name, guide.code.lang, guide.code.code)}
+                      className="rounded-md border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[11px] text-slate-300 transition hover:bg-white/10 hover:text-white"
+                    >
+                      ⬇ {tr(t.guideCodeDownload)}
+                    </button>
+                  </div>
                 </div>
                 <div className="overflow-hidden rounded-xl border border-white/10 bg-black/40">
                   <div className="border-b border-white/5 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-slate-500">
@@ -447,6 +478,7 @@ export function ComponentDetail({
                     <code>{guide.code.code}</code>
                   </pre>
                 </div>
+                <p className="mt-1.5 text-[11px] text-slate-500">{tr(t.guideCodeHint)}</p>
               </section>
             )}
 

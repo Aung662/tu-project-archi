@@ -9,6 +9,7 @@ import { getComponentFavorites, COMPONENT_FAVORITES_EVENT } from '@/lib/componen
 import { EmptyState } from '@/components/ui';
 import { Reveal } from '@/components/motion';
 import { tr, t, getLang } from '@/lib/i18n';
+import { downloadBom } from '@/lib/bomExport';
 
 /**
  * "Components Toolkit" — a browsable, searchable library of the hardware and
@@ -93,6 +94,16 @@ export default function ToolkitPage() {
             ★ {tr(t.favOnly)}{' '}
             <span className="font-latin text-xs opacity-70">{favorites.length}</span>
           </Chip>
+        )}
+        {favorites.length > 0 && (
+          <button
+            type="button"
+            onClick={() => downloadBom(favorites)}
+            title={tr(t.bomHint)}
+            className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1.5 text-sm font-medium text-emerald-200 transition hover:bg-emerald-400/20"
+          >
+            ⬇ {tr(t.bomExport)}
+          </button>
         )}
         {CATEGORIES.map((c) => {
           const n = COMPONENTS.filter((x) => x.category === c.key).length;
