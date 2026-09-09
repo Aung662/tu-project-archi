@@ -72,6 +72,19 @@ const EnvSchema = z.object({
   // Default kit price (MMK) used when a kit has no explicit price.
   DEFAULT_KIT_PRICE_MMK: z.coerce.number().int().nonnegative().default(10000),
 
+  // ── SMTP email (optional): powers transactional emails to buyers when a
+  // payment or website-kit order is approved/rejected. When SMTP_HOST is blank
+  // every email degrades gracefully — the message is logged to the server
+  // console instead of sent, and nothing in the request flow breaks. Use any
+  // SMTP provider (Gmail app-password, Brevo, Mailtrap, etc.).
+  SMTP_HOST: z.string().default(''),
+  SMTP_PORT: z.coerce.number().int().positive().default(587),
+  SMTP_SECURE: boolish(false),
+  SMTP_USER: z.string().default(''),
+  SMTP_PASS: z.string().default(''),
+  // From-address shown on outgoing mail; falls back to SMTP_USER when blank.
+  MAIL_FROM: z.string().default('TU Project Archive <no-reply@tu-archive.mm>'),
+
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(900_000),
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(300),
   AUTH_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(20),

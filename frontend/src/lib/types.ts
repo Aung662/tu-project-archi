@@ -254,10 +254,14 @@ export interface DashboardData {
     totalPageViews: number;
     totalSearches: number;
     totalChecks: number;
+    revenueTotal?: number;
   };
   series: { date: string; views: number; uniques: number; searches: number; checks: number }[];
   byUniversity: { label: string; value: number }[];
   topPaths: { path: string; count: number }[];
+  topProjects?: { id: string; label: string; value: number }[];
+  topQueries?: { label: string; value: number }[];
+  revenueSeries?: { date: string; amount: number }[];
 }
 
 // ── Public archive stats (/stats page) ───────────────────────────────────────

@@ -100,6 +100,9 @@ adminRouter.get(
       recentPageViews,
       byUniversityRaw,
       topPathsRaw,
+      topProjectsRaw,
+      queryLogs,
+      approvedOrders,
     ] = await Promise.all([
       prisma.project.count({ where: projWhere }),
       prisma.project.count({ where: { ...projWhere, status: 'PUBLISHED' } }),
@@ -127,6 +130,25 @@ adminRouter.get(
         _count: { _all: true },
         orderBy: { _count: { path: 'desc' } },
         take: 8,
+      }),
+      // Most-viewed projects (popularity), scoped for department admins.
+      prisma.project.findMany({
+        where: projWhere,
+        select: { id: true, title: true, viewCount: true },
+        orderBy: [{ viewCount: 'desc' }, { createdAt: 'desc' }],
+        take: 8,
+      }),
+      // Top search queries in the window (what students are actually looking for).
+      prisma.searchLog.findMany({
+        where: { createdAt: { gte: since } },
+        select: { normalizedQuery: true, rawQuery: true },
+      }),
+      // Approved payments in the window, for the revenue/sales trend.
+      prisma.paymentOrder.findMany({
+        where: dep
+          ? { status: 'APPROVED', reviewedAt: { gte: since }, project: { departmentId: dep } }
+          : { status: 'APPROVED', reviewedAt: { gte: since } },
+        select: { amountMmk: true, reviewedAt: true },
       }),
     ]);
 
@@ -174,6 +196,33 @@ adminRouter.get(
 
     const topPaths = topPathsRaw.map((r) => ({ path: r.path, count: r._count._all }));
 
+    // Top projects by views (label = title, value = views).
+    const topProjects = topProjectsRaw
+      .filter((p) => (p.viewCount ?? 0) > 0)
+      .map((p) => ({ id: p.id, label: p.title, value: p.viewCount ?? 0 }));
+
+    // Most frequent search queries (case-insensitive, by normalized form).
+    const queryCounts = new Map<string, { label: string; value: number }>();
+    for (const q of queryLogs) {
+      const key = (q.normalizedQuery || q.rawQuery || '').trim().toLowerCase();
+      if (!key) continue;
+      const cur = queryCounts.get(key);
+      if (cur) cur.value++;
+      else queryCounts.set(key, { label: q.rawQuery || key, value: 1 });
+    }
+    const topQueries = [...queryCounts.values()]
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 8);
+
+    // Daily revenue (approved payments) over the same window.
+    const revenueByDayMap = zero();
+    for (const o of approvedOrders) {
+      const k = o.reviewedAt ? dayKey(o.reviewedAt) : null;
+      if (k && k in revenueByDayMap) revenueByDayMap[k] += o.amountMmk;
+    }
+    const revenueSeries = days.map((d) => ({ date: d, amount: revenueByDayMap[d] }));
+    const revenueTotal = approvedOrders.reduce((s, o) => s + o.amountMmk, 0);
+
     res.json(
       ok({
         scoped: Boolean(dep),
@@ -186,10 +235,14 @@ adminRouter.get(
           totalPageViews,
           totalSearches,
           totalChecks,
+          revenueTotal,
         },
         series,
         byUniversity,
         topPaths,
+        topProjects,
+        topQueries,
+        revenueSeries,
       }),
     );
   }),
@@ -260,6 +313,137 @@ adminRouter.post(
     const created = await createProject(req.body, req.user!.sub);
     await audit({ actorId: req.user!.sub, action: 'PROJECT_CREATED', entityType: 'Project', entityId: created.id });
     res.status(201).json(ok(created));
+  }),
+);
+
+// ── Bulk import (CSV → JSON rows) ────────────────────────────────────────────
+// The client parses the CSV/Excel to rows and posts them here. University and
+// department are referenced by human-friendly shortName / code (not cuid) so a
+// spreadsheet is easy to author. Each row is validated + created independently:
+// one bad row never aborts the others, and a per-row report is returned.
+const bulkRowSchema = z.object({
+  title: z.string().min(3).max(300),
+  abstract: z.string().min(10),
+  keywords: z.string().max(500).optional(),
+  year: z.coerce.number().int().min(1990).max(2100),
+  level: z.enum(['YEAR_3', 'YEAR_5', 'FINAL_YEAR', 'OTHER']),
+  authorsText: z.string().max(500).optional(),
+  supervisorName: z.string().max(200).optional(),
+  university: z.string().min(1), // shortName OR name OR id
+  department: z.string().min(1), // code OR name OR id (within that university)
+  priceMmk: z.coerce.number().int().nonnegative().optional(),
+  status: z.enum(['DRAFT', 'PUBLISHED', 'ARCHIVED']).optional(),
+  hasConsent: z
+    .union([z.boolean(), z.string()])
+    .optional()
+    .transform((v) => v === true || v === 'true' || v === '1' || v === 'yes'),
+});
+
+adminRouter.post(
+  '/projects/bulk-import',
+  validate({
+    body: z.object({
+      rows: z.array(z.record(z.string(), z.any())).min(1).max(500),
+      // Dry-run validates + reports without creating anything.
+      dryRun: z.boolean().optional(),
+    }),
+  }),
+  asyncHandler(async (req, res) => {
+    const scope = await resolveAdminScope(req.user!.sub);
+    const dryRun = Boolean(req.body.dryRun);
+    const rows = req.body.rows as Record<string, unknown>[];
+
+    // Resolve lookup tables once.
+    const [unis, depts] = await Promise.all([
+      prisma.university.findMany({ select: { id: true, name: true, shortName: true } }),
+      prisma.department.findMany({ select: { id: true, name: true, code: true, universityId: true } }),
+    ]);
+    const findUni = (key: string) => {
+      const k = key.trim().toLowerCase();
+      return unis.find(
+        (u) => u.id.toLowerCase() === k || u.shortName.toLowerCase() === k || u.name.toLowerCase() === k,
+      );
+    };
+    const findDept = (key: string, universityId: string) => {
+      const k = key.trim().toLowerCase();
+      return depts.find(
+        (d) =>
+          d.universityId === universityId &&
+          (d.id.toLowerCase() === k || d.code.toLowerCase() === k || d.name.toLowerCase() === k),
+      );
+    };
+
+    const results: { row: number; ok: boolean; id?: string; title?: string; error?: string }[] = [];
+    let created = 0;
+
+    for (let i = 0; i < rows.length; i++) {
+      const rowNum = i + 1;
+      const parsed = bulkRowSchema.safeParse(rows[i]);
+      if (!parsed.success) {
+        results.push({ row: rowNum, ok: false, error: parsed.error.issues.map((x) => `${x.path.join('.')}: ${x.message}`).join('; ') });
+        continue;
+      }
+      const r = parsed.data;
+      const uni = findUni(r.university);
+      if (!uni) {
+        results.push({ row: rowNum, ok: false, error: `Unknown university "${r.university}"` });
+        continue;
+      }
+      const dept = findDept(r.department, uni.id);
+      if (!dept) {
+        results.push({ row: rowNum, ok: false, error: `Unknown department "${r.department}" in ${uni.shortName}` });
+        continue;
+      }
+      // RBAC: a department admin may only import into their own department.
+      try {
+        assertCanWriteProjectInDept(scope, dept.id);
+      } catch {
+        results.push({ row: rowNum, ok: false, error: 'Not allowed to import into this department' });
+        continue;
+      }
+
+      if (dryRun) {
+        results.push({ row: rowNum, ok: true, title: r.title });
+        continue;
+      }
+
+      try {
+        const proj = await createProject(
+          {
+            title: r.title,
+            abstract: r.abstract,
+            keywords: r.keywords,
+            year: r.year,
+            level: r.level,
+            authorsText: r.authorsText,
+            supervisorName: r.supervisorName,
+            universityId: uni.id,
+            departmentId: dept.id,
+            priceMmk: r.priceMmk,
+            status: r.status,
+            hasConsent: r.hasConsent,
+          } as any,
+          req.user!.sub,
+        );
+        created++;
+        results.push({ row: rowNum, ok: true, id: proj.id, title: proj.title });
+      } catch (err) {
+        results.push({ row: rowNum, ok: false, error: err instanceof Error ? err.message : 'Create failed' });
+      }
+    }
+
+    if (!dryRun && created > 0) {
+      await audit({
+        actorId: req.user!.sub,
+        action: 'PROJECTS_BULK_IMPORTED',
+        entityType: 'Project',
+        entityId: 'bulk',
+        metadata: { created, total: rows.length },
+      });
+    }
+
+    const succeeded = results.filter((r) => r.ok).length;
+    res.json(ok({ dryRun, total: rows.length, succeeded, failed: rows.length - succeeded, created, results }));
   }),
 );
 

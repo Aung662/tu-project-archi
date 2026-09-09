@@ -1,9 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { COMPONENTS, CATEGORIES, type CategoryKey } from '@/data/components';
 import { ComponentCard } from '@/components/ComponentCard';
 import { ComponentDetail } from '@/components/ComponentDetail';
+import { ComponentCompare } from '@/components/ComponentCompare';
+import { getComponentFavorites, COMPONENT_FAVORITES_EVENT } from '@/lib/componentFavorites';
 import { EmptyState } from '@/components/ui';
 import { Reveal } from '@/components/motion';
 import { tr, t, getLang } from '@/lib/i18n';
@@ -17,17 +19,33 @@ import { tr, t, getLang } from '@/lib/i18n';
 export default function ToolkitPage() {
   const [query, setQuery] = useState('');
   const [cat, setCat] = useState<'' | CategoryKey>('');
+  const [favOnly, setFavOnly] = useState(false);
+  const [favorites, setFavorites] = useState<string[]>([]);
+
+  // Track the favourites set (localStorage) so the ★ filter and count stay live.
+  useEffect(() => {
+    const sync = () => setFavorites(getComponentFavorites());
+    sync();
+    window.addEventListener(COMPONENT_FAVORITES_EVENT, sync);
+    window.addEventListener('storage', sync);
+    return () => {
+      window.removeEventListener(COMPONENT_FAVORITES_EVENT, sync);
+      window.removeEventListener('storage', sync);
+    };
+  }, []);
 
   const q = query.trim().toLowerCase();
+  const favSet = useMemo(() => new Set(favorites), [favorites]);
 
   const filtered = useMemo(() => {
     return COMPONENTS.filter((c) => {
+      if (favOnly && !favSet.has(c.id)) return false;
       if (cat && c.category !== cat) return false;
       if (!q) return true;
       const hay = `${c.name} ${c.blurb} ${(c.tags ?? []).join(' ')} ${c.category}`.toLowerCase();
       return hay.includes(q);
     });
-  }, [q, cat]);
+  }, [q, cat, favOnly, favSet]);
 
   const catById = useMemo(() => Object.fromEntries(CATEGORIES.map((c) => [c.key, c])), []);
   const hardwareCats = CATEGORIES.filter((c) => c.group === 'hardware');
@@ -66,10 +84,16 @@ export default function ToolkitPage() {
 
       {/* Category chips */}
       <div className="flex flex-wrap gap-2">
-        <Chip active={cat === ''} onClick={() => setCat('')}>
+        <Chip active={cat === '' && !favOnly} onClick={() => { setCat(''); setFavOnly(false); }}>
           ✨ {tr(t.toolkitAll)}{' '}
           <span className="font-latin text-xs opacity-70">{COMPONENTS.length}</span>
         </Chip>
+        {favorites.length > 0 && (
+          <Chip active={favOnly} onClick={() => setFavOnly((v) => !v)}>
+            ★ {tr(t.favOnly)}{' '}
+            <span className="font-latin text-xs opacity-70">{favorites.length}</span>
+          </Chip>
+        )}
         {CATEGORIES.map((c) => {
           const n = COMPONENTS.filter((x) => x.category === c.key).length;
           return (
@@ -81,7 +105,9 @@ export default function ToolkitPage() {
         })}
       </div>
 
-      {filtered.length === 0 && <EmptyState title={tr(t.toolkitEmpty)} />}
+      {filtered.length === 0 && (
+        <EmptyState title={favOnly ? tr(t.favEmpty) : tr(t.toolkitEmpty)} />
+      )}
 
       {/* Hardware section */}
       {hardwareItems.length > 0 && (
@@ -129,6 +155,9 @@ export default function ToolkitPage() {
           position={{ index: selIndex, total: ordered.length }}
         />
       )}
+
+      {/* Floating compare tray + side-by-side spec modal. */}
+      <ComponentCompare onOpenComponent={(id) => setSelectedId(id)} />
     </div>
   );
 }

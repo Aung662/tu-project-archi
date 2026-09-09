@@ -69,3 +69,22 @@ Coverage today: **120/120 hardware components have a `code` block.** Keep it 100
 
 Because navigation is derived from the filtered list, it always matches exactly
 what the user sees after searching/filtering — no extra state to keep in sync.
+
+## Wiring diagrams (auto-generated)
+
+`frontend/src/lib/wiring.ts` + `frontend/src/components/WiringDiagram.tsx` render
+a *typical* Arduino-UNO connection diagram for every non-board hardware component
+that has `pinout` data — **no hand-drawn SVGs to maintain**. The mapping is
+heuristic and honestly labelled "example":
+
+- power (VCC/VDD/VIN/5V/3V3) → `5V`
+- ground (GND/-) → `GND`
+- `SDA`→`A4`, `SCL`→`A5` (I²C)
+- analog (`AO`/`A`/`PO`) → `A0, A1…`
+- digital (`DO`/`DATA`/`OUT`/`TRIG`/`ECHO`/…) → `D2, D3…` (TRIG/ECHO pinned to
+  D9/D10 to match the HC-SR04 starter sketch)
+
+To improve a specific diagram, refine the token classification in
+`lib/wiring.ts` (add the token to the right `classify()` bucket). The diagram
+appears automatically in `ComponentDetail` above the starter code; boards are
+skipped because they *are* the Arduino.

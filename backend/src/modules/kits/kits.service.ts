@@ -11,6 +11,8 @@ import { prisma } from '../../lib/prisma.js';
 import { BadRequest, Conflict, NotFound } from '../../lib/errors.js';
 import { deletePrivateFile } from '../../lib/storage.js';
 import { audit } from '../../lib/audit.js';
+import { sendMailAsync } from '../../lib/mailer.js';
+import { env } from '../../config/env.js';
 
 /** Shape a kit for public listing (never leaks the private storage key). */
 function toPublicKit(k: {
@@ -160,7 +162,50 @@ export async function approveKitOrder(adminId: string, orderId: string, note?: s
     entityId: orderId,
     metadata: { userId: order.userId, kitId: order.kitId, amountMmk: order.amountMmk },
   });
+  void notifyKitDecision(order.userId, order.kitId, 'APPROVED', note);
   return updated;
+}
+
+/** Best-effort buyer email for a website-kit order decision. */
+async function notifyKitDecision(
+  userId: string,
+  kitId: string,
+  decision: 'APPROVED' | 'REJECTED',
+  note?: string,
+) {
+  try {
+    const [user, kit] = await Promise.all([
+      prisma.user.findUnique({ where: { id: userId }, select: { email: true, name: true } }),
+      prisma.websiteKit.findUnique({ where: { id: kitId }, select: { title: true, slug: true } }),
+    ]);
+    if (!user?.email) return;
+    const title = kit?.title ?? 'your website kit';
+    const link = `${env.FRONTEND_ORIGIN}/kits`;
+    if (decision === 'APPROVED') {
+      sendMailAsync({
+        to: user.email,
+        subject: `✅ Kit unlocked — ${title}`,
+        text:
+          `Hi ${user.name || 'there'},\n\n` +
+          `Your payment for the "${title}" website kit has been approved. You can download it from your kits page:\n${link}\n\n` +
+          (note ? `Note from the reviewer: ${note}\n\n` : '') +
+          `Happy building!\nTU Project Archive`,
+      });
+    } else {
+      sendMailAsync({
+        to: user.email,
+        subject: `⚠ Kit payment could not be verified — ${title}`,
+        text:
+          `Hi ${user.name || 'there'},\n\n` +
+          `We couldn't verify your payment for the "${title}" website kit, so it was not approved.\n\n` +
+          (note ? `Reason: ${note}\n\n` : '') +
+          `You can re-submit your payment proof here:\n${link}\n\n` +
+          `TU Project Archive`,
+      });
+    }
+  } catch {
+    /* best-effort */
+  }
 }
 
 export async function rejectKitOrder(adminId: string, orderId: string, note?: string) {
@@ -179,6 +224,7 @@ export async function rejectKitOrder(adminId: string, orderId: string, note?: st
     entityId: orderId,
     metadata: { note },
   });
+  void notifyKitDecision(order.userId, order.kitId, 'REJECTED', note);
   return updated;
 }
 

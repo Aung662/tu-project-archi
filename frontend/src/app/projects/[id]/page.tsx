@@ -16,6 +16,7 @@ import { BookmarkButton } from '@/components/BookmarkButton';
 import { CompareButton } from '@/components/CompareButton';
 import { CollectionButton } from '@/components/CollectionButton';
 import { ShareButton } from '@/components/ShareButton';
+import { ExportButton } from '@/components/ExportButton';
 import { CitationBox } from '@/components/CitationBox';
 import { NoteEditor } from '@/components/NoteEditor';
 import { ReviewSection } from '@/components/ReviewSection';
@@ -141,6 +142,20 @@ export default function ProjectDetailPage() {
               <span aria-hidden>🖨</span>
               <span className="hidden sm:inline">{tr(t.printLabel)}</span>
             </button>
+            <ExportButton
+              project={{
+                id: project.id,
+                title: project.title,
+                year: project.year,
+                level: project.level,
+                abstract: project.abstract,
+                keywords: project.keywords,
+                authorsText: project.authorsText,
+                supervisorName: project.supervisorName,
+                university: project.university,
+                department: project.department,
+              }}
+            />
           </div>
         </div>
 

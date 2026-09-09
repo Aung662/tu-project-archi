@@ -86,6 +86,62 @@ function Legend({ color, label }: { color: string; label: string }) {
   );
 }
 
+/** Vertical bar chart of daily revenue (MMK). Dependency-free inline SVG. */
+export function RevenueChart({ data }: { data: { date: string; amount: number }[] }) {
+  const W = 720;
+  const H = 200;
+  const P = { top: 16, right: 16, bottom: 28, left: 44 };
+  const iw = W - P.left - P.right;
+  const ih = H - P.top - P.bottom;
+  const max = Math.max(1, ...data.map((d) => d.amount));
+  const n = Math.max(1, data.length);
+  const bw = (iw / n) * 0.62;
+  const gap = iw / n;
+  const y = (v: number) => P.top + ih - (v / max) * ih;
+  const fmt = (v: number) => (v >= 1000 ? `${Math.round(v / 1000)}k` : String(v));
+
+  const hasData = data.some((d) => d.amount > 0);
+
+  return (
+    <div className="w-full overflow-x-auto">
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full min-w-[560px]" role="img" aria-label="Daily revenue chart">
+        <defs>
+          <linearGradient id="gRev" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#33e6c4" />
+            <stop offset="100%" stopColor="#6d8bff" />
+          </linearGradient>
+        </defs>
+        {[0, 0.5, 1].map((f, i) => {
+          const gv = Math.round(max * f);
+          return (
+            <g key={i}>
+              <line x1={P.left} x2={W - P.right} y1={y(gv)} y2={y(gv)} stroke="rgba(255,255,255,0.08)" />
+              <text x={4} y={y(gv) + 4} fill="rgba(255,255,255,0.4)" fontSize={10}>
+                {fmt(gv)}
+              </text>
+            </g>
+          );
+        })}
+        {data.map((d, i) => {
+          const x = P.left + i * gap + (gap - bw) / 2;
+          const h = (d.amount / max) * ih;
+          return (
+            <g key={i}>
+              <rect x={x} y={P.top + ih - h} width={bw} height={Math.max(0, h)} rx={2} fill="url(#gRev)" />
+              {i % Math.ceil(data.length / 7) === 0 && (
+                <text x={x + bw / 2} y={H - 8} fill="rgba(255,255,255,0.4)" fontSize={9} textAnchor="middle">
+                  {d.date.slice(5)}
+                </text>
+              )}
+            </g>
+          );
+        })}
+      </svg>
+      {!hasData && <p className="mt-1 text-xs text-slate-500">No approved sales in this window yet.</p>}
+    </div>
+  );
+}
+
 /** Horizontal bar chart for categorical distributions. */
 export function BarList({
   data,

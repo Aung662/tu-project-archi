@@ -2,6 +2,8 @@ import { prisma } from '../../lib/prisma.js';
 import { BadRequest, Conflict, NotFound } from '../../lib/errors.js';
 import { audit } from '../../lib/audit.js';
 import { deletePrivateFile } from '../../lib/storage.js';
+import { sendMailAsync } from '../../lib/mailer.js';
+import { env } from '../../config/env.js';
 
 export async function createOrder(
   userId: string,
@@ -148,7 +150,52 @@ export async function approveOrder(adminId: string, orderId: string, note?: stri
     entityId: orderId,
     metadata: { userId: order.userId, projectId: order.projectId, amountMmk: order.amountMmk },
   });
+
+  // Best-effort email to the buyer (no-op unless SMTP is configured).
+  void notifyOrderDecision(order.userId, order.projectId, 'APPROVED', note);
   return result;
+}
+
+/** Compose + send the buyer notification for a payment decision (best-effort). */
+async function notifyOrderDecision(
+  userId: string,
+  projectId: string,
+  decision: 'APPROVED' | 'REJECTED',
+  note?: string,
+) {
+  try {
+    const [user, project] = await Promise.all([
+      prisma.user.findUnique({ where: { id: userId }, select: { email: true, name: true } }),
+      prisma.project.findUnique({ where: { id: projectId }, select: { title: true } }),
+    ]);
+    if (!user?.email) return;
+    const title = project?.title ?? 'your project';
+    const link = `${env.FRONTEND_ORIGIN}/projects/${projectId}`;
+    if (decision === 'APPROVED') {
+      sendMailAsync({
+        to: user.email,
+        subject: `✅ Payment approved — ${title}`,
+        text:
+          `Hi ${user.name || 'there'},\n\n` +
+          `Your payment for "${title}" has been approved. You can now download the full file here:\n${link}\n\n` +
+          (note ? `Note from the reviewer: ${note}\n\n` : '') +
+          `Thanks for using TU Project Archive.`,
+      });
+    } else {
+      sendMailAsync({
+        to: user.email,
+        subject: `⚠ Payment could not be verified — ${title}`,
+        text:
+          `Hi ${user.name || 'there'},\n\n` +
+          `We were unable to verify your payment for "${title}", so the order was not approved.\n\n` +
+          (note ? `Reason: ${note}\n\n` : '') +
+          `If you believe this is a mistake, please re-submit your payment proof here:\n${link}\n\n` +
+          `TU Project Archive`,
+      });
+    }
+  } catch {
+    /* notification is best-effort — never affects the request */
+  }
 }
 
 export async function rejectOrder(adminId: string, orderId: string, note?: string) {
@@ -167,5 +214,7 @@ export async function rejectOrder(adminId: string, orderId: string, note?: strin
     entityId: orderId,
     metadata: { note },
   });
+
+  void notifyOrderDecision(order.userId, order.projectId, 'REJECTED', note);
   return updated;
 }

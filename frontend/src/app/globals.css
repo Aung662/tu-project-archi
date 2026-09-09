@@ -453,10 +453,25 @@ kbd,
 :root[data-theme='light'] .bg-white\/5 { background-color: rgba(15, 23, 42, 0.04) !important; }
 :root[data-theme='light'] .bg-white\/10 { background-color: rgba(15, 23, 42, 0.07) !important; }
 :root[data-theme='light'] .bg-white\/20 { background-color: rgba(15, 23, 42, 0.12) !important; }
+
+/* Bracketed white-alpha surfaces (bg-white/[0.02…0.06]) are used heavily for
+   cards, chips, table zebra and tiles. Without these remaps they'd be invisible
+   white-on-white in light mode. */
+:root[data-theme='light'] .bg-white\/\[0\.02\] { background-color: rgba(15, 23, 42, 0.025) !important; }
+:root[data-theme='light'] .bg-white\/\[0\.03\] { background-color: rgba(15, 23, 42, 0.035) !important; }
+:root[data-theme='light'] .bg-white\/\[0\.04\] { background-color: rgba(15, 23, 42, 0.05) !important; }
+:root[data-theme='light'] .bg-white\/\[0\.05\] { background-color: rgba(15, 23, 42, 0.06) !important; }
+:root[data-theme='light'] .bg-white\/\[0\.06\] { background-color: rgba(15, 23, 42, 0.07) !important; }
+:root[data-theme='light'] .hover\:bg-white\/\[0\.05\]:hover { background-color: rgba(15, 23, 42, 0.06) !important; }
+:root[data-theme='light'] .ring-white\/\[0\.08\] { --tw-ring-color: rgba(15, 23, 42, 0.08) !important; }
 :root[data-theme='light'] .bg-ink-800 { background-color: #e7ecf6 !important; }
 :root[data-theme='light'] .bg-ink-900 { background-color: #dde4f1 !important; }
 :root[data-theme='light'] .bg-ink-800\/60 { background-color: rgba(220, 228, 241, 0.6) !important; }
+:root[data-theme='light'] .bg-ink-800\/90 { background-color: rgba(231, 236, 246, 0.92) !important; }
 :root[data-theme='light'] .bg-ink-900\/70 { background-color: rgba(255, 255, 255, 0.8) !important; }
+:root[data-theme='light'] .bg-ink-900\/85 { background-color: rgba(255, 255, 255, 0.9) !important; }
+:root[data-theme='light'] .bg-ink-900\/90 { background-color: rgba(255, 255, 255, 0.93) !important; }
+:root[data-theme='light'] .bg-ink-900\/95 { background-color: rgba(255, 255, 255, 0.97) !important; }
 
 :root[data-theme='light'] .border-white\/10 { border-color: rgba(15, 23, 42, 0.1) !important; }
 :root[data-theme='light'] .border-white\/15 { border-color: rgba(15, 23, 42, 0.14) !important; }

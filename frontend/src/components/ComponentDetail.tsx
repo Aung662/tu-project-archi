@@ -6,6 +6,13 @@ import { ComponentIcon } from './ComponentIcon';
 import { photoFor } from '@/data/componentPhotos';
 import { specsFor } from '@/data/componentSpecs';
 import { guideFor, type Difficulty } from '@/data/componentGuide';
+import { WiringDiagram } from './WiringDiagram';
+import {
+  isInComponentCompare,
+  toggleComponentCompare,
+  COMPONENT_COMPARE_EVENT,
+} from '@/lib/componentCompare';
+import { isFavorite, toggleFavorite, COMPONENT_FAVORITES_EVENT } from '@/lib/componentFavorites';
 import { downloadSvg, downloadPng } from '@/lib/iconDownload';
 import { tr, t, getLang } from '@/lib/i18n';
 
@@ -51,7 +58,25 @@ export function ComponentDetail({
   const specs = specsFor(item.id);
   const guide = guideFor(item.id);
   const [copied, setCopied] = useState(false);
+  const [inCompare, setInCompare] = useState(false);
+  const [fav, setFav] = useState(false);
   const catLabel = getLang() === 'my' ? category.labelMy : category.labelEn;
+
+  // Keep the compare toggle in sync with the store (and across item changes).
+  useEffect(() => {
+    const sync = () => setInCompare(isInComponentCompare(item.id));
+    sync();
+    window.addEventListener(COMPONENT_COMPARE_EVENT, sync);
+    return () => window.removeEventListener(COMPONENT_COMPARE_EVENT, sync);
+  }, [item.id]);
+
+  // Keep the favourite star in sync with the store (and across item changes).
+  useEffect(() => {
+    const sync = () => setFav(isFavorite(item.id));
+    sync();
+    window.addEventListener(COMPONENT_FAVORITES_EVENT, sync);
+    return () => window.removeEventListener(COMPONENT_FAVORITES_EVENT, sync);
+  }, [item.id]);
 
   const diffLabel: Record<Difficulty, string> = {
     beginner: tr(t.guideDiffBeginner),
@@ -171,13 +196,43 @@ export function ComponentDetail({
         {/* Sticky top bar: back + position counter + prev/next + close.
             Always reachable while scrolling long content. */}
         <div className="sticky top-0 z-20 flex items-center justify-between gap-2 border-b border-white/10 bg-ink-900/85 px-3 py-2 backdrop-blur-md">
-          <button
-            onClick={onClose}
-            aria-label={tr(t.toolkitBack)}
-            className="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-1.5 text-xs font-medium text-slate-200 transition hover:bg-white/10"
-          >
-            <span aria-hidden>←</span> {tr(t.toolkitBack)}
-          </button>
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={onClose}
+              aria-label={tr(t.toolkitBack)}
+              className="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-1.5 text-xs font-medium text-slate-200 transition hover:bg-white/10"
+            >
+              <span aria-hidden>←</span> {tr(t.toolkitBack)}
+            </button>
+            <button
+              onClick={() => {
+                const ok = toggleComponentCompare(item.id);
+                setInCompare(ok);
+                if (!ok && !inCompare) alert(tr(t.cmpFull));
+              }}
+              aria-pressed={inCompare}
+              className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition ${
+                inCompare
+                  ? 'border-brand-400/40 bg-brand-500/20 text-brand-100'
+                  : 'border-white/10 bg-white/[0.04] text-slate-200 hover:bg-white/10'
+              }`}
+            >
+              <span aria-hidden>⇄</span>
+              <span className="hidden sm:inline">{inCompare ? tr(t.cmpAdded) : tr(t.cmpAdd)}</span>
+            </button>
+            <button
+              onClick={() => setFav(toggleFavorite(item.id))}
+              aria-pressed={fav}
+              title={fav ? tr(t.favAdded) : tr(t.favAdd)}
+              className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition ${
+                fav
+                  ? 'border-amber-300/40 bg-amber-300/15 text-amber-200'
+                  : 'border-white/10 bg-white/[0.04] text-slate-200 hover:bg-white/10'
+              }`}
+            >
+              <span aria-hidden>{fav ? '★' : '☆'}</span>
+            </button>
+          </div>
 
           <div className="flex items-center gap-1.5">
             {position && (
@@ -357,6 +412,17 @@ export function ComponentDetail({
                 <p className="rounded-lg border border-amber-300/20 bg-amber-300/[0.05] px-3 py-2 text-sm leading-relaxed text-amber-100/90">
                   {tr(guide.wiring)}
                 </p>
+              </section>
+            )}
+
+            {/* Auto-generated wiring diagram — only for non-board hardware that
+                has pinout data (boards ARE the Arduino, so no self-diagram). */}
+            {category.key !== 'boards' && guide?.pinout && guide.pinout.length > 0 && (
+              <section>
+                <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                  {tr(t.guideWiringDiagram)}
+                </h3>
+                <WiringDiagram pinout={guide.pinout} componentName={item.name} />
               </section>
             )}
 

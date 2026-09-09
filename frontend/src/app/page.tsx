@@ -13,6 +13,12 @@ import { Reveal, StaggerGrid, StaggerItem, TiltCard, Magnetic } from '@/componen
 import { RecentlyViewed } from '@/components/RecentlyViewed';
 import { TrendingProjects } from '@/components/TrendingProjects';
 import { NewArrivals } from '@/components/NewArrivals';
+import {
+  getRecentSearches,
+  addRecentSearch,
+  clearRecentSearches,
+  RECENT_SEARCHES_EVENT,
+} from '@/lib/recentSearches';
 
 interface Suggestion {
   id: string;
@@ -27,6 +33,19 @@ export default function HomePage() {
   const [result, setResult] = useState<SearchResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // ── Recent searches (auto-captured, localStorage) ─────────
+  const [recent, setRecent] = useState<string[]>([]);
+  useEffect(() => {
+    const sync = () => setRecent(getRecentSearches());
+    sync();
+    window.addEventListener(RECENT_SEARCHES_EVENT, sync);
+    window.addEventListener('storage', sync);
+    return () => {
+      window.removeEventListener(RECENT_SEARCHES_EVENT, sync);
+      window.removeEventListener('storage', sync);
+    };
+  }, []);
 
   // ── Autocomplete ──────────────────────────────────────────
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -90,16 +109,19 @@ export default function HomePage() {
     }
   }
 
-  async function runSearch(e?: React.FormEvent) {
+  async function runSearch(e?: React.FormEvent, override?: string) {
     e?.preventDefault();
-    if (!q.trim()) return;
+    const query = (override ?? q).trim();
+    if (!query) return;
+    if (override !== undefined) setQ(override);
     suppressRef.current = true;
     setShowSuggest(false);
     setLoading(true);
     setError(null);
     try {
-      const data = await api.get<SearchResult>(`/search${api.qs({ q, limit: 25 })}`);
+      const data = await api.get<SearchResult>(`/search${api.qs({ q: query, limit: 25 })}`);
       setResult(data);
+      addRecentSearch(query); // remember successful searches for one-tap re-run
     } catch (err) {
       setError(err instanceof Error ? err.message : tr(t.searchFailed));
     } finally {
@@ -220,6 +242,36 @@ export default function HomePage() {
             </Link>
           </Magnetic>
         </motion.div>
+
+        {/* Recent searches — auto-captured, one tap to re-run. */}
+        {recent.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="mt-6 flex flex-wrap items-center justify-center gap-2"
+          >
+            <span className="text-xs font-medium text-slate-500">{tr(t.recentSearches)}:</span>
+            {recent.map((r) => (
+              <button
+                key={r}
+                type="button"
+                onClick={() => runSearch(undefined, r)}
+                className="max-w-[220px] truncate rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs text-slate-300 transition hover:border-brand-400/40 hover:bg-white/10 hover:text-white"
+                title={r}
+              >
+                🔎 {r}
+              </button>
+            ))}
+            <button
+              type="button"
+              onClick={() => clearRecentSearches()}
+              className="rounded-full px-2 py-1 text-xs text-slate-500 transition hover:text-rose-300"
+            >
+              {tr(t.recentSearchesClear)}
+            </button>
+          </motion.div>
+        )}
       </section>
 
       {/* ── Results ──────────────────────────────────────────── */}

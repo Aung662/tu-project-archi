@@ -6,6 +6,7 @@ import { api } from '@/lib/api';
 import type { Paginated, ProjectCard as Card } from '@/lib/types';
 import { Spinner, EmptyState, StatusBadge, Alert } from '@/components/ui';
 import { ProjectForm } from '@/components/ProjectForm';
+import { BulkImport } from '@/components/BulkImport';
 import { tr, t, statusLabel } from '@/lib/i18n';
 
 export default function AdminProjects() {
@@ -16,6 +17,7 @@ export default function AdminProjects() {
   const [status, setStatus] = useState('');
   const [editing, setEditing] = useState<Card | null>(null);
   const [creating, setCreating] = useState(false);
+  const [importing, setImporting] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -83,10 +85,25 @@ export default function AdminProjects() {
             <option value="ARCHIVED">{tr(statusLabel.ARCHIVED)}</option>
           </select>
         </div>
-        <button onClick={() => setCreating(true)} className="btn-primary">
-          {tr(t.aNewProject)}
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setImporting(true)} className="btn-secondary">
+            {tr(t.aBulkImport)}
+          </button>
+          <button onClick={() => setCreating(true)} className="btn-primary">
+            {tr(t.aNewProject)}
+          </button>
+        </div>
       </div>
+
+      {importing && (
+        <BulkImport
+          onClose={() => setImporting(false)}
+          onDone={() => {
+            setMsg(tr(t.aBulkImportNow));
+            load();
+          }}
+        />
+      )}
 
       {msg && <Alert kind="success">{msg}</Alert>}
 
