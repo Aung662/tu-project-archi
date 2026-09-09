@@ -137,3 +137,29 @@ Est. price, Notes`. It reuses `lib/csv.ts` for identical quoting to the admin
 import, follows catalogue order (stable output), and prefixes a UTF-8 BOM so
 Excel renders Burmese/price text correctly. The price comes from each guide's
 `price` field. Filename: `parts-list-YYYY-MM-DD.csv`.
+
+## Wiring hub — every connection in one place (`/wiring`)
+
+`frontend/src/app/wiring/page.tsx` is a dedicated **"Wiring & Pin Connections"**
+page (nav: 🔌 ချိတ်ဆက်ပုံများ / Wiring) that gathers EVERY Arduino ↔ component
+connection into one browsable place — instead of only inside each component's
+detail modal.
+
+- Source set: all hardware components with pinout data **except boards** (a board
+  *is* the Arduino), computed once at module scope from `buildWiring()` — **95
+  diagrams** across sensors, displays/LCD, actuators, comms, power, io,
+  industrial, robotics.
+- Each card shows the auto-generated **diagram** (reuses `<WiringDiagram/>`) OR a
+  **pin-to-pin connection table** (Arduino pin ↔ component pin ↔ wire type),
+  toggled by a page-level **Diagram / List** switch.
+- Search box + category chips (only categories that actually have wiring show).
+- Per-card **⬇ Download diagram (SVG)** via `frontend/src/lib/wiringSvg.ts`
+  (`buildWiringSvg` mirrors the React diagram as a standalone string; Noto Sans
+  Myanmar in the font stack so Burmese labels render in the saved file).
+- Page-level 🌐 language toggle (independent of global) + **🔍 View full details**
+  opens the same `ComponentDetail` modal.
+- Honest footer note: diagrams are auto-generated examples — confirm against the
+  datasheet + sketch pin numbers.
+
+No new component data was authored or modified — the hub is a new *view* over the
+existing `pinout` data, so original data is untouched.

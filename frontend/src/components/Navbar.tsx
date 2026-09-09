@@ -18,6 +18,7 @@ const PRIMARY: { href: string; label: Label; icon: string }[] = [
   { href: '/titles', label: t.navTitles, icon: '📋' },
   { href: '/topics', label: t.navTopics, icon: '🏷️' },
   { href: '/toolkit', label: t.navToolkit, icon: '🧰' },
+  { href: '/wiring', label: t.navWiring, icon: '🔌' },
   { href: '/kits', label: t.navKits, icon: '🌐' },
   { href: '/check', label: t.navCheck, icon: '🛡️' },
   { href: '/contact', label: t.navContact, icon: '✉️' },
