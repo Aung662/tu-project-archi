@@ -6,6 +6,7 @@
  * baked in — so the saved file opens correctly anywhere and prints cleanly).
  */
 import { buildWiring, WIRE_KIND_LABEL, WIRE_COLORS, type WireConn } from './wiring';
+import { getBoardProfile } from './boardProfiles';
 import type { PinRow } from '@/data/componentGuide';
 
 function esc(s: string): string {
@@ -21,9 +22,11 @@ export function buildWiringSvg(
   componentName: string,
   pinout: PinRow[] | undefined,
   lang: 'my' | 'en' = 'en',
+  boardId = 'arduino-uno',
 ): string {
-  const conns = buildWiring(pinout);
+  const conns = buildWiring(pinout, boardId);
   if (conns.length === 0) return '';
+  const board = getBoardProfile(boardId);
   const my = lang === 'my';
 
   const rowH = 34;
@@ -39,7 +42,7 @@ export function buildWiringSvg(
   const boxH = topPad + conns.length * rowH + botPad - boxTop - 16;
   const yFor = (i: number) => topPad + i * rowH + rowH / 2;
 
-  const title = my ? 'Arduino UNO နှင့် ချိတ်ဆက်ပုံ (နမူနာ)' : 'Typical Arduino UNO wiring';
+  const title = my ? `${board.name} နှင့် ချိတ်ဆက်ပုံ (နမူနာ)` : `Typical ${board.name} wiring`;
   const compName = componentName.length > 18 ? componentName.slice(0, 17) + '…' : componentName;
 
   const wires = conns
@@ -78,7 +81,8 @@ export function buildWiringSvg(
   <text x="${width / 2}" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0">${esc(title)}</text>
   <text x="${width / 2}" y="38" text-anchor="middle" font-size="10" fill="#64748b">${esc(componentName)}</text>
   <rect x="${ardX}" y="${boxTop}" width="${ardW}" height="${boxH}" rx="10" fill="#0f3d3e" stroke="#2dd4bf" stroke-width="1.5"/>
-  <text x="${ardX + ardW / 2}" y="${boxTop + 20}" text-anchor="middle" font-size="12" font-weight="700" fill="#5eead4">Arduino UNO</text>
+  <text x="${ardX + ardW / 2}" y="${boxTop + 20}" text-anchor="middle" font-size="12" font-weight="700" fill="#5eead4">${esc(board.name)}</text>
+  <text x="${ardX + ardW / 2}" y="${boxTop + 34}" text-anchor="middle" font-size="9" fill="#5eead4" opacity="0.7">${board.logic} logic</text>
   <rect x="${compX}" y="${boxTop}" width="${ardW}" height="${boxH}" rx="10" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
   <text x="${compX + ardW / 2}" y="${boxTop + 20}" text-anchor="middle" font-size="11" font-weight="700" fill="#a5b4fc">${esc(compName)}</text>${wires}${legend}
 </svg>`;
@@ -90,16 +94,17 @@ export function downloadWiringSvg(
   componentName: string,
   pinout: PinRow[] | undefined,
   lang: 'my' | 'en' = 'en',
+  boardId = 'arduino-uno',
 ): void {
   if (typeof window === 'undefined') return;
-  const svg = buildWiringSvg(componentName, pinout, lang);
+  const svg = buildWiringSvg(componentName, pinout, lang, boardId);
   if (!svg) return;
   const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   try {
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${componentId}-wiring.svg`;
+    a.download = `${boardId}--${componentId}-wiring.svg`;
     document.body.appendChild(a);
     a.click();
     a.remove();

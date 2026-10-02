@@ -7,6 +7,8 @@ import { photoFor } from '@/data/componentPhotos';
 import { specsFor } from '@/data/componentSpecs';
 import { guideFor, type Difficulty } from '@/data/componentGuide';
 import { WiringDiagram } from './WiringDiagram';
+import { BOARD_ORDER, getBoardProfile } from '@/lib/boardProfiles';
+import { loadWiringManifest, type WiringManifest } from '@/lib/wiringPhotos';
 import {
   isInComponentCompare,
   toggleComponentCompare,
@@ -61,6 +63,16 @@ export function ComponentDetail({
   const [copied, setCopied] = useState(false);
   const [inCompare, setInCompare] = useState(false);
   const [fav, setFav] = useState(false);
+  const [manifest, setManifest] = useState<WiringManifest | null>(null);
+
+  // Real Flow-generated wiring photos for THIS component across every board.
+  useEffect(() => {
+    loadWiringManifest().then(setManifest);
+  }, []);
+  const realWiringPhotos = manifest
+    ? BOARD_ORDER.map((bid) => ({ bid, file: manifest[bid]?.[item.id] }))
+        .filter((x): x is { bid: string; file: string } => Boolean(x.file))
+    : [];
 
   // In-modal language override. Defaults to the app's current language, but a
   // reader can flip မြန်မာ / ENG right here to read a component's full details in
@@ -435,6 +447,47 @@ export function ComponentDetail({
                 <p className="rounded-lg border border-amber-300/20 bg-amber-300/[0.05] px-3 py-2 text-sm leading-relaxed text-amber-100/90">
                   {tr(guide.wiring)}
                 </p>
+              </section>
+            )}
+
+            {/* Real Flow-generated wiring photos for this component, one per
+                board that has one. Empty until photos are added, then shows a
+                responsive gallery; each thumbnail opens the full image. */}
+            {category.key !== 'boards' && realWiringPhotos.length > 0 && (
+              <section>
+                <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                  📷 {viewLang === 'my' ? 'တကယ့် ဝါယာကြိုးချိတ်ပုံများ' : 'Real wiring photos'}
+                  <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-medium text-emerald-300">
+                    {realWiringPhotos.length}
+                  </span>
+                </h3>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {realWiringPhotos.map(({ bid, file }) => (
+                    <a
+                      key={bid}
+                      href={`/wiring/${file}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="group overflow-hidden rounded-xl border border-white/10 bg-white"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`/wiring/${file}`}
+                        alt={`${getBoardProfile(bid).name} ↔ ${item.name} wiring`}
+                        loading="lazy"
+                        className="h-auto w-full object-contain"
+                      />
+                      <div className="flex items-center justify-between bg-slate-900/80 px-2.5 py-1.5">
+                        <span className="text-[11px] font-medium text-slate-200">
+                          {getBoardProfile(bid).name}
+                        </span>
+                        <span className="text-[10px] text-emerald-300 opacity-0 transition group-hover:opacity-100">
+                          {viewLang === 'my' ? 'ဖွင့်ကြည့်ရန်' : 'Open'}
+                        </span>
+                      </div>
+                    </a>
+                  ))}
+                </div>
               </section>
             )}
 

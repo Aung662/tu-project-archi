@@ -1,0 +1,373 @@
+================================================================================
+ GOOGLE FLOW / IMAGEN — STARTER PACK (Arduino Uno, top beginner parts)
+ A short, copy-paste-once list for the most common Arduino Uno projects.
+ For the FULL 16-board x 94-component pack, use FLOW-AI-WIRING-PROMPTS.txt
+================================================================================
+
+STEP 1 — paste this ONCE:
+--------------------------------------------------------------------------------
+You are generating a consistent SERIES of realistic Fritzing-style hardware wiring
+diagrams. For EVERY prompt I send next, keep this fixed style: one Arduino Uno on
+the LEFT, one sensor/module on the RIGHT, slight top-down angle, soft light-grey
+studio background, coloured jumper wires with correctly-spelled pin labels on both
+sides. Wire colours: RED=power, BLACK=GND, BLUE=I2C SDA, YELLOW=I2C SCL,
+GREEN=analog, ORANGE=digital, CYAN=UART, PURPLE=SPI. Render EXACTLY the wires I
+list — never invent, add or drop a wire. 16:9, high resolution. Confirm, then wait.
+
+STEP 2 — paste the prompts below (each block = one image):
+
+--------------------------------------------------------------------------------
+IMAGE 1  |  file: arduino-uno__dht11.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + DHT11 / DHT22".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a DHT11 / DHT22 (Sensors).
+Wire them EXACTLY:
+  VCC → 5V (RED wire)
+  DATA → D2 (ORANGE wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 3 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 2  |  file: arduino-uno__hc-sr04.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + HC-SR04".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a HC-SR04 (Sensors).
+Wire them EXACTLY:
+  VCC → 5V (RED wire)
+  TRIG → D9 (ORANGE wire)
+  ECHO → D10 (ORANGE wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 4 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 3  |  file: arduino-uno__pir.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + PIR Motion (HC-SR501)".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a PIR Motion (HC-SR501) (Sensors).
+Wire them EXACTLY:
+  VCC → 5V (RED wire)
+  OUT → D2 (ORANGE wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 3 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 4  |  file: arduino-uno__ldr.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + LDR (Photoresistor)".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a LDR (Photoresistor) (Sensors).
+Wire them EXACTLY:
+  A → A0 (GREEN wire)
+  B → A1 (GREEN wire)
+Correct pin labels on both sides. Render ONLY these 2 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 5  |  file: arduino-uno__soil-moisture.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + Soil Moisture".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a Soil Moisture (Sensors).
+Wire them EXACTLY:
+  VCC → 5V (RED wire)
+  AO → A0 (GREEN wire)
+  DO → D2 (ORANGE wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 4 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 6  |  file: arduino-uno__mq2.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + MQ-2 Gas".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a MQ-2 Gas (Sensors).
+Wire them EXACTLY:
+  VCC → 5V (RED wire)
+  AO → A0 (GREEN wire)
+  DO → D2 (ORANGE wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 4 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 7  |  file: arduino-uno__ds18b20.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + DS18B20".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a DS18B20 (Sensors).
+Wire them EXACTLY:
+  VDD → 5V (RED wire)
+  DQ → D2 (ORANGE wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 3 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 8  |  file: arduino-uno__lm35.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + LM35".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a LM35 (Sensors).
+Wire them EXACTLY:
+  VCC → 5V (RED wire)
+  OUT → A0 (GREEN wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 3 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 9  |  file: arduino-uno__bmp280.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + BMP280 / BME280".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a BMP280 / BME280 (Sensors).
+Wire them EXACTLY:
+  VCC → 5V (RED wire)
+  SDA → A4 (SDA) (BLUE wire)
+  SCL → A5 (SCL) (YELLOW wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 4 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 10  |  file: arduino-uno__mpu6050.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + MPU-6050 IMU".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a MPU-6050 IMU (Sensors).
+Wire them EXACTLY:
+  VCC → 5V (RED wire)
+  SDA → A4 (SDA) (BLUE wire)
+  SCL → A5 (SCL) (YELLOW wire)
+  INT → D2 (ORANGE wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 5 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 11  |  file: arduino-uno__oled.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + OLED 0.96" (SSD1306)".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: an OLED 0.96" (SSD1306) (Displays).
+Wire them EXACTLY:
+  SDA → A4 (SDA) (BLUE wire)
+  SCL → A5 (SCL) (YELLOW wire)
+  VCC → 5V (RED wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 4 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 12  |  file: arduino-uno__lcd1602.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + LCD 16×2".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a LCD 16×2 (Displays).
+Wire them EXACTLY:
+  SDA → A4 (SDA) (BLUE wire)
+  SCL → A5 (SCL) (YELLOW wire)
+  VCC → 5V (RED wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 4 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 13  |  file: arduino-uno__servo.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + Servo (SG90/MG996)".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a Servo (SG90/MG996) (Actuators & Motors).
+Wire them EXACTLY:
+  Signal → D2 (ORANGE wire)
+  VCC → 5V (RED wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 3 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 14  |  file: arduino-uno__dc-motor.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + DC Motor".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a DC Motor (Actuators & Motors).
+Wire them EXACTLY:
+  2 → D2 (ORANGE wire)
+Correct pin labels on both sides. Render ONLY these 1 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 15  |  file: arduino-uno__stepper.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + Stepper (28BYJ-48)".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a Stepper (28BYJ-48) (Actuators & Motors).
+Wire them EXACTLY:
+  IN1–IN4 → D2 (ORANGE wire)
+  VCC → 5V (RED wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 3 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 16  |  file: arduino-uno__relay-module.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + Relay Module".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a Relay Module (Actuators & Motors).
+Wire them EXACTLY:
+  IN → D2 (ORANGE wire)
+  VCC → 5V (RED wire)
+  GND → GND (BLACK wire)
+  COM → D3 (ORANGE wire)
+  NO → D4 (ORANGE wire)
+  NC → D5 (ORANGE wire)
+Correct pin labels on both sides. Render ONLY these 6 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 17  |  file: arduino-uno__l298n.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + L298N Driver".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a L298N Driver (Actuators & Motors).
+Wire them EXACTLY:
+  IN1–IN4 → D2 (ORANGE wire)
+  ENA → D3 (ORANGE wire)
+  ENB → D4 (ORANGE wire)
+  OUT1–4 → D5 (ORANGE wire)
+  12V → D6 (ORANGE wire)
+  5V → 5V (RED wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 7 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 18  |  file: arduino-uno__ir-sensor.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + IR Obstacle Sensor".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: an IR Obstacle Sensor (Sensors).
+Wire them EXACTLY:
+  VCC → 5V (RED wire)
+  OUT → D2 (ORANGE wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 3 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 19  |  file: arduino-uno__rfid-rc522.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + RFID RC522".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a RFID RC522 (Connectivity).
+Wire them EXACTLY:
+  SCK → D13 (SCK) (PURPLE wire)
+  MOSI → D11 (MOSI) (PURPLE wire)
+  MISO → D12 (MISO) (PURPLE wire)
+  SDA → A4 (SDA) (BLUE wire)
+  RST → D2 (ORANGE wire)
+  VCC → 5V (RED wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 7 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 20  |  file: arduino-uno__buzzer.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + Buzzer".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a Buzzer (Actuators & Motors).
+Wire them EXACTLY:
+  + → 5V (RED wire)
+  - → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 2 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 21  |  file: arduino-uno__push-button.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + Push Button".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a Push Button (Input / Output).
+Wire them EXACTLY:
+  4 legs → D2 (ORANGE wire)
+Correct pin labels on both sides. Render ONLY these 1 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 22  |  file: arduino-uno__potentiometer.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + Potentiometer".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a Potentiometer (Passive & Discrete).
+Wire them EXACTLY:
+  Outer 1 → D2 (ORANGE wire)
+  2 → D3 (ORANGE wire)
+  Wiper → D4 (ORANGE wire)
+Correct pin labels on both sides. Render ONLY these 3 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 23  |  file: arduino-uno__rain-sensor.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + Rain Sensor".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a Rain Sensor (Sensors).
+Wire them EXACTLY:
+  VCC → 5V (RED wire)
+  AO → A0 (GREEN wire)
+  DO → D2 (ORANGE wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 4 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 24  |  file: arduino-uno__flame-sensor.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + Flame Sensor".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a Flame Sensor (Sensors).
+Wire them EXACTLY:
+  VCC → 5V (RED wire)
+  AO → A0 (GREEN wire)
+  DO → D2 (ORANGE wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 4 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 25  |  file: arduino-uno__water-level.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + Water Level Sensor".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a Water Level Sensor (Sensors).
+Wire them EXACTLY:
+  VCC → 5V (RED wire)
+  + → 5V (RED wire)
+  S → A0 (GREEN wire)
+  GND → GND (BLACK wire)
+  - → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 5 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 26  |  file: arduino-uno__color-sensor.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + TCS3200 Color".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a TCS3200 Color (Sensors).
+Wire them EXACTLY:
+  VCC → 5V (RED wire)
+  GND → GND (BLACK wire)
+  S0–S3 → D2 (ORANGE wire)
+  OUT → D3 (ORANGE wire)
+Correct pin labels on both sides. Render ONLY these 4 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 27  |  file: arduino-uno__rtc.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + RTC (DS3231)".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a RTC (DS3231) (Input / Output).
+Wire them EXACTLY:
+  SDA → A4 (SDA) (BLUE wire)
+  SCL → A5 (SCL) (YELLOW wire)
+  VCC → 5V (RED wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 4 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 28  |  file: arduino-uno__neopixel.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + NeoPixel (WS2812)".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a NeoPixel (WS2812) (Displays).
+Wire them EXACTLY:
+  DIN → D11 (MOSI) (PURPLE wire)
+  5V → 5V (RED wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 3 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 29  |  file: arduino-uno__sd-module.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + MicroSD Module".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a MicroSD Module (Input / Output).
+Wire them EXACTLY:
+  SCK → D13 (SCK) (PURPLE wire)
+  MOSI → D11 (MOSI) (PURPLE wire)
+  MISO → D12 (MISO) (PURPLE wire)
+  CS → D10 (SS) (PURPLE wire)
+  VCC → 5V (RED wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 6 wires.
+
+--------------------------------------------------------------------------------
+IMAGE 30  |  file: arduino-uno__joystick.png
+--------------------------------------------------------------------------------
+A realistic Fritzing-style wiring diagram titled "Arduino Uno + Joystick Module".
+LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a Joystick Module (Input / Output).
+Wire them EXACTLY:
+  VRx → D2 (ORANGE wire)
+  VRy → D3 (ORANGE wire)
+  SW → D4 (ORANGE wire)
+  VCC → 5V (RED wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 5 wires.
+
+(Assembled 30 starter prompts. Full pack: FLOW-AI-WIRING-PROMPTS.txt)

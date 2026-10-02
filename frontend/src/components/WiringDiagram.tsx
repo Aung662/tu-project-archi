@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { buildWiring, WIRE_KIND_LABEL, type WireConn } from '@/lib/wiring';
+import { getBoardProfile } from '@/lib/boardProfiles';
 import type { PinRow } from '@/data/componentGuide';
 import { t, getLang, type Lang } from '@/lib/i18n';
 
@@ -20,13 +21,17 @@ export function WiringDiagram({
   pinout,
   componentName,
   lang,
+  boardId = 'arduino-uno',
 }: {
   pinout: PinRow[] | undefined;
   componentName: string;
   /** Optional language override (e.g. the in-modal toggle). Defaults to global. */
   lang?: Lang;
+  /** Which board to wire against — defaults to Arduino Uno. */
+  boardId?: string;
 }) {
-  const conns = useMemo(() => buildWiring(pinout), [pinout]);
+  const conns = useMemo(() => buildWiring(pinout, boardId), [pinout, boardId]);
+  const board = getBoardProfile(boardId);
   const my = (lang ?? getLang()) === 'my';
 
   if (conns.length === 0) return null;
@@ -56,7 +61,7 @@ export function WiringDiagram({
       >
         {/* Title */}
         <text x={width / 2} y={22} textAnchor="middle" fontSize="13" fontWeight="700" fill="#e2e8f0">
-          {my ? 'Arduino UNO နှင့် ချိတ်ဆက်ပုံ (နမူနာ)' : 'Typical Arduino UNO wiring'}
+          {my ? `${board.name} နှင့် ချိတ်ဆက်ပုံ (နမူနာ)` : `Typical ${board.name} wiring`}
         </text>
 
         {/* Board box (left) */}
@@ -71,7 +76,10 @@ export function WiringDiagram({
           strokeWidth={1.5}
         />
         <text x={ardX + ardW / 2} y={boxTop + 20} textAnchor="middle" fontSize="12" fontWeight="700" fill="#5eead4">
-          Arduino UNO
+          {board.name}
+        </text>
+        <text x={ardX + ardW / 2} y={boxTop + 36} textAnchor="middle" fontSize="9" fill="#5eead4" opacity="0.7">
+          {board.logic} logic
         </text>
 
         {/* Component box (right) */}
@@ -111,6 +119,11 @@ export function WiringDiagram({
           </span>
         ))}
       </div>
+      {board.note && (
+        <p className="border-t border-white/10 px-3 py-1.5 text-[10px] leading-relaxed text-amber-200/70">
+          ⚡ {my ? board.note.my : board.note.en}
+        </p>
+      )}
       <p className="border-t border-white/10 px-3 py-1.5 text-[10px] leading-relaxed text-slate-500">
         {my ? t.guideWiringAuto.my : t.guideWiringAuto.en}
       </p>

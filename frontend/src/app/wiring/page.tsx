@@ -3,14 +3,24 @@
 import { useEffect, useMemo, useState } from 'react';
 import { COMPONENTS, CATEGORIES, type CategoryKey } from '@/data/components';
 import { guideFor, type PinRow } from '@/data/componentGuide';
+import type { GlyphKey } from '@/data/glyphs';
 import { buildWiring } from '@/lib/wiring';
 import { downloadWiringSvg } from '@/lib/wiringSvg';
 import { WiringDiagram } from '@/components/WiringDiagram';
+import { FritzingDiagram } from '@/components/FritzingDiagram';
+import { downloadFritzingSvg } from '@/lib/fritzing';
 import { ComponentDetail } from '@/components/ComponentDetail';
 import { WIRE_KIND_LABEL } from '@/lib/wiring';
+import { BOARD_ORDER, getBoardProfile } from '@/lib/boardProfiles';
 import { EmptyState } from '@/components/ui';
 import { Reveal } from '@/components/motion';
 import { tr, t, getLang, type Lang } from '@/lib/i18n';
+import {
+  loadWiringManifest,
+  wiringPhotoUrl,
+  wiringPhotoCount,
+  type WiringManifest,
+} from '@/lib/wiringPhotos';
 
 /**
  * "Wiring & Pin Connections" hub — every Arduino ↔ component connection in ONE
@@ -30,6 +40,7 @@ interface WireItem {
   name: string;
   blurb: string;
   category: CategoryKey;
+  glyph: GlyphKey;
   pinout: PinRow[] | undefined;
   connCount: number;
 }
@@ -44,6 +55,7 @@ const WIRE_ITEMS: WireItem[] = COMPONENTS.filter((c) => c.category !== 'boards')
           name: c.name,
           blurb: c.blurb,
           category: c.category,
+          glyph: c.glyph,
           pinout: g?.pinout,
           connCount: conns.length,
         }
@@ -54,13 +66,25 @@ const WIRE_ITEMS: WireItem[] = COMPONENTS.filter((c) => c.category !== 'boards')
 export default function WiringPage() {
   const [query, setQuery] = useState('');
   const [cat, setCat] = useState<'' | CategoryKey>('');
-  const [view, setView] = useState<'diagram' | 'list'>('diagram');
+  const [view, setView] = useState<'photo' | 'realistic' | 'diagram' | 'list'>('realistic');
   const [lang, setLangState] = useState<Lang>('en');
+  const [boardId, setBoardId] = useState<string>('arduino-uno');
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [manifest, setManifest] = useState<WiringManifest | null>(null);
+
+  const board = getBoardProfile(boardId);
+  const photoCount = wiringPhotoCount(manifest, boardId);
 
   useEffect(() => {
     setLangState(getLang());
+    loadWiringManifest().then(setManifest);
   }, []);
+
+  // When real photos exist for the chosen board, default to the Photo view so
+  // the student sees them first; otherwise keep the drawn Fritzing diagram.
+  useEffect(() => {
+    if (photoCount > 0) setView('photo');
+  }, [photoCount]);
 
   const q = query.trim().toLowerCase();
 
@@ -97,6 +121,44 @@ export default function WiringPage() {
         <p className="mt-2 max-w-3xl text-sm text-slate-400">{tr(t.wiringSubtitle)}</p>
       </Reveal>
 
+      {/* Board selector — pick ANY board; every diagram below re-wires to its
+          real pins (Arduino Uno / Mega / ESP32 / ESP32-CAM / Pico / Pi / …). */}
+      <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+        <div className="mb-2 flex items-center justify-between gap-2">
+          <span className="text-sm font-semibold text-slate-200">
+            🧠 {tr(t.wiringPickBoard)}
+          </span>
+          <span className="rounded-full border border-brand-400/30 bg-brand-400/10 px-2.5 py-0.5 text-[11px] font-medium text-brand-200">
+            {board.name} · {board.logic} logic
+          </span>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {BOARD_ORDER.map((id) => {
+            const b = getBoardProfile(id);
+            return (
+              <button
+                key={id}
+                onClick={() => setBoardId(id)}
+                aria-pressed={boardId === id}
+                className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition ${
+                  boardId === id
+                    ? 'border-transparent bg-gradient-to-r from-brand-500 to-brand-400 text-white shadow-glow'
+                    : 'border-white/10 bg-white/[0.03] text-slate-300 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                {b.name}
+                <span className="font-latin text-[10px] opacity-60">{b.logic}</span>
+              </button>
+            );
+          })}
+        </div>
+        {board.note && (
+          <p className="mt-2.5 rounded-lg border border-amber-400/20 bg-amber-400/5 px-3 py-2 text-[11px] leading-relaxed text-amber-200/80">
+            ⚡ {lang === 'my' ? board.note.my : board.note.en}
+          </p>
+        )}
+      </div>
+
       {/* Controls: search + view toggle + language */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
@@ -110,6 +172,21 @@ export default function WiringPage() {
         </div>
         <div className="flex items-center gap-2">
           <div className="inline-flex rounded-lg border border-white/10 bg-white/[0.03] p-0.5">
+            {photoCount > 0 && (
+              <button
+                onClick={() => setView('photo')}
+                className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${view === 'photo' ? 'bg-brand-500 text-white' : 'text-slate-300 hover:text-white'}`}
+              >
+                📷 {lang === 'my' ? 'ဓာတ်ပုံ' : 'Photo'}{' '}
+                <span className="font-latin opacity-70">{photoCount}</span>
+              </button>
+            )}
+            <button
+              onClick={() => setView('realistic')}
+              className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${view === 'realistic' ? 'bg-brand-500 text-white' : 'text-slate-300 hover:text-white'}`}
+            >
+              🔧 {tr(t.wiringViewRealistic)}
+            </button>
             <button
               onClick={() => setView('diagram')}
               className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${view === 'diagram' ? 'bg-brand-500 text-white' : 'text-slate-300 hover:text-white'}`}
@@ -160,13 +237,15 @@ export default function WiringPage() {
               {items.length} {tr(t.wiringCount)}
             </span>
           </h2>
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <div className={`grid grid-cols-1 gap-4 ${view === 'realistic' ? 'xl:grid-cols-2' : 'lg:grid-cols-2'}`}>
             {items.map((w) => (
               <WiringCard
                 key={w.id}
                 item={w}
                 view={view}
                 lang={lang}
+                boardId={boardId}
+                photoUrl={wiringPhotoUrl(manifest, boardId, w.id)}
                 onOpen={() => setSelectedId(w.id)}
               />
             ))}
@@ -193,15 +272,22 @@ function WiringCard({
   item,
   view,
   lang,
+  boardId,
+  photoUrl,
   onOpen,
 }: {
   item: WireItem;
-  view: 'diagram' | 'list';
+  view: 'photo' | 'realistic' | 'diagram' | 'list';
   lang: Lang;
+  boardId: string;
+  photoUrl: string | null;
   onOpen: () => void;
 }) {
-  const conns = useMemo(() => buildWiring(item.pinout), [item.pinout]);
+  const conns = useMemo(() => buildWiring(item.pinout, boardId), [item.pinout, boardId]);
   const my = lang === 'my';
+  // If the Photo view is requested but this specific pair has no real photo yet,
+  // gracefully fall back to the drawn Fritzing-style diagram for that card.
+  const effView = view === 'photo' && !photoUrl ? 'realistic' : view;
 
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
@@ -216,20 +302,69 @@ function WiringCard({
       </div>
 
       <div className="flex-1 p-3">
-        {view === 'diagram' ? (
-          <WiringDiagram pinout={item.pinout} componentName={item.name} lang={lang} />
+        {effView === 'photo' && photoUrl ? (
+          <a
+            href={photoUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="group relative block overflow-hidden rounded-xl border border-white/10 bg-white"
+            title={my ? 'အပြည့်ကြည့်ရန် နှိပ်ပါ' : 'Click to view full size'}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={photoUrl}
+              alt={`${getBoardProfile(boardId).name} ↔ ${item.name} wiring`}
+              loading="lazy"
+              className="h-auto w-full object-contain"
+            />
+            <span className="absolute right-2 top-2 rounded-full bg-emerald-500/90 px-2 py-0.5 text-[10px] font-semibold text-white shadow">
+              {my ? 'တကယ့်ပုံ' : 'Real photo'}
+            </span>
+          </a>
+        ) : effView === 'realistic' ? (
+          <FritzingDiagram
+            componentName={item.name}
+            glyph={item.glyph}
+            category={item.category}
+            pinout={item.pinout}
+            boardId={boardId}
+            lang={lang}
+          />
+        ) : effView === 'diagram' ? (
+          <WiringDiagram pinout={item.pinout} componentName={item.name} lang={lang} boardId={boardId} />
         ) : (
-          <ConnTable conns={conns} lang={lang} />
+          <ConnTable conns={conns} lang={lang} boardName={getBoardProfile(boardId).name} />
         )}
       </div>
 
       <div className="flex items-center gap-2 border-t border-white/10 px-3 py-2">
-        <button
-          onClick={() => downloadWiringSvg(item.id, item.name, item.pinout, lang)}
-          className="inline-flex items-center gap-1 rounded-md border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] text-slate-300 transition hover:bg-white/10 hover:text-white"
-        >
-          ⬇ {tr(t.wiringDownloadSvg)}
-        </button>
+        {effView === 'photo' && photoUrl ? (
+          <a
+            href={photoUrl}
+            download={`${boardId}__${item.id}.jpg`}
+            className="inline-flex items-center gap-1 rounded-md border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] text-slate-300 transition hover:bg-white/10 hover:text-white"
+          >
+            ⬇ {my ? 'ဓာတ်ပုံ Download' : 'Download photo'}
+          </a>
+        ) : (
+          <button
+            onClick={() =>
+              effView === 'realistic'
+                ? downloadFritzingSvg(item.id, {
+                    componentName: item.name,
+                    glyph: item.glyph,
+                    category: item.category,
+                    pinout: item.pinout,
+                    boardId,
+                    lang,
+                  })
+                : downloadWiringSvg(item.id, item.name, item.pinout, lang, boardId)
+            }
+            className="inline-flex items-center gap-1 rounded-md border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] text-slate-300 transition hover:bg-white/10 hover:text-white"
+          >
+            ⬇ {tr(t.wiringDownloadSvg)}
+          </button>
+        )}
         <button
           onClick={onOpen}
           className="inline-flex items-center gap-1 rounded-md border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] text-slate-300 transition hover:bg-white/10 hover:text-white"
@@ -241,14 +376,22 @@ function WiringCard({
   );
 }
 
-function ConnTable({ conns, lang }: { conns: ReturnType<typeof buildWiring>; lang: Lang }) {
+function ConnTable({
+  conns,
+  lang,
+  boardName,
+}: {
+  conns: ReturnType<typeof buildWiring>;
+  lang: Lang;
+  boardName: string;
+}) {
   const my = lang === 'my';
   return (
     <div className="overflow-hidden rounded-xl border border-white/10">
       <table className="w-full text-left text-xs">
         <thead>
           <tr className="bg-white/[0.03] text-slate-400">
-            <th className="px-3 py-2 font-medium">{tr(t.wiringColArduino)}</th>
+            <th className="px-3 py-2 font-medium">{boardName}</th>
             <th className="px-3 py-2 font-medium">{tr(t.wiringColComp)}</th>
             <th className="px-3 py-2 font-medium">{tr(t.wiringColType)}</th>
           </tr>
