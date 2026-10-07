@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '@/lib/api';
-import type { SearchResult } from '@/lib/types';
+import type { PublicStats, SearchResult } from '@/lib/types';
 import { SimilarityMeter, Alert, SkeletonList, EmptyState, LevelBadge } from '@/components/ui';
 import { formatMMK } from '@/lib/format';
 import { tr, t } from '@/lib/i18n';
@@ -33,6 +33,11 @@ export default function HomePage() {
   const [result, setResult] = useState<SearchResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [archiveStats, setArchiveStats] = useState<PublicStats | null>(null);
+
+  useEffect(() => {
+    api.get<PublicStats>('/stats').then(setArchiveStats).catch(() => setArchiveStats(null));
+  }, []);
 
   // ── Recent searches (auto-captured, localStorage) ─────────
   const [recent, setRecent] = useState<string[]>([]);
@@ -149,7 +154,7 @@ export default function HomePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          <span className="eyebrow font-latin animate-shine">✦ AI Title Similarity</span>
+          <span className="eyebrow font-latin animate-shine">✦ Project Title Similarity</span>
           <h1 className="mx-auto mt-5 max-w-3xl text-4xl font-extrabold leading-tight tracking-tight sm:text-6xl">
             <span className="text-gradient-animated">{tr(t.heroTitle)}</span>
           </h1>
@@ -398,10 +403,22 @@ export default function HomePage() {
           {/* Stats band */}
           <Reveal>
             <div className="card grid grid-cols-2 gap-6 p-8 sm:grid-cols-4">
-              <Stat value="3" label="Universities" />
-              <Stat value="7" label="Departments" />
-              <Stat value="12+" label="Projects" />
-              <Stat value="AI" label="Similarity Engine" />
+              <Stat
+                value={archiveStats ? String(archiveStats.totals.universities) : '—'}
+                label={tr(t.statsUniversities)}
+              />
+              <Stat
+                value={archiveStats ? String(archiveStats.totals.departments) : '—'}
+                label={tr(t.statsDepartments)}
+              />
+              <Stat
+                value={archiveStats ? String(archiveStats.totals.projects) : '—'}
+                label={tr(t.statsProjects)}
+              />
+              <Stat
+                value={archiveStats ? String(archiveStats.totals.withFile) : '—'}
+                label={tr(t.statsWithFile)}
+              />
             </div>
           </Reveal>
         </>

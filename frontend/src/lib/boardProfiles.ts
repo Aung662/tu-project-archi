@@ -1,20 +1,12 @@
 /**
- * boardProfiles.ts — REAL per-board pin maps so the wiring hub can draw an
- * accurate "this exact board ↔ this component" connection for EVERY board, not
- * just the Arduino UNO.
+ * boardProfiles.ts — example/default pin pools for the listed board families.
+ * They help the wiring hub produce an initial pinout illustration, but do not
+ * constitute an exact board+module wiring recipe. Board revisions, breakout
+ * boards, strapping pins, logic levels, and bus variants can change what is safe.
  *
- * Each profile records the pins a student would actually use on that specific
- * board for the common buses (power, ground, I²C, SPI, UART) plus a pool of
- * general-purpose analog / digital pins. `buildWiring()` (lib/wiring.ts) reads
- * the selected board's profile and assigns component pins to these real names —
- * so switching the board on `/wiring` re-labels every diagram with that board's
- * genuine pin numbers (ESP32 → GPIO21/22, Pico → GP0/GP1, Pi → GPIO2/3 …).
- *
- * The pin choices follow each board's standard/default bus pins (Arduino core
- * defaults, Espressif default I²C, RP2040 I2C0, the Raspberry-Pi 40-pin header,
- * STM32 Blue-Pill USART1/I2C1/SPI1, etc.). They are the sensible defaults a
- * student should start from — always confirmable against the datasheet, exactly
- * as the on-diagram note says.
+ * `buildWiring()` uses these profiles with heuristics for generic signals. The
+ * resulting diagrams must stay labelled illustrative until a pair-specific
+ * recipe has been checked against sources and the physical connector locations.
  */
 
 export interface BoardProfile {
@@ -23,7 +15,7 @@ export interface BoardProfile {
   name: string;
   /** Logic voltage of the GPIO pins. */
   logic: '5V' | '3.3V';
-  /** Pin label a sensor's VCC should connect to (matches the logic level). */
+  /** Example board supply label; the module's required voltage must be checked separately. */
   power: string;
   /** Optional secondary supply pin (e.g. a 3.3V board that also exposes 5V-in). */
   powerAlt?: string;

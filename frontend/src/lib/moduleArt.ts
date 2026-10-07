@@ -1,11 +1,9 @@
 /**
- * moduleArt.ts — recognizable SVG illustrations of the *component/module* side of
- * a Fritzing-style wiring diagram (the box on the right). Like boardArt.ts, real
- * components are too many to photograph and AI art mislabels pins, so each part
- * is drawn as a clean, identifiable vector chosen from a small set of archetypes
- * keyed off the component's category + glyph (an ultrasonic sensor gets its twin
- * "eyes", an LCD/OLED gets a screen, a relay gets its blue block + terminals, a
- * motor gets its round body, …).
+ * moduleArt.ts — generic vector silhouettes for illustrative pinout views.
+ * They are archetypes selected by glyph/category, not exact component artwork and
+ * not physical connector layouts. Only the separate reviewed-diagram pipeline
+ * uses genuine, attributed part artwork with wires attached to source connector
+ * coordinates.
  *
  * The connection header (the labelled pin pads the wires attach to) is drawn by
  * fritzing.ts along this module's left edge, so this focuses on the silhouette.

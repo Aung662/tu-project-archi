@@ -12,7 +12,7 @@
     "dev": "tsx watch src/server.ts",
     "build": "npm run db:provider && prisma generate && tsc -p tsconfig.json",
     "setup:postgres": "tsx scripts/setup-postgres.ts",
-    "deploy:release": "npm run db:provider && prisma db push --skip-generate --accept-data-loss && npm run setup:postgres && tsx prisma/seed.ts && tsx prisma/seed-kits.ts",
+    "deploy:release": "npm run db:provider && prisma db push --skip-generate && npm run setup:postgres && tsx prisma/seed.ts && tsx prisma/seed-kits.ts",
     "start": "node dist/server.js",
     "test": "vitest run",
     "test:watch": "vitest"

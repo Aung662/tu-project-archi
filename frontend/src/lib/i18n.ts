@@ -1,16 +1,14 @@
 /**
- * Burmese-first UI labels.
+ * Bilingual UI labels for Myanmar Technological Universities.
  *
- * The product is built for final-year IT students at Myanmar Technological
- * Universities, so Burmese (Myanmar) is the PRIMARY language of the interface.
- * Every entry here is a `{ my, en }` pair: `my` is what users read first, `en`
- * is kept as a secondary/helper string (shown small under key headings, and as
- * a fallback). Centralizing labels here keeps copy consistent and makes a full
- * second-language pass trivial later.
+ * Every entry is a `{ my, en }` pair. English is the default language to keep
+ * server rendering and the first client render consistent; users can switch the
+ * full interface to Burmese at runtime. Centralizing labels here keeps copy
+ * consistent across both languages.
  */
 export interface Label {
-  my: string; // Burmese — primary
-  en: string; // English — secondary/helper
+  my: string; // Burmese translation
+  en: string; // English translation (default)
 }
 
 const L = (my: string, en: string): Label => ({ my, en });
@@ -155,26 +153,26 @@ export const t = {
   // ── Wiring hub page ──────────────────────────────────────────────
   wiringTitle: L('ချိတ်ဆက်ပုံ လမ်းညွှန်', 'Wiring & Pin Connections'),
   wiringSubtitle: L(
-    'ဘုတ်အားလုံး (Arduino UNO/Mega/Nano, ESP32, ESP32-CAM, ESP8266, Pi Pico, Raspberry Pi, STM32 …) နှင့် sensor / LCD / module များ ချိတ်ဆက်ပုံ အားလုံးကို တစ်နေရာတည်းတွင် — ဘုတ်ရွေးလိုက်တာနဲ့ pin အစစ်ဖြင့် ပြောင်းလဲပေးသည်။',
-    'Every board (Arduino UNO/Mega/Nano, ESP32, ESP32-CAM, ESP8266, Pi Pico, Raspberry Pi, STM32 …) ↔ sensor / LCD / module connection in one place — pick a board and every diagram re-wires to its real pins.',
+    'ဘုတ်၊ sensor နှင့် module များ၏ pin ချိတ်ဆက်မှုကို တစ်နေရာတည်းတွင် ကြည့်နိုင်သည်။ ✓ အမှတ်ပါသော recipe များကိုသာ ရင်းမြစ်နှင့် physical pin နေရာအထိ တိုက်စစ်ထားပြီး အခြားပုံများကို နမူနာအဖြစ်သာ သတ်မှတ်ထားသည်။',
+    'Browse board, sensor and module pin connections in one place. Only recipes marked ✓ have been checked against sources and physical connector locations; all other diagrams are illustrative examples.',
   ),
   wiringSearch: L('ချိတ်ဆက်ပုံ ရှာရန်… (ဥပမာ DHT22, LCD, HC-SR04)', 'Search wiring… (e.g. DHT22, LCD, HC-SR04)'),
   wiringCount: L('ချိတ်ဆက်ပုံ', 'diagrams'),
   wiringEmpty: L('ကိုက်ညီသော ချိတ်ဆက်ပုံ မတွေ့ပါ', 'No matching wiring diagrams'),
   wiringConnTable: L('ချိတ်ဆက်မှု ဇယား', 'Connection table'),
-  wiringPickBoard: L('ဘုတ် ရွေးပါ — ချိတ်ဆက်ပုံအားလုံး ထိုဘုတ်၏ pin အစစ်ဖြင့် ပြောင်းလဲပါမည်', 'Pick a board — every diagram re-wires to that board’s real pins'),
+  wiringPickBoard: L('ဘုတ် ရွေးပါ — အတည်ပြုထားသော အတွဲများတွင်သာ pin-map ကို တိတိကျကျ ဖော်ပြထားသည်', 'Choose a board — exact pin maps are shown only for reviewed combinations'),
   wiringColBoard: L('ဘုတ် Pin', 'Board pin'),
   wiringColArduino: L('Arduino UNO', 'Arduino UNO'),
   wiringColComp: L('ကွန်ပိုနင့် Pin', 'Component pin'),
   wiringColType: L('အမျိုးအစား', 'Type'),
   wiringDownloadSvg: L('ပုံ (SVG) ဒေါင်းရန်', 'Download diagram (SVG)'),
   wiringOpenDetail: L('အသေးစိတ် ကြည့်ရန်', 'View full details'),
-  wiringViewRealistic: L('ပုံမှန်အတိုင်း', 'Realistic'),
+  wiringViewRealistic: L('Fritzing ပုံစံ', 'Fritzing-style'),
   wiringViewDiagram: L('ချိတ်ဆက်ပုံ', 'Schematic'),
   wiringViewList: L('စာရင်း', 'List'),
   wiringNote: L(
-    '* ဤချိတ်ဆက်ပုံများသည် pinout ဒေတာမှ အလိုအလျောက် ထုတ်ထားသော နမူနာများ ဖြစ်သည် — datasheet နှင့် code ထဲက pin နံပါတ်များနှင့် အမြဲတိုက်စစ်ပါ။',
-    '* These diagrams are auto-generated examples from the pinout data — always confirm against the datasheet and the pin numbers in your sketch.',
+    '* အတည်ပြုအမှတ်မပါသော ပုံများသည် pinout မှ အလိုအလျောက်တွက်ချက်ထားသော နမူနာများသာ ဖြစ်သည်။ Board revision၊ module breakout နှင့် voltage level ကွဲနိုင်သဖြင့် မချိတ်မီ datasheet နှင့် code ထဲက pin နံပါတ်ကို စစ်ပါ။',
+    '* Diagrams without a verification badge are pinout-derived examples only. Board revisions, module breakouts and logic voltages can differ; check the exact datasheet and sketch pin numbers before connecting.',
   ),
   toolkitDownloadSvg: L('SVG ဒေါင်းလုဒ်', 'Download SVG'),
   toolkitDownloadPng: L('PNG ဒေါင်းလုဒ်', 'Download PNG'),
@@ -810,7 +808,7 @@ export const t = {
   ),
 } as const;
 
-/** Level enum → Burmese-first label. */
+/** Level enum → bilingual label. */
 export const levelLabel: Record<string, Label> = {
   YEAR_3: L('တတိယနှစ်', '3rd Year'),
   YEAR_5: L('ပဉ္စမနှစ်', '5th Year'),
@@ -818,7 +816,7 @@ export const levelLabel: Record<string, Label> = {
   OTHER: L('အခြား', 'Other'),
 };
 
-/** Status enum → Burmese-first label (projects + payments). */
+/** Status enum → bilingual label (projects + payments). */
 export const statusLabel: Record<string, Label> = {
   DRAFT: L('မူကြမ်း', 'Draft'),
   PUBLISHED: L('ထုတ်ဝေပြီး', 'Published'),

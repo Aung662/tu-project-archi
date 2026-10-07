@@ -11,9 +11,10 @@ and a bank of likely examiner questions with crisp, honest answers.
 > earlier work, because past archives are scattered and unsearchable. I built a centralized,
 > searchable archive with an *intelligent title similarity checker*: a student pastes a proposed
 > title and instantly gets a ranked list of the closest existing projects plus a duplicate-risk
-> verdict. It's a production-grade, decoupled web app — a Next.js PWA frontend and a TypeScript
-> REST API on PostgreSQL with `pg_trgm` — including a manual MMK payment flow to buy full project
-> files, with server-enforced access control so paid content is never publicly downloadable."
+> verdict. It's a decoupled thesis/MVP web application — an English-default bilingual Next.js PWA
+> frontend and a TypeScript REST API on PostgreSQL with `pg_trgm` — including a manual MMK payment
+> flow and server-enforced access control so paid content is never publicly downloadable. The code
+> is ready for a thesis demo; persistent private storage is still required before paid production."
 
 ## 2. Contributions to claim (and defend)
 
@@ -80,9 +81,10 @@ A: The API is stateless and horizontally scalable; Postgres + GIN handles fuzzy 
 files move to object storage via the existing seam; rate limiting moves to a shared store. These
 are enumerated in the future-work section with the honest current single-instance caveat.
 
-**Q: Why Burmese-first UI?**
-A: The end users are Myanmar students and staff; a Burmese-first interface (with English helper
-labels for examiners) maximizes real adoption. All labels flow through one i18n module.
+**Q: Why support both English and Burmese, with English as the default?**
+A: English keeps the academic and technical terminology familiar and matches the system's initial
+render; Myanmar students can switch the full interface to Burmese at runtime. Labels are centralized
+in one i18n module so both languages remain consistent.
 
 **Q: Biggest weakness of your system?**
 A: It detects *title* duplication, not content plagiarism, and the thresholds aren't yet

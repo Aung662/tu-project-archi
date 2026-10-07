@@ -22,7 +22,7 @@ payments, and monitor usage.
 The system separates a stateless JSON API (backend) from a server-rendered UI (frontend). Browsing
 and searching are free and require no login; purchasing requires an account; administration is
 protected by server-side role checks and is reachable only through a non-advertised entry point. The
-interface is **Burmese-first**, keeping widely understood English technical terms in place.
+interface is bilingual, with **English as the default and a runtime Burmese switch**, while retaining standard English technical terms.
 
 ---
 
@@ -55,7 +55,7 @@ channel.
 - Enforce **author consent** before a project can be published.
 - Provide an **admin dashboard** for catalogue CRUD, file upload, payment moderation, user roles,
   audit trail, and search analytics.
-- Meet **production-grade security** and be **thesis-defensible** in architecture and implementation.
+- Apply **production-oriented security controls** and keep the architecture and implementation **thesis-defensible**.
 
 ---
 
@@ -64,7 +64,7 @@ channel.
 **In scope.** Public title search + duplicate check; faceted browse and project detail; account
 registration/login; manual MMK purchase flow with proof upload and admin verification; protected
 file download gated by purchase; admin management of projects, files, universities, departments,
-users, payments; audit logging; search analytics; bilingual (Burmese-first) UI; PWA packaging.
+users, payments; audit logging; search analytics; bilingual UI (English default, runtime Burmese switch); PWA packaging.
 
 **Out of scope (deliberate, documented non-goals).** Automated/online payment-gateway integration
 (the environment requires manual MMK verification); full-text search inside file contents (titles and
@@ -78,7 +78,7 @@ multi-tenant per-university isolation (a single shared catalogue with a universi
 **Decoupled two-tier design.**
 
 ```
-Browser (Next.js 15 App Router, Burmese-first UI, PWA)
+Browser (Next.js 15 App Router, English-default bilingual UI, PWA)
    │  relative /api/* calls, credentials: 'include'
    ▼
 Next.js dev/proxy  ──rewrite /api/:path*──▶  Express API (TypeScript, ESM)

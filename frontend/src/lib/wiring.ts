@@ -84,6 +84,18 @@ function classify(tokenRaw: string, descHint = ''): WireKind | null {
   if (/[–-].*\d/.test(tokenRaw) && /D\d|A\d|GP|GPIO|PA|PB|PC/i.test(tokenRaw)) return null;
   if (/EDGE|USB|HDMI|CSI|BNC|PROBE|JACK|SWD|BOOT|SERIAL1|SERIAL2|SERIAL3/i.test(tokenRaw)) return null;
 
+  // External MOTOR-SUPPLY pins on driver boards (VMOT, 12V, Vcc2 …). These go to
+  // a separate motor power source, NEVER to an MCU pin — drawing them to the
+  // board's 5V would be electrically wrong, so they are dropped from the
+  // board↔module wire list (the wiring note explains the external supply).
+  if (/^(VMOT|VM|VS|VCC2|VDD2|VMS|12V|\+12V|24V|\+24V)$/.test(t)) return null;
+  // MOTOR-OUTPUT terminals on driver boards (OUT1–4, coil 1A/1B/2A/2B, U/V/W)
+  // and raw speaker terminals (SPK±): these connect to the motor/speaker, not
+  // to the MCU, so they are not board wires either.
+  if (/^OUT\d/.test(t) || /^OUT[–-]/.test(t) || /^OUT\d[–-]/.test(t)) return null;
+  if (/^[12][AB]$/.test(t)) return null;
+  if (/^(SPK1|SPK2|SPK\+|SPK-|SP\+|SP-)$/.test(t)) return null;
+
   // Ground
   if (t === 'GND' || t === '-' || t === 'GND-' || t === '−') return 'gnd';
   // Power
@@ -102,8 +114,9 @@ function classify(tokenRaw: string, descHint = ''): WireKind | null {
     return 'spi';
   // Serial
   if (t === 'TX' || t === 'RX' || t === 'U0R' || t === 'U0T' || t === 'DTR') return 'serial';
-  // Analog outputs (explicit tokens)
-  if (['AO', 'A', 'B', 'PO', 'OUT-A', 'ANALOG'].includes(t) || /^AOUT/.test(t)) return 'analog';
+  // Analog outputs (explicit tokens). WIPER = a potentiometer's middle tap,
+  // which is ALWAYS an analog voltage into an ADC pin — never a digital line.
+  if (['AO', 'A', 'B', 'PO', 'OUT-A', 'ANALOG', 'WIPER'].includes(t) || /^AOUT/.test(t)) return 'analog';
 
   // Ambiguous signal pins (OUT / S / SIG / SIGNAL): use the pin DESCRIPTION to
   // decide analog vs digital — the catalogue descriptions state which (e.g. LM35
@@ -124,6 +137,71 @@ function classify(tokenRaw: string, descHint = ''): WireKind | null {
   // Unknown but looks like a real single pin → treat as a digital signal example.
   if (t.length <= 6 && /[A-Z0-9+]/.test(t)) return 'digital';
   return null;
+}
+
+/**
+ * Pure inline / discrete parts that DO NOT have a meaningful "connect these
+ * terminals to specific board pins" diagram: they sit in-line in a circuit
+ * (in series with, or across, other parts) rather than talking to an MCU pin.
+ * Auto-wiring them produced electrically wrong diagrams (e.g. "Resistor → D2,
+ * digital signal"), so they are excluded from the generated wiring cards and
+ * fall back to their datasheet pinout/notes instead.
+ */
+export const NON_WIREABLE_IDS = new Set<string>([
+  // Pure inline discretes — sit in-line in a circuit, not on an MCU pin.
+  'resistor',
+  'capacitor',
+  'diode',
+  'crystal',
+  'transistor',
+  'inductor',
+  'fuse',
+  // Accessories / bare hardware with no MCU signal wiring.
+  'breadboard',
+  'pcb',
+  'jumper-wires',
+  'toggle-switch',
+  // Power supplies / converters / cells — wire to a POWER rail, not MCU GPIO.
+  // An "IN+→D2" diagram is meaningless (and misleading), so they show their
+  // datasheet pinout + notes instead of a generated board diagram.
+  'buck',
+  'boost',
+  'tp4056',
+  'ams1117',
+  'ldo',
+  'ups-module',
+  'liion',
+  'lipo',
+  'solar-panel',
+  // Bare motors / mechanical parts — driven THROUGH a driver board, never
+  // straight off Arduino pins.
+  'dc-motor',
+  'nema17',
+  'solenoid',
+  'bldc',
+  'robot-arm',
+  'robot-wheel',
+  'gripper',
+  'linear-actuator',
+  // Industrial / mains-voltage gear — 24V/3-phase/fieldbus, not MCU jumpers.
+  'plc',
+  'hmi',
+  'vfd',
+  'contactor',
+  'proximity',
+  'scada',
+  'sensor-industrial',
+  'industrial-encoder',
+  // Host-interface / PC peripherals — connect to a computer, not an MCU pin.
+  'depth-cam',
+  'usb-ttl',
+  // Built-in radio / protocol on the MCU itself — no external wiring.
+  'esp-now',
+]);
+
+/** True when a component should NOT get an auto-generated board-wiring diagram. */
+export function isWireable(id: string | undefined): boolean {
+  return !!id && !NON_WIREABLE_IDS.has(id);
 }
 
 /**
@@ -164,6 +242,30 @@ export function buildWiring(
   let di = 0;
   let ai = 0;
   const seen = new Set<string>();
+  // Track every board pin already assigned (SPI/I²C/serial/analog/dedicated),
+  // so the generic digital-pin cursor never hands out a pin that's already in
+  // use — which previously caused two wires to land on one GPIO on pin-limited
+  // boards (ESP32-CAM, ESP8266).
+  const usedPins = new Set<string>();
+
+  /** Next free digital pin that isn't already taken by another wire. When the
+   *  board has genuinely run out of free GPIOs (e.g. an SPI display on an
+   *  ESP32-CAM), we DON'T fake a duplicate — we return an honest caveat so the
+   *  diagram/table shows the board can't fit this module rather than lying. */
+  const nextDigital = (): string => {
+    for (let n = 0; n < digitalPool.length; n++) {
+      const p = digitalPool[di++ % digitalPool.length];
+      if (!usedPins.has(p)) return p;
+    }
+    return 'no free pin';
+  };
+  const nextAnalog = (): string => {
+    for (let n = 0; n < analogPool.length; n++) {
+      const p = analogPool[ai++ % analogPool.length];
+      if (!usedPins.has(p)) return p;
+    }
+    return 'no free pin';
+  };
 
   for (const row of pinout) {
     const descHint = `${row.desc?.en ?? ''} ${row.desc?.my ?? ''}`;
@@ -183,43 +285,42 @@ export function buildWiring(
           ardLabel = board.gnd;
           break;
         case 'i2c-sda':
-          ardLabel = board.i2c ? board.i2c.sda : digitalPool[di++ % digitalPool.length];
+          ardLabel = board.i2c ? board.i2c.sda : nextDigital();
           break;
         case 'i2c-scl':
-          ardLabel = board.i2c ? board.i2c.scl : digitalPool[di++ % digitalPool.length];
+          ardLabel = board.i2c ? board.i2c.scl : nextDigital();
           break;
         case 'spi':
-          ardLabel = spiPinFor(token, board, () => digitalPool[di++ % digitalPool.length]);
+          ardLabel = spiPinFor(token, board, nextDigital);
           break;
         case 'serial':
           ardLabel = board.serial
             ? /TX|U0T|SDO/i.test(token)
               ? board.serial.rx
               : board.serial.tx
-            : digitalPool[di++ % digitalPool.length];
+            : nextDigital();
           break;
         case 'analog':
           if (hasAdc) {
-            ardLabel = analogPool[ai % analogPool.length];
-            ai++;
+            ardLabel = nextAnalog();
           } else {
             // Board has no ADC — an analog sensor needs an external ADC. Assign a
-            // free GPIO from the shared digital cursor so it never collides with
-            // a real digital signal, and flag the caveat via a distinct label.
-            ardLabel = `${digitalPool[di % digitalPool.length]} (needs ext. ADC)`;
-            di++;
+            // free GPIO so it never collides with a real digital signal, and flag
+            // the caveat via a distinct label.
+            ardLabel = `${nextDigital()} (needs ext. ADC)`;
           }
           break;
         case 'digital':
         default:
           if (/TRIG/i.test(token) && board.trigEcho) ardLabel = board.trigEcho.trig;
           else if (/ECHO/i.test(token) && board.trigEcho) ardLabel = board.trigEcho.echo;
-          else {
-            ardLabel = digitalPool[di % digitalPool.length];
-            di++;
-          }
+          else ardLabel = nextDigital();
           break;
       }
+      // Mark this pin used so later wires skip it. Strip ONLY the synthetic
+      // "(needs ext. ADC)" note — real pin names like "GPIO14 (D5)" must be kept
+      // intact so they match the digital-pool entries.
+      usedPins.add(ardLabel.replace(/\s*\(needs ext\. ADC\)$/, ''));
       conns.push({ compLabel: token, ardLabel, kind, color: WIRE_COLORS[kind] });
     }
   }

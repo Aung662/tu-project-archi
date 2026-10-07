@@ -6,7 +6,7 @@
  * <html>/<body>. Kept dependency-free and inline-styled (globals.css may not be
  * present in this fallback tree).
  */
-export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function GlobalError({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
     <html lang="en">
       <body

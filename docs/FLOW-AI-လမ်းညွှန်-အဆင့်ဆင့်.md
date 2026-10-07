@@ -1,7 +1,7 @@
 # အဆင့်ဆင့် လမ်းညွှန် — Controller အားလုံးအတွက် ချိတ်ဆက်ပုံ Generate လုပ်နည်း
 
 သင့် prompt ဖိုင်တွေမှာ **controller ၁၆ မျိုးလုံး** ပါပြီးသားပါ (Arduino တစ်ခုတည်း
-မဟုတ်ပါ)။ တစ်ခုစီ component ၉၄ ခုစီ — **စုစုပေါင်း ပုံ ၁,၅၀၄ ပုံ**။
+မဟုတ်ပါ)။ တစ်ခုစီ component ၆၅ ခုစီ — **စုစုပေါင်း ပုံ ၁,၀၄၀ ပုံ**။
 
 Arduino Uno R3 · Arduino Nano · Arduino Mega 2560 · Arduino Pro Mini · ESP32
 DevKit V1 · ESP32-CAM · ESP8266 · NodeMCU · Raspberry Pi Pico · Raspberry Pi 4 ·
@@ -43,26 +43,33 @@ prompt တစ်ခုချင်းစီမှာ အဲဒီ board ရဲ�
 ## အပိုင်း (ခ) — prompt list ရဲ့ ဖွဲ့စည်းပုံ (controller ရွေးလို့ရအောင်)
 
 `FLOW-AI-PROMPTS-ONELINE.txt` ကို board အလိုက် စီထားပြီး **board တစ်ခုလျှင်
-၉၄ ကြောင်း**၊ အောက်ပါ အစီအစဉ်အတိုင်း —
+၆၅ ကြောင်း**၊ အောက်ပါ အစီအစဉ်အတိုင်း —
 
 | Board | Line အပိုင်းအခြား |
 | --- | --- |
-| Arduino Uno R3 | 1 – 94 |
-| Arduino Nano | 95 – 188 |
-| Arduino Mega 2560 | 189 – 282 |
-| Arduino Pro Mini | 283 – 376 |
-| ESP32 DevKit V1 | 377 – 470 |
-| ESP32-CAM | 471 – 564 |
-| ESP8266 | 565 – 658 |
-| NodeMCU | 659 – 752 |
-| Raspberry Pi Pico | 753 – 846 |
-| Raspberry Pi 4 | 847 – 940 |
-| STM32 Blue Pill | 941 – 1034 |
-| Teensy 4.0 | 1035 – 1128 |
-| ATtiny85 | 1129 – 1222 |
-| BBC micro:bit v2 | 1223 – 1316 |
-| Jetson Nano | 1317 – 1410 |
-| Orange Pi | 1411 – 1504 |
+| Arduino Uno R3 | 1 – 65 |
+| Arduino Nano | 66 – 130 |
+| Arduino Mega 2560 | 131 – 195 |
+| Arduino Pro Mini | 196 – 260 |
+| ESP32 DevKit V1 | 261 – 325 |
+| ESP32-CAM | 326 – 390 |
+| ESP8266 | 391 – 455 |
+| NodeMCU | 456 – 520 |
+| Raspberry Pi Pico | 521 – 585 |
+| Raspberry Pi 4 | 586 – 650 |
+| STM32 Blue Pill | 651 – 715 |
+| Teensy 4.0 | 716 – 780 |
+| ATtiny85 | 781 – 845 |
+| BBC micro:bit v2 | 846 – 910 |
+| Jetson Nano | 911 – 975 |
+| Orange Pi | 976 – 1040 |
+
+> မှတ်ချက်: "board pin သို့ ချိတ်" ဆိုတဲ့ ပုံ မရှိနိုင်တဲ့ parts တွေကို
+> **ချန်လှပ်ထားပါတယ်** — inline discretes (resistor, capacitor, diode, crystal,
+> inductor, fuse, transistor)၊ power supply/converter/battery (buck, boost,
+> TP4056, AMS1117, ဘက်ထရီများ…)၊ driver မှတဆင့် မောင်းရတဲ့ bare motor/mechanical၊
+> နှင့် industrial mains gear (PLC, VFD, contactor…)။ ၎င်းတို့ကို "IN+ → D2" လို
+> ဆွဲပြရင် လွဲမှားစေမှာမို့ MCU နဲ့ တကယ် ချိတ်လို့ရတဲ့ ၆၅ ခုကိုသာ ထုတ်ပါတယ်။
 
 (CSV ထဲမှာ row တစ်ခုချင်းရဲ့ `filename` က board id နဲ့ စတယ် — ဥပမာ `esp32__…`၊
 `raspberry-pi-pico__…` — အဲဒီ prefix နဲ့ filter လုပ်ပြီး board တစ်ခု ယူနိုင်တယ်။)

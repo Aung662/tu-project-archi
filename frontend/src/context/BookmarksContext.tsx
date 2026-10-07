@@ -44,7 +44,8 @@ export function BookmarksProvider({ children }: { children: React.ReactNode }) {
       // Optimistic update, revert on error.
       setIds((prev) => {
         const next = new Set(prev);
-        has ? next.delete(projectId) : next.add(projectId);
+        if (has) next.delete(projectId);
+        else next.add(projectId);
         return next;
       });
       try {
@@ -53,7 +54,8 @@ export function BookmarksProvider({ children }: { children: React.ReactNode }) {
       } catch {
         setIds((prev) => {
           const next = new Set(prev);
-          has ? next.add(projectId) : next.delete(projectId);
+          if (has) next.add(projectId);
+          else next.delete(projectId);
           return next;
         });
       }

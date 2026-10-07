@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 2,
+  "source": "https://tu-project-archi.vercel.app/wiring/manifest.json",
+  "candidateBoardCount": 10,
+  "candidatePairCount": 338,
+  "candidateImagesAreShownToVisitors": false,
+  "reviewMatrix": "review-matrix.csv",
+  "statusCounts": {
+    "pending": 337,
+    "rejected": 1,
+    "approved": 0
+  },
+  "verifiedPhotoPairs": 0,
+  "humanElectricalSignOffRequired": true,
+  "status": "REVIEW-IN-PROGRESS",
+  "reason": "337 candidate pair(s) remain pending; approved images are published only through the hash-checked promotion command, and rejected candidates remain quarantined."
+}

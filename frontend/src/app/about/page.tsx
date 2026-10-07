@@ -24,14 +24,14 @@ const MISSION = [
   {
     icon: '🔍',
     title: { en: 'Avoid duplicate titles', my: 'ခေါင်းစဉ်ထပ်ခြင်း ရှောင်ရှားရန်' },
-    en: 'Choosing a title should not feel like a guessing game. Our AI-powered similarity checker lets students test an idea in seconds and see how close it is to work that already exists — so they can refine it, stand out, and walk into their proposal with confidence rather than worry.',
-    my: 'ခေါင်းစဉ် ရွေးချယ်ခြင်းဟာ မှန်းဆကစားပွဲ မဖြစ်သင့်ပါဘူး။ ကျွန်ုပ်တို့ရဲ့ AI ခေါင်းစဉ် တူညီမှုစစ်ဆေးစနစ်က ကျောင်းသားတွေကို စက္ကန့်ပိုင်းအတွင်း သူတို့ရဲ့ အကြံဉာဏ်ကို စမ်းသပ်ပြီး၊ ရှိပြီးသား ပရောဂျက်တွေနဲ့ ဘယ်လောက် နီးစပ်နေလဲ ကြည့်ရှုနိုင်စေပါတယ်။ ဒါကြောင့် ခေါင်းစဉ်ကို ပိုမိုကောင်းမွန်အောင် ပြင်ဆင်ကာ၊ ထူးခြားစွာ ရပ်တည်နိုင်ပြီး၊ စိတ်ပူစရာမလိုဘဲ ယုံကြည်မှုအပြည့်နဲ့ proposal ကို တင်ပြနိုင်ပါတယ်။',
+    en: 'Choosing a title should not feel like a guessing game. Our title-similarity checker compares a proposed idea with projects already in the archive, so students can refine their topic and take a more informed proposal to their department.',
+    my: 'ခေါင်းစဉ်ရွေးချယ်ခြင်းဟာ မှန်းဆရတဲ့အလုပ် မဖြစ်သင့်ပါဘူး။ ခေါင်းစဉ်ဆင်တူမှု စစ်ဆေးစနစ်က အဆိုပြုမယ့် ခေါင်းစဉ်ကို မှတ်တမ်းထဲရှိ project များနဲ့ နှိုင်းယှဉ်ပြပေးတာကြောင့်၊ ကျောင်းသားတွေက မိမိတို့ခေါင်းစဉ်ကို ပြန်လည်ပြင်ဆင်ပြီး ဌာနကို ပိုမိုသေချာတဲ့ အဆိုပြုချက် တင်ပြနိုင်ပါတယ်။',
   },
   {
     icon: '🌱',
     title: { en: 'Built to grow', my: 'ရေရှည်တိုးတက်ရန် တည်ဆောက်ထားခြင်း' },
-    en: 'This started as a final-year project of our own, but we designed it to last. From Burmese-first design to a durable database and room for more universities and features, the archive is meant to keep serving students long after we graduate.',
-    my: 'ဒါဟာ ကျွန်ုပ်တို့ကိုယ်တိုင်ရဲ့ နောက်ဆုံးနှစ် ပရောဂျက်အဖြစ် စတင်ခဲ့ပေမဲ့၊ ရေရှည်တည်တံ့စေဖို့ ဒီဇိုင်းဆွဲထားပါတယ်။ မြန်မာဘာသာကို ဦးစားပေးတဲ့ ဒီဇိုင်းကနေ ခိုင်မာတဲ့ ဒေတာဘေ့စ်၊ တက္ကသိုလ်များနဲ့ လုပ်ဆောင်ချက်များ ထပ်တိုးနိုင်တဲ့ နေရာအထိ — ကျွန်ုပ်တို့ ဘွဲ့ရပြီးနောက်ပိုင်းမှာလည်း ကျောင်းသားတွေကို ဆက်လက် အထောက်အကူ ဖြစ်စေဖို့ ရည်ရွယ်ပါတယ်။',
+    en: 'This began as our own final-year project, but it is designed to grow: the interface defaults to English with a Burmese language switch, and the archive can onboard more universities and features over time.',
+    my: 'ဒီ project ကို ကျွန်ုပ်တို့ရဲ့ နောက်ဆုံးနှစ်ပရောဂျက်အဖြစ် စတင်ခဲ့ပေမဲ့ နောက်ထပ် တက္ကသိုလ်များနဲ့ လုပ်ဆောင်ချက်များ ထပ်တိုးနိုင်အောင် ဖန်တီးထားပါတယ်။ Interface ကို English ဖြင့် စတင်ပြသပြီး မြန်မာဘာသာသို့ ပြောင်းသုံးနိုင်ပါတယ်။',
   },
 ];
 

@@ -8,6 +8,7 @@ import { specsFor } from '@/data/componentSpecs';
 import { guideFor, type Difficulty } from '@/data/componentGuide';
 import { WiringDiagram } from './WiringDiagram';
 import { BOARD_ORDER, getBoardProfile } from '@/lib/boardProfiles';
+import { isWireable } from '@/lib/wiring';
 import { loadWiringManifest, type WiringManifest } from '@/lib/wiringPhotos';
 import {
   isInComponentCompare,
@@ -65,11 +66,11 @@ export function ComponentDetail({
   const [fav, setFav] = useState(false);
   const [manifest, setManifest] = useState<WiringManifest | null>(null);
 
-  // Real Flow-generated wiring photos for THIS component across every board.
+  // Approved wiring-image assets for this component across available boards.
   useEffect(() => {
     loadWiringManifest().then(setManifest);
   }, []);
-  const realWiringPhotos = manifest
+  const reviewedWiringImages = manifest
     ? BOARD_ORDER.map((bid) => ({ bid, file: manifest[bid]?.[item.id] }))
         .filter((x): x is { bid: string; file: string } => Boolean(x.file))
     : [];
@@ -450,19 +451,18 @@ export function ComponentDetail({
               </section>
             )}
 
-            {/* Real Flow-generated wiring photos for this component, one per
-                board that has one. Empty until photos are added, then shows a
-                responsive gallery; each thumbnail opens the full image. */}
-            {category.key !== 'boards' && realWiringPhotos.length > 0 && (
+            {/* Approved pair-specific wiring images only; quarantined candidates
+                are never fetched by the UI. Thumbnails open the full image. */}
+            {category.key !== 'boards' && reviewedWiringImages.length > 0 && (
               <section>
                 <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-slate-500">
-                  📷 {viewLang === 'my' ? 'တကယ့် ဝါယာကြိုးချိတ်ပုံများ' : 'Real wiring photos'}
+                  📷 {viewLang === 'my' ? 'စစ်ဆေးအတည်ပြုထားသော wiring ပုံများ' : 'Reviewed wiring images'}
                   <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-medium text-emerald-300">
-                    {realWiringPhotos.length}
+                    {reviewedWiringImages.length}
                   </span>
                 </h3>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  {realWiringPhotos.map(({ bid, file }) => (
+                  {reviewedWiringImages.map(({ bid, file }) => (
                     <a
                       key={bid}
                       href={`/wiring/${file}`}
@@ -492,8 +492,10 @@ export function ComponentDetail({
             )}
 
             {/* Auto-generated wiring diagram — only for non-board hardware that
-                has pinout data (boards ARE the Arduino, so no self-diagram). */}
-            {category.key !== 'boards' && guide?.pinout && guide.pinout.length > 0 && (
+                has pinout data (boards ARE the Arduino, so no self-diagram) and
+                is actually wireable to an MCU (pure inline discretes like a
+                resistor/capacitor/diode are excluded — see NON_WIREABLE_IDS). */}
+            {category.key !== 'boards' && isWireable(item.id) && guide?.pinout && guide.pinout.length > 0 && (
               <section>
                 <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500">
                   {tr(t.guideWiringDiagram)}

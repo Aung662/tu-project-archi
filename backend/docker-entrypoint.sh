@@ -4,7 +4,7 @@
 # (e.g. Koyeb, Fly). Idempotent, so it is safe to run on every boot.
 #
 # On PostgreSQL it:
-#   1) creates/updates tables            (prisma db push)
+#   1) creates/updates tables            (prisma db push; no data-loss override)
 #   2) enables pg_trgm + trigram index   (scripts/setup-postgres.ts)
 #   3) seeds admin + reference data       (prisma/seed.ts — uses upserts)
 # then starts the API. On SQLite it just starts the API.
@@ -13,7 +13,7 @@ set -e
 
 if [ "$DB_PROVIDER" = "postgresql" ]; then
   echo "→ [entrypoint] DB_PROVIDER=postgresql — bootstrapping database..."
-  npx prisma db push --skip-generate --accept-data-loss
+  npx prisma db push --skip-generate
   npx tsx scripts/setup-postgres.ts
   npx tsx prisma/seed.ts
   echo "✅ [entrypoint] database ready."

@@ -1,6 +1,6 @@
 import { COMPONENTS, CATEGORIES } from '/home/user/tu-project-archive/frontend/src/data/components.ts';
 import { guideFor } from '/home/user/tu-project-archive/frontend/src/data/componentGuide.ts';
-import { buildWiring } from '/home/user/tu-project-archive/frontend/src/lib/wiring.ts';
+import { buildWiring, isWireable } from '/home/user/tu-project-archive/frontend/src/lib/wiring.ts';
 import { BOARD_ORDER, getBoardProfile } from '/home/user/tu-project-archive/frontend/src/lib/boardProfiles.ts';
 import fs from 'fs';
 
@@ -30,7 +30,7 @@ const WIRE_COLOR = {
   analog:'GREEN', digital:'ORANGE', serial:'CYAN', spi:'PURPLE',
 };
 
-const wireable = COMPONENTS.filter(c=>c.category!=='boards' && buildWiring(guideFor(c.id)?.pinout,'arduino-uno').length>0);
+const wireable = COMPONENTS.filter(c=>c.category!=='boards' && isWireable(c.id) && buildWiring(guideFor(c.id)?.pinout,'arduino-uno').length>0);
 const catName = Object.fromEntries(CATEGORIES.map(c=>[c.key,c.labelEn]));
 
 function connLine(c){

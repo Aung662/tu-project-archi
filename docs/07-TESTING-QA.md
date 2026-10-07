@@ -11,7 +11,7 @@ Run: `cd backend && npm run seed && npm test`
 - Levenshtein: identical / single-edit / empty.
 - scoring: identical → EXACT band; reordered/paraphrased → SIMILAR band; unrelated → low; symmetric.
 
-### Integration — API (`tests/api.test.ts`, 19 tests)
+### Integration — API (`tests/api.test.ts`, 45 tests)
 - health; public browse without auth; ranked search ordering; duplicate-check verdict.
 - auth: invalid login rejected; admin & student login; **RBAC** (student 403, anon 401, admin 200).
 - **consent gate**: publish blocked without consent, allowed with consent.
@@ -22,7 +22,7 @@ Run: `cd backend && npm run seed && npm test`
   `.pdf`) → 400; genuine PDF magic bytes → 201; `SearchLog` row written and visible to admin;
   non-admin blocked from `/admin/search-logs`.
 
-### Integration — payment flow with proof review (`tests/api.test.ts`, 8 tests)
+### Payment-flow coverage (8 of the 45 API tests in `tests/api.test.ts`)
 Added in the bug-fix wave to lock the previously-broken manual-verification flow:
 - unsupported payment method rejected (enum); order created with a valid method;
 - proof upload accepted; admin list exposes `hasProof` and **never** leaks `proofKey`;
@@ -30,12 +30,25 @@ Added in the bug-fix wave to lock the previously-broken manual-verification flow
 - download blocked before approval (403/404, never 200); after admin approval the buyer is granted
   `PurchaseAccess` and appears in their library.
 
-**Status: 39/39 passing** (12 similarity + 27 API).
+### Additional suites
+
+- **RBAC (`tests/rbac.test.ts`, 15 tests):** department-scoped permissions, super-admin controls,
+  and server-side authorization boundaries.
+- **Website kits (`tests/kits.test.ts`, 10 tests):** manual order approval, protected ZIP access,
+  and admin-only management.
+
+**Current verified status (2026-10-02): 82/82 passing across 4 files**
+(12 similarity + 45 API + 15 RBAC + 10 kits).
 
 ### Live-verified security checks (curl, against running server)
 JWT `alg:none` forgery rejected (401); stale-role token (admin demoted in DB) blocked (403);
 magic-byte spoof `.docx` with PE header rejected (400); `RateLimit-*` headers present on search;
 `AUTH_LOGIN`/`AUTH_LOGIN_FAILED` audit events recorded; CHECK rows log a `verdict`.
+
+### Frontend quality gates (verified 2026-10-02)
+- `npm run lint` — clean (ESLint, zero warnings/errors).
+- `npx tsc --noEmit` — clean.
+- `npm run build` — production build succeeds (34 routes generated).
 
 ## Manual QA checklist (verified during build)
 
@@ -63,6 +76,6 @@ magic-byte spoof `.docx` with PE header rejected (400); `RateLimit-*` headers pr
 - [x] `npm audit`: **0 vulnerabilities** in both backend and frontend.
 
 ## Known limitations (documented, non-blocking)
-- Single-node local file storage (S3 seam documented in `lib/storage.ts`).
+- **High priority before paid production:** private uploads use single-node local disk; the current Render Free blueprint has no persistent disk, so project files, kit ZIPs, and payment proofs can be lost on restart/redeploy. Attach persistent storage or implement S3-compatible storage (`lib/storage.ts`) and test restore.
 - Manual payment reconciliation (by design for MMK context).
 - Title-only similarity (file-content plagiarism is out of scope).

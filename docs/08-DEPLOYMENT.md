@@ -1,6 +1,6 @@
 # 08 — Deployment Plan
 
-Target: **Frontend → Vercel**, **Backend → Render/Railway**, **DB → Neon/Supabase (PostgreSQL)**.
+Current blueprint: **Frontend → Vercel**, **Backend + PostgreSQL → Render**. Railway and Neon/Supabase remain portable alternatives.
 
 ## 0. Ready-to-use config files (added in Wave 6)
 | File | Purpose |
@@ -14,8 +14,8 @@ One-command Render deploy: push the repo, then *New → Blueprint* and point it 
 Set the `sync: false` secrets (`FRONTEND_ORIGIN`, `SEED_ADMIN_*`, `PAYMENT_INSTRUCTIONS`) in the
 dashboard before the first deploy so the seed picks up the right admin credentials.
 
-## 1. Database (Neon or Supabase)
-1. Create a PostgreSQL database; copy the connection string.
+## 1. Database (Render-managed PostgreSQL in the current blueprint; Neon/Supabase are alternatives)
+1. The `render.yaml` blueprint creates a PostgreSQL database and wires its connection string to the API. If using Neon or Supabase instead, create a PostgreSQL database and copy its connection string.
 2. Locally point `backend/.env` to it with `DB_PROVIDER=postgresql` and run:
    ```bash
    npm run prisma:generate

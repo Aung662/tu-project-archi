@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { tr, getLang, setLangModule, LANG_STORAGE_KEY, type Lang } from '@/lib/i18n';
+import { getLang, setLangModule, LANG_STORAGE_KEY, type Lang } from '@/lib/i18n';
 
 interface LanguageState {
   lang: Lang;

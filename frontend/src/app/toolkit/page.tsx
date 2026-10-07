@@ -49,9 +49,6 @@ export default function ToolkitPage() {
   }, [q, cat, favOnly, favSet]);
 
   const catById = useMemo(() => Object.fromEntries(CATEGORIES.map((c) => [c.key, c])), []);
-  const hardwareCats = CATEGORIES.filter((c) => c.group === 'hardware');
-  const softwareCats = CATEGORIES.filter((c) => c.group === 'software');
-
   const hardwareItems = filtered.filter((c) => catById[c.category].group === 'hardware');
   const softwareItems = filtered.filter((c) => catById[c.category].group === 'software');
 

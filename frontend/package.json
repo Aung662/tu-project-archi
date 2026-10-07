@@ -4,9 +4,16 @@
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run build:wiring && next build",
     "start": "next start -p 3000",
-    "lint": "next lint"
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test",
+    "build:wiring": "node scripts/build-verified-wiring-diagrams.mjs && node scripts/check-wiring-quality.mjs",
+    "check:wiring": "node scripts/build-verified-wiring-diagrams.mjs --check && node scripts/check-wiring-quality.mjs",
+    "sync:wiring-review": "node scripts/sync-wiring-review-status.mjs",
+    "register:wiring-review": "node scripts/register-wiring-candidates.mjs",
+    "promote:wiring": "node scripts/promote-reviewed-wiring.mjs"
   },
   "keywords": [],
   "author": "",
@@ -26,8 +33,9 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
     "autoprefixer": "^10.5.4",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^15.5.25",
     "postcss": "^8.5.26",
-    "sharp": "^0.35.4",
     "tailwindcss": "^3.4.19",
     "typescript": "^5.9.3"
   },
@@ -35,7 +43,7 @@
     "postcss": "^8.5.26"
   },
   "optionalDependencies": {
-    "sharp": "^0.33.5"
+    "sharp": "^0.35.5"
   },
   "private": true
 }

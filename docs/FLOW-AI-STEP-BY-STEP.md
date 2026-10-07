@@ -1,7 +1,7 @@
 # Step-by-step: generate wiring images for ALL controllers
 
 Your prompt files already cover **16 controllers**, not just Arduino — each with
-94 component wiring diagrams (1,504 images total):
+65 component wiring diagrams (1,040 images total):
 
 Arduino Uno R3 · Arduino Nano · Arduino Mega 2560 · Arduino Pro Mini · ESP32
 DevKit V1 · ESP32-CAM · ESP8266 · NodeMCU · Raspberry Pi Pico · Raspberry Pi 4 ·
@@ -42,27 +42,35 @@ every prompt line.
 
 ## PART B — The layout of the prompt list (so you can pick any controller)
 
-`FLOW-AI-PROMPTS-ONELINE.txt` is grouped by board, **94 lines per board**, in this
+`FLOW-AI-PROMPTS-ONELINE.txt` is grouped by board, **65 lines per board**, in this
 exact order:
 
 | Board | Line range |
 | --- | --- |
-| Arduino Uno R3 | 1 – 94 |
-| Arduino Nano | 95 – 188 |
-| Arduino Mega 2560 | 189 – 282 |
-| Arduino Pro Mini | 283 – 376 |
-| ESP32 DevKit V1 | 377 – 470 |
-| ESP32-CAM | 471 – 564 |
-| ESP8266 | 565 – 658 |
-| NodeMCU | 659 – 752 |
-| Raspberry Pi Pico | 753 – 846 |
-| Raspberry Pi 4 | 847 – 940 |
-| STM32 Blue Pill | 941 – 1034 |
-| Teensy 4.0 | 1035 – 1128 |
-| ATtiny85 | 1129 – 1222 |
-| BBC micro:bit v2 | 1223 – 1316 |
-| Jetson Nano | 1317 – 1410 |
-| Orange Pi | 1411 – 1504 |
+| Arduino Uno R3 | 1 – 65 |
+| Arduino Nano | 66 – 130 |
+| Arduino Mega 2560 | 131 – 195 |
+| Arduino Pro Mini | 196 – 260 |
+| ESP32 DevKit V1 | 261 – 325 |
+| ESP32-CAM | 326 – 390 |
+| ESP8266 | 391 – 455 |
+| NodeMCU | 456 – 520 |
+| Raspberry Pi Pico | 521 – 585 |
+| Raspberry Pi 4 | 586 – 650 |
+| STM32 Blue Pill | 651 – 715 |
+| Teensy 4.0 | 716 – 780 |
+| ATtiny85 | 781 – 845 |
+| BBC micro:bit v2 | 846 – 910 |
+| Jetson Nano | 911 – 975 |
+| Orange Pi | 976 – 1040 |
+
+> Note: parts with no meaningful "connect to a board pin" diagram are
+> intentionally **excluded** — inline discretes (resistor, capacitor, diode,
+> crystal, inductor, fuse, transistor), power supplies/converters/cells
+> (buck, boost, TP4056, AMS1117, batteries…), bare motors/mechanicals driven
+> through a driver, and industrial mains gear (PLC, VFD, contactor…). Drawing an
+> "IN+ → D2" wire for those would be misleading, so only the 65 genuinely
+> MCU-wireable components per board are generated.
 
 (In the CSV, each row's `filename` starts with the board id, e.g. `esp32__…`,
 `raspberry-pi-pico__…` — filter by that prefix to grab one board.)
@@ -71,7 +79,7 @@ exact order:
 
 ## PART C — Generate, one controller at a time (recommended)
 
-Doing 1,504 at once is a lot, so run it **board by board**:
+Doing 1,040 at once is a lot, so run it **board by board**:
 
 1. Open `FLOW-AI-PROMPTS-ONELINE.txt`.
 2. **Select the line range for the board you want** (see the table above) — e.g.
@@ -92,7 +100,7 @@ Doing 1,504 at once is a lot, so run it **board by board**:
 
 ### Doing ALL of it in one go (optional)
 If your extension and Flow quota can handle it, just **select the whole file
-(Ctrl+A), copy, paste, Start**. It will run all 1,504 in sequence. A board-by-board
+(Ctrl+A), copy, paste, Start**. It will run all 1,040 in sequence. A board-by-board
 run is only safer against quota limits / browser slow-downs.
 
 ---

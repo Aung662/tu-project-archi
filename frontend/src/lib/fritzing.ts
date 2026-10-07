@@ -1,14 +1,12 @@
 /**
- * fritzing.ts — builds a REALISTIC, Fritzing-style wiring illustration: a
- * recognizable board on the left, the real component/module on the right, and
- * colour-coded jumper wires routed between labelled pin pads — exactly the style
- * of the reference diagrams (red = VCC/power, black = GND, and distinct colours
- * per signal). It reuses the SAME board-aware connection plan as the schematic
- * view (buildWiring → real pins per board) so every wire is 100% accurate for the
- * selected board, then draws it against the illustrated board + module art.
+ * fritzing.ts — builds an illustrative pinout diagram for an unreviewed pair.
+ * The board/module silhouettes are category archetypes; pin pads are laid out
+ * synthetically and are NOT the physical locations on a Fritzing part. The wire
+ * plan comes from buildWiring's heuristics and may need electrical review for a
+ * specific breakout, logic voltage, or board revision. Do not mark this output as
+ * verified; source-backed recipes use the separate curated SVG pipeline.
  *
- * Output is a standalone SVG string (no external refs, Myanmar-capable font stack)
- * so it renders in the sandboxed preview AND downloads as a finished file.
+ * Output is a self-contained SVG so it can be viewed and downloaded offline.
  */
 import { buildWiring, type WireConn } from './wiring';
 import { drawBoard } from './boardArt';

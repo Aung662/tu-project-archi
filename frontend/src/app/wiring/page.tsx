@@ -4,10 +4,12 @@ import { useEffect, useMemo, useState } from 'react';
 import { COMPONENTS, CATEGORIES, type CategoryKey } from '@/data/components';
 import { guideFor, type PinRow } from '@/data/componentGuide';
 import type { GlyphKey } from '@/data/glyphs';
-import { buildWiring } from '@/lib/wiring';
+import { buildWiring, isWireable } from '@/lib/wiring';
 import { downloadWiringSvg } from '@/lib/wiringSvg';
 import { WiringDiagram } from '@/components/WiringDiagram';
 import { FritzingDiagram } from '@/components/FritzingDiagram';
+import { VerifiedWiringDiagram } from '@/components/VerifiedWiringDiagram';
+import { verifiedWiringFor } from '@/lib/verifiedWiring';
 import { downloadFritzingSvg } from '@/lib/fritzing';
 import { ComponentDetail } from '@/components/ComponentDetail';
 import { WIRE_KIND_LABEL } from '@/lib/wiring';
@@ -19,7 +21,10 @@ import {
   loadWiringManifest,
   wiringPhotoUrl,
   wiringPhotoCount,
+  loadWiringGallery,
+  wiringGalleryUrl,
   type WiringManifest,
+  type WiringGalleryItem,
 } from '@/lib/wiringPhotos';
 
 /**
@@ -45,7 +50,9 @@ interface WireItem {
   connCount: number;
 }
 
-const WIRE_ITEMS: WireItem[] = COMPONENTS.filter((c) => c.category !== 'boards')
+const WIRE_ITEMS: WireItem[] = COMPONENTS.filter(
+  (c) => c.category !== 'boards' && isWireable(c.id),
+)
   .map((c) => {
     const g = guideFor(c.id);
     const conns = buildWiring(g?.pinout);
@@ -71,20 +78,38 @@ export default function WiringPage() {
   const [boardId, setBoardId] = useState<string>('arduino-uno');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [manifest, setManifest] = useState<WiringManifest | null>(null);
+  const [gallery, setGallery] = useState<WiringGalleryItem[]>([]);
 
   const board = getBoardProfile(boardId);
   const photoCount = wiringPhotoCount(manifest, boardId);
 
+  // Boards to show in the picker. Once reviewed image assets are approved, show
+  // only boards that have one; with an empty verified manifest, keep all boards
+  // available and use the illustrative/verified SVG fallback.
+  const boardsWithPhotos = useMemo(
+    () => BOARD_ORDER.filter((id) => wiringPhotoCount(manifest, id) > 0),
+    [manifest],
+  );
+  const boardsToShow = boardsWithPhotos.length > 0 ? boardsWithPhotos : BOARD_ORDER;
+  const photoMode = boardsWithPhotos.length > 0;
+
   useEffect(() => {
     setLangState(getLang());
     loadWiringManifest().then(setManifest);
+    loadWiringGallery().then(setGallery);
   }, []);
 
-  // When real photos exist for the chosen board, default to the Photo view so
-  // the student sees them first; otherwise keep the drawn Fritzing diagram.
+  // Keep the selected board valid when the reviewed-image set is non-empty.
   useEffect(() => {
-    if (photoCount > 0) setView('photo');
-  }, [photoCount]);
+    if (photoMode && !boardsWithPhotos.includes(boardId)) {
+      setBoardId(boardsWithPhotos[0]);
+    }
+  }, [photoMode, boardsWithPhotos, boardId]);
+
+  // When the selected board has reviewed image assets, default to their view.
+  useEffect(() => {
+    if (wiringPhotoCount(manifest, boardId) > 0) setView('photo');
+  }, [manifest, boardId]);
 
   const q = query.trim().toLowerCase();
 
@@ -121,8 +146,15 @@ export default function WiringPage() {
         <p className="mt-2 max-w-3xl text-sm text-slate-400">{tr(t.wiringSubtitle)}</p>
       </Reveal>
 
-      {/* Board selector — pick ANY board; every diagram below re-wires to its
-          real pins (Arduino Uno / Mega / ESP32 / ESP32-CAM / Pico / Pi / …). */}
+      <p className="rounded-xl border border-amber-400/25 bg-amber-400/[0.05] px-4 py-3 text-xs leading-relaxed text-amber-100/85">
+        <span className="mr-1.5" aria-hidden="true">⚠</span>
+        {lang === 'my'
+          ? 'အစိမ်းရောင် ✓ ပါသောပုံများသာ ရင်းမြစ်နှင့် pin နေရာ တိုက်စစ်ထားသည်။ အခြားပုံများသည် pinout အချက်အလက်မှ ထုတ်ထားသော နမူနာဖြစ်၍ ဘုတ်/မော်ဂျူး၏ အတိအကျ model နှင့် voltage ကို datasheet ဖြင့် အရင်စစ်ပါ။'
+          : 'Only diagrams marked with a green ✓ have a source-checked pin map. Other views are illustrative pinout examples; verify the exact board/module model and voltage against its datasheet before wiring.'}
+      </p>
+
+      {/* Board selector — choose a supported board; verified recipes are
+          displayed only for exact board/component combinations. */}
       <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
         <div className="mb-2 flex items-center justify-between gap-2">
           <span className="text-sm font-semibold text-slate-200">
@@ -133,8 +165,9 @@ export default function WiringPage() {
           </span>
         </div>
         <div className="flex flex-wrap gap-2">
-          {BOARD_ORDER.map((id) => {
+          {boardsToShow.map((id) => {
             const b = getBoardProfile(id);
+            const n = wiringPhotoCount(manifest, id);
             return (
               <button
                 key={id}
@@ -148,10 +181,22 @@ export default function WiringPage() {
               >
                 {b.name}
                 <span className="font-latin text-[10px] opacity-60">{b.logic}</span>
+                {photoMode && n > 0 && (
+                  <span className="rounded-full bg-emerald-500/20 px-1.5 text-[9px] font-semibold text-emerald-300">
+                    📷{n}
+                  </span>
+                )}
               </button>
             );
           })}
         </div>
+        {photoMode && (
+          <p className="mt-2.5 rounded-lg border border-emerald-400/20 bg-emerald-400/5 px-3 py-2 text-[11px] leading-relaxed text-emerald-200/80">
+            📷 {lang === 'my'
+              ? 'ရင်းမြစ်နှင့် ချိတ်ဆက်မှုကို စစ်ဆေးပြီးသော ပုံရှိသည့် board များကိုသာ ဖော်ပြထားသည်။'
+              : 'Showing only boards with reviewed wiring images.'}
+          </p>
+        )}
         {board.note && (
           <p className="mt-2.5 rounded-lg border border-amber-400/20 bg-amber-400/5 px-3 py-2 text-[11px] leading-relaxed text-amber-200/80">
             ⚡ {lang === 'my' ? board.note.my : board.note.en}
@@ -177,7 +222,7 @@ export default function WiringPage() {
                 onClick={() => setView('photo')}
                 className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${view === 'photo' ? 'bg-brand-500 text-white' : 'text-slate-300 hover:text-white'}`}
               >
-                📷 {lang === 'my' ? 'ဓာတ်ပုံ' : 'Photo'}{' '}
+                📷 {lang === 'my' ? 'စစ်ဆေးပြီးသောပုံ' : 'Reviewed image'}{' '}
                 <span className="font-latin opacity-70">{photoCount}</span>
               </button>
             )}
@@ -253,6 +298,10 @@ export default function WiringPage() {
         </section>
       ))}
 
+      {/* This only renders indexed, approved public references. Quarantined
+          candidates are intentionally not exposed to visitors. */}
+      {gallery.length > 0 && <WiringGallerySection gallery={gallery} lang={lang} />}
+
       <p className="rounded-xl border border-amber-400/20 bg-amber-400/5 px-4 py-3 text-xs leading-relaxed text-amber-200/80">
         {tr(t.wiringNote)}
       </p>
@@ -285,8 +334,9 @@ function WiringCard({
 }) {
   const conns = useMemo(() => buildWiring(item.pinout, boardId), [item.pinout, boardId]);
   const my = lang === 'my';
-  // If the Photo view is requested but this specific pair has no real photo yet,
-  // gracefully fall back to the drawn Fritzing-style diagram for that card.
+  const verifiedRecipe = verifiedWiringFor(boardId, item.id);
+  // If the reviewed-image view is requested but this pair has no approved image,
+  // fall back to a source-checked recipe or a clearly labelled pinout illustration.
   const effView = view === 'photo' && !photoUrl ? 'realistic' : view;
 
   return (
@@ -318,18 +368,29 @@ function WiringCard({
               className="h-auto w-full object-contain"
             />
             <span className="absolute right-2 top-2 rounded-full bg-emerald-500/90 px-2 py-0.5 text-[10px] font-semibold text-white shadow">
-              {my ? 'တကယ့်ပုံ' : 'Real photo'}
+              {my ? 'စစ်ဆေးထားသောပုံ' : 'Reviewed image'}
             </span>
           </a>
         ) : effView === 'realistic' ? (
-          <FritzingDiagram
-            componentName={item.name}
-            glyph={item.glyph}
-            category={item.category}
-            pinout={item.pinout}
-            boardId={boardId}
-            lang={lang}
-          />
+          verifiedRecipe ? (
+            <VerifiedWiringDiagram recipe={verifiedRecipe} lang={lang} />
+          ) : (
+            <>
+              <p className="mb-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-[10px] leading-relaxed text-slate-400">
+                {my
+                  ? 'နမူနာပုံ — ဒီ board/module အတွဲအတွက် အတည်ပြုထားသော pin-map မရှိသေးပါ။ အောက်ပါ connection list ကို datasheet နှင့် တိုက်စစ်ပါ။'
+                  : 'Illustrative example — this exact board/module pair has no reviewed pin map yet. Check the connection list against the datasheet.'}
+              </p>
+              <FritzingDiagram
+                componentName={item.name}
+                glyph={item.glyph}
+                category={item.category}
+                pinout={item.pinout}
+                boardId={boardId}
+                lang={lang}
+              />
+            </>
+          )
         ) : effView === 'diagram' ? (
           <WiringDiagram pinout={item.pinout} componentName={item.name} lang={lang} boardId={boardId} />
         ) : (
@@ -338,13 +399,21 @@ function WiringCard({
       </div>
 
       <div className="flex items-center gap-2 border-t border-white/10 px-3 py-2">
-        {effView === 'photo' && photoUrl ? (
+        {effView === 'realistic' && verifiedRecipe ? (
+          <a
+            href={`/wiring/verified/${verifiedRecipe.diagramFile}`}
+            download={verifiedRecipe.diagramFile}
+            className="inline-flex items-center gap-1 rounded-md border border-emerald-400/20 bg-emerald-400/[0.06] px-2.5 py-1 text-[11px] text-emerald-100 transition hover:bg-emerald-400/10"
+          >
+            ⬇ {my ? 'အတည်ပြုပုံ SVG ဒေါင်းရန်' : 'Download verified SVG'}
+          </a>
+        ) : effView === 'photo' && photoUrl ? (
           <a
             href={photoUrl}
             download={`${boardId}__${item.id}.jpg`}
             className="inline-flex items-center gap-1 rounded-md border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] text-slate-300 transition hover:bg-white/10 hover:text-white"
           >
-            ⬇ {my ? 'ဓာတ်ပုံ Download' : 'Download photo'}
+            ⬇ {my ? 'စစ်ဆေးထားသော ပုံကို ဒေါင်းရန်' : 'Download reviewed image'}
           </a>
         ) : (
           <button
@@ -439,5 +508,88 @@ function Chip({
     >
       {children}
     </button>
+  );
+}
+
+/**
+ * Optional gallery for separately reviewed, pair-specific image references.
+ * Unmatched/duplicate candidates stay outside the public folder and are never
+ * fetched here. The current release gate intentionally keeps this gallery empty.
+ */
+function WiringGallerySection({
+  gallery,
+  lang,
+}: {
+  gallery: WiringGalleryItem[];
+  lang: Lang;
+}) {
+  const my = lang === 'my';
+
+  // Group by board id, following BOARD_ORDER; unknown-board items land in "other".
+  const byBoard = useMemo(() => {
+    const map = new Map<string, WiringGalleryItem[]>();
+    for (const it of gallery) {
+      const key = it.board ?? 'other';
+      const arr = map.get(key) ?? [];
+      arr.push(it);
+      map.set(key, arr);
+    }
+    const ordered: { board: string; label: string; items: WiringGalleryItem[] }[] = [];
+    for (const id of BOARD_ORDER) {
+      const items = map.get(id);
+      if (items?.length) ordered.push({ board: id, label: getBoardProfile(id).name, items });
+    }
+    const other = map.get('other');
+    if (other?.length) ordered.push({ board: 'other', label: my ? 'အခြား' : 'Other', items: other });
+    return ordered;
+  }, [gallery, my]);
+
+  return (
+    <section className="space-y-5 rounded-2xl border border-white/10 bg-white/[0.02] p-4 sm:p-5">
+      <div className="flex items-center justify-between gap-2">
+        <div>
+          <h2 className="flex items-center gap-2 text-lg font-bold text-slate-100">
+            🖼️ {my ? 'စစ်ဆေးထားသော ကိုးကားပုံများ' : 'Reviewed reference images'}
+          </h2>
+          <p className="mt-0.5 text-xs text-slate-500">
+            {my
+              ? 'board အလိုက် စုစည်းထားသော စစ်ဆေးပြီးသား ကိုးကားပုံများ။'
+              : 'Additional reviewed reference images, grouped by board.'}
+          </p>
+        </div>
+        <span className="shrink-0 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-0.5 text-[11px] text-slate-400">
+          {gallery.length} {my ? 'ပုံ' : 'images'}
+        </span>
+      </div>
+
+      {byBoard.map(({ board, label, items }) => (
+        <div key={board} className="space-y-3">
+          <h3 className="flex items-center gap-2 text-sm font-semibold text-slate-200">
+            <span className="rounded-md border border-white/10 bg-white/[0.03] px-2 py-0.5">{label}</span>
+            <span className="font-latin text-xs font-normal text-slate-500">{items.length}</span>
+          </h3>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            {items.map((it) => (
+              <a
+                key={it.file}
+                href={wiringGalleryUrl(it)}
+                target="_blank"
+                rel="noreferrer"
+                className="group relative block overflow-hidden rounded-xl border border-white/10 bg-white transition hover:border-brand-400/40"
+                title={my ? 'အပြည့်ကြည့်ရန် နှိပ်ပါ' : 'Click to view full size'}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={wiringGalleryUrl(it)}
+                  alt={`${label} wiring`}
+                  loading="lazy"
+                  className="aspect-[4/3] h-auto w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
   );
 }

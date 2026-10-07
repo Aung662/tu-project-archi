@@ -1,129 +1,102 @@
-# Flow ပုံ ၃၃၉ ပုံ → Website ပေါ် တင်နည်း (မြန်မာ)
+# Google Flow wiring-image candidates: safe review workflow
 
-Google Flow က ထုတ်ပေးတဲ့ wiring ပုံတွေက **ဖိုင်နာမည် ရှုပ်ပွနေ** (ဥပမာ
-`Arduino_Mega_and_MPU-6050_wiring_20260909220202.jpeg`) ပြီး **အရွယ်ကြီး** တယ်။
-Website က `arduino-mega__mpu6050.jpg` လို **သတ်မှတ် နာမည်** တွေ လိုတယ်။
+> **Important:** the organizer does not publish images. Google Flow output can have wrong boards, invented labels, missing power/ground, and unsafe wiring. Treat every render as an unverified candidate until a human checks its exact hardware and connections. One sampled Uno/LDR candidate has already been rejected; the rest remain pending.
 
-ဒါကြောင့် **script တစ်ခု** ကို သင့် PC မှာ တစ်ခါ run လိုက်ရုံနဲ့ —
-1. ဖိုင်နာမည်တွေ အလိုအလျောက် **ပြန်နာမည်ပေး** (board + module ကို ဉာဏ်နဲ့ ရှာလို့)
-2. ပုံတွေ **compress** (width 1280px၊ quality 72 → size များစွာ ကျ)
-3. `manifest.json` ဆောက် — website က ပုံတွေ ဘယ်မှာရှိလဲ သိအောင်
+## Current state
 
-ပြီးရင် `git` နဲ့ push လိုက်ရုံ။
+- 338 recovered candidate images are kept in `frontend/quality/wiring-review/candidates/`, outside the public website directory.
+- Review matrix: 337 `PENDING`, one `REJECTED`, zero `APPROVED` image assets.
+- `frontend/public/wiring/manifest.json` is `{}`. Do not copy candidates into it to make images appear.
+- The one source-backed published diagram is Uno R3 + HC-SR04 at `frontend/public/wiring/verified/arduino-uno__hc-sr04.svg`. Other board/module combinations remain illustrative until reviewed.
 
-> ⏱️ **အချိန်ကုန်သက်သာဖို့:** ၃၃၉ ပုံ အားလုံး တစ်ခါတည်း လုပ်လို့ရ။ တစ်ပုံချင်း
-> လက်နဲ့ လုပ်စရာ မလို။
+## 1. Organize a new Flow export into quarantine
 
----
+Use Node.js 20+ from the project root. The organizer only adds candidates to the review area; it preserves existing files, merges the index, and registers new/changed pairs as `PENDING`. Re-running it never replaces a reviewed candidate in place; a repeated render is retained as a quarantined extra.
 
-## လိုအပ်ချက်
-- **Node.js** (v18+) — https://nodejs.org မှာ install (`node --version` နဲ့ စစ်)
-- Git (push လုပ်ဖို့)
-- သင့် repo folder (frontend/ ပါတဲ့ folder — ဥပမာ `tu-project-archive`)
+### Windows (PowerShell)
 
----
-
-## အဆင့် ၁ — (ရွေးချယ်) compression enable (အထူးအကြံပြု)
-
-ဒါက ပုံ size ကို ~၅–၁၀ ဆ လျှော့ချပေးတယ်။ တစ်ခါပဲ လုပ်ရ —
-
-```bash
-cd tu-project-archive/frontend
-npm install          # dependencies (sharp ပါ package.json ထဲ ထည့်ပြီးသား)
-```
-
-`sharp` install မဖြစ်ရင်တောင် script က အလုပ်လုပ်တယ် — ပုံတွေကို compress မလုပ်ဘဲ
-ကူးထည့်ပေးမယ် (size ကြီးနေမယ်ဆိုတာပဲ)။
-
----
-
-## အဆင့် ၂ — script ကို run
-
-Flow ပုံတွေ save ထားတဲ့ folder (ပုံမှန် `Downloads/GoogleFlowAutomator` သို့
-`Downloads/ARduino`) နဲ့ repo path ၂ ခု ပေးရမယ်။
-
-### Windows (Command Prompt / PowerShell)
-```bat
-cd tu-project-archive\frontend\scripts
-node organize-wiring-images.mjs "C:\Users\YOU\Downloads\GoogleFlowAutomator" "C:\path\to\tu-project-archive"
+```powershell
+node .\frontend\scripts\organize-wiring-images.mjs `
+  "C:\Users\YOU\Downloads\GoogleFlowAutomator" `
+  "C:\path\to\tu-project-archive"
 ```
 
 ### macOS / Linux
-```bash
-cd tu-project-archive/frontend/scripts
-node organize-wiring-images.mjs ~/Downloads/GoogleFlowAutomator ~/tu-project-archive
-```
-
-- **arg 1** = Flow ပုံတွေ ရှိတဲ့ folder (subfolder တွေပါ အောက်ဆုံးထိ ရှာပေးမယ်)
-- **arg 2** = သင့် repo root (frontend/ ရှိတဲ့ folder)
-
-Script က `frontend/public/wiring/` ထဲ ပုံတွေ ပြန်နာမည်ပေးပြီး compress လုပ်ကာ
-`manifest.json` ဆောက်ပေးမယ်။ သင့် **မူရင်း Flow ဖိုင်တွေ မထိ / မဖျက်** ဘူး —
-copy ပဲ လုပ်တာ။
-
-### ရလဒ် ဥပမာ
-```
-✓ sharp found — images will be compressed.
-Found 339 image(s) in input folder.
-  …processed 25
-  …processed 50
-  ...
-✓ Organized 339 image(s) into: .../frontend/public/wiring
-✓ Manifest: .../frontend/public/wiring/manifest.json (16 boards, 339 pairs)
-! 0 file(s) could not be matched
-```
-
-**match မဖြစ်တဲ့ ဖိုင်ရှိရင်** → `frontend/public/wiring/unmatched-report.txt`
-ထဲ စာရင်း ထွက်မယ်။ အဲဒါတွေကို ကိုယ်တိုင် `<board>__<component>.jpg` နာမည်ပေးပြီး
-`frontend/public/wiring/` ထဲ ထည့်၊ manifest ထဲ ထည့်လိုက်ရုံ (သို့ ကျွန်တော့်ကို
-ဖိုင်နာမည်တွေ ပြောရင် matcher ကို ချိန်ပေးမယ်)။
-
----
-
-## အဆင့် ၃ — website မှာ စစ်ကြည့် (ရွေးချယ်)
 
 ```bash
-cd tu-project-archive/frontend
-npm run dev
+node frontend/scripts/organize-wiring-images.mjs \
+  ~/Downloads/GoogleFlowAutomator \
+  ~/tu-project-archive
 ```
-Browser မှာ `http://localhost:3000/wiring` ဖွင့် → board (ဥပမာ **Arduino Mega**)
-ရွေး → အပေါ်မှာ **📷 Photo** ခလုတ် ပေါ်လာမယ် → တကယ့်ပုံတွေ မြင်ရမယ်။
-component detail modal ဖွင့်ရင်လည်း **"📷 Real wiring photos"** အပိုင်း ပေါ်မယ်။
 
----
-
-## အဆင့် ၄ — Git နဲ့ push
+The script may use the optional `sharp` package to resize/compress input files. Without it, it preserves the source format and copies the file uncompressed. Original downloads are not modified. When candidates have been copied or indexed manually, rebuild the **candidate index** (not the public manifest) and register it:
 
 ```bash
-cd tu-project-archive
-git add frontend/public/wiring
-git commit -m "feat(wiring): add real Flow-generated wiring photos + manifest"
-git push
+cd frontend
+node scripts/rebuild-wiring-manifest.mjs "<repo-root>"
+npm run register:wiring-review
 ```
 
-> remote မထည့်ရသေးရင် တစ်ခါတည်း —
-> ```bash
-> git remote add origin https://github.com/USERNAME/REPO.git
-> git push -u origin main
-> ```
+Organizer/rebuild output is always under `frontend/quality/wiring-review/candidates/`.
 
-Push ပြီးရင် host (Vercel/Netlify စသဖြင့်) က အလိုအလျောက် redeploy လုပ်ပြီး
-website ပေါ် ပုံတွေ ပေါ်လာမယ်။
+## 2. Review the exact candidate bytes
 
----
+Open `frontend/quality/wiring-review/review-matrix.csv`. Each row points to the staged file and its SHA-256. Review that image—not another render with the same filename. For `APPROVED`, a qualified human reviewer must set all nine checks to `YES`:
 
-## မကြာခဏ မေးလေ့ရှိတဲ့ မေးခွန်း
+1. Exact board model/revision.
+2. Exact sensor/module model.
+3. Pin labels match authoritative references.
+4. Every wire endpoint lands on the labelled connector.
+5. Power and ground routing is correct and complete.
+6. GPIO voltage, polarity, current and required level shifting/resistors are safe.
+7. Image is legible and not misleading.
+8. Written guidance agrees with the diagram.
+9. Rights to publish the exact image are confirmed.
 
-**Q: ၃၃၉ ပဲ ရှိသေးတယ်၊ ၁၅၀၄ မပြည့်သေး — ရလား?**
-A: ရတယ်။ website က **တစ်ဝက်တစ်ပျက်ကို ကောင်းကောင်း handle** လုပ်တယ် — ပုံရှိတဲ့
-board×component က တကယ့်ပုံ ပြမယ်၊ ပုံမရှိသေးတာက အရင်လို auto-drawn Fritzing
-diagram ပြနေမယ်။ နောက်ပုံတွေ ထပ်ထုတ်ပြီး script ပြန် run လိုက်ရုံ — manifest
-အလိုအလျောက် update ဖြစ်မယ်။
+Also fill one or more authoritative HTTPS source URLs (separate multiple URLs with `;`), a named human reviewer, ISO date (`YYYY-MM-DD`), provenance and rationale. If any check is uncertain, leave the row `PENDING`; if wrong or unsafe, mark it `REJECTED` and explain why. Hash changes invalidate prior approval.
 
-**Q: file size ဘယ်လောက် ကျမလဲ?**
-A: `sharp` နဲ့ဆို full-res JPEG (~1–3 MB) တစ်ခုကို ~150–350 KB ထိ ကျတတ်တယ်။
-၃၃၉ ပုံ = ~1.5 GB → ~80–120 MB လောက်။
+Refresh the summary and run the gate:
 
-**Q: script က board/module မှားရင်?**
-A: `unmatched-report.txt` ကြည့်၊ လက်နဲ့ ပြင်၊ သို့ ကျွန်တော့်ကို ပြောပါ — alias
-ထပ်ထည့်ပေးမယ်။
+```bash
+cd frontend
+npm run sync:wiring-review
+npm run check:wiring
+```
+
+`check:wiring` verifies candidate hashes, pair IDs, review completeness, public-manifest authorization and the absence of unindexed public images. It is a release control, not a substitute for electrical review.
+
+## 3. Promote only an approved pair
+
+A candidate must be `APPROVED` with every required check, source, rights, reviewer, date and notes completed. Preview the operation first:
+
+```bash
+npm run promote:wiring -- arduino-uno hc-sr04 --dry-run
+```
+
+Then promote that exact row:
+
+```bash
+npm run promote:wiring -- arduino-uno hc-sr04
+```
+
+The promotion script checks the review row and candidate SHA-256, copies only that image, updates the public manifest/status, and reruns the release gate. On failure, public changes are rolled back. Do not manually copy, rename, or add candidate images to `frontend/public/wiring/`.
+
+Before release, run:
+
+```bash
+npm run lint
+npm run typecheck
+npm test
+npm run build
+```
+
+## Source-backed diagrams
+
+Verified source-backed wiring diagrams use a separate curated recipe in `frontend/src/data/verifiedWiring.json`. `npm run build:wiring` resolves connector IDs from Fritzing part definitions, verifies pinned SHA-256 source files and attribution, and regenerates the self-contained SVG. `npm run check:wiring` confirms it is current. See `docs/WIRING-ASSET-ATTRIBUTION.md`.
+
+## What not to do
+
+- Do not label generated candidate art as a real photo, Fritzing diagram, or verified wiring merely because it looks realistic.
+- Do not publish unmatched/duplicate/gallery images; they do not have an exact board+component review path yet.
+- Do not add a wiring image with missing power/ground, ambiguous terminals, wrong pin labels, or unverified voltage compatibility.
+- Do not claim deployment is complete until the updated code has been committed, pushed to the confirmed frontend host, and smoke-tested against the live site.

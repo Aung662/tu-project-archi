@@ -56,9 +56,10 @@ IMAGE 4  |  file: arduino-uno__ldr.png
 A realistic Fritzing-style wiring diagram titled "Arduino Uno + LDR (Photoresistor)".
 LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a LDR (Photoresistor) (Sensors).
 Wire them EXACTLY:
-  A → A0 (GREEN wire)
-  B → A1 (GREEN wire)
-Correct pin labels on both sides. Render ONLY these 2 wires.
+  VCC → 5V (RED wire)
+  AO → A0 (GREEN wire)
+  GND → GND (BLACK wire)
+Correct pin labels on both sides. Render ONLY these 3 wires.
 
 --------------------------------------------------------------------------------
 IMAGE 5  |  file: arduino-uno__soil-moisture.png
@@ -209,11 +210,9 @@ Wire them EXACTLY:
   IN1–IN4 → D2 (ORANGE wire)
   ENA → D3 (ORANGE wire)
   ENB → D4 (ORANGE wire)
-  OUT1–4 → D5 (ORANGE wire)
-  12V → D6 (ORANGE wire)
   5V → 5V (RED wire)
   GND → GND (BLACK wire)
-Correct pin labels on both sides. Render ONLY these 7 wires.
+Correct pin labels on both sides. Render ONLY these 5 wires.
 
 --------------------------------------------------------------------------------
 IMAGE 18  |  file: arduino-uno__ir-sensor.png
@@ -235,7 +234,7 @@ Wire them EXACTLY:
   SCK → D13 (SCK) (PURPLE wire)
   MOSI → D11 (MOSI) (PURPLE wire)
   MISO → D12 (MISO) (PURPLE wire)
-  SDA → A4 (SDA) (BLUE wire)
+  SS → D10 (SS) (PURPLE wire)
   RST → D2 (ORANGE wire)
   VCC → 5V (RED wire)
   GND → GND (BLACK wire)
@@ -266,9 +265,9 @@ IMAGE 22  |  file: arduino-uno__potentiometer.png
 A realistic Fritzing-style wiring diagram titled "Arduino Uno + Potentiometer".
 LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a Potentiometer (Passive & Discrete).
 Wire them EXACTLY:
-  Outer 1 → D2 (ORANGE wire)
-  2 → D3 (ORANGE wire)
-  Wiper → D4 (ORANGE wire)
+  VCC → 5V (RED wire)
+  GND → GND (BLACK wire)
+  Wiper → A0 (GREEN wire)
 Correct pin labels on both sides. Render ONLY these 3 wires.
 
 --------------------------------------------------------------------------------
@@ -301,12 +300,10 @@ IMAGE 25  |  file: arduino-uno__water-level.png
 A realistic Fritzing-style wiring diagram titled "Arduino Uno + Water Level Sensor".
 LEFT: an Arduino Uno R3 board (5V logic). RIGHT: a Water Level Sensor (Sensors).
 Wire them EXACTLY:
-  VCC → 5V (RED wire)
   + → 5V (RED wire)
   S → A0 (GREEN wire)
-  GND → GND (BLACK wire)
   - → GND (BLACK wire)
-Correct pin labels on both sides. Render ONLY these 5 wires.
+Correct pin labels on both sides. Render ONLY these 3 wires.
 
 --------------------------------------------------------------------------------
 IMAGE 26  |  file: arduino-uno__color-sensor.png

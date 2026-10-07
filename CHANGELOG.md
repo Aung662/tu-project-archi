@@ -3,6 +3,16 @@
 All notable changes to **TU Project Archive & Title Similarity Checker**. Grouped by build wave;
 newest first. Dates are the project timeline (Asia/Yangon).
 
+## [Unreleased] — Project-wide audit & hardening (2026-10-02)
+- Refreshed vulnerable, semver-compatible dependencies in both lockfiles; `npm audit` now reports 0 vulnerabilities for backend and frontend.
+- Added a non-interactive Next.js ESLint setup; fixed the conditional `useTransform` hook and the reported unused/dependency warnings. `npm run lint` is clean.
+- Removed `--accept-data-loss` from Render and Docker database bootstrap commands so destructive schema changes fail for review instead of being silently accepted.
+- Corrected current test counts to 82/82 and documented the Render Free ephemeral-upload limitation.
+- Replaced stale homepage stats with live `/api/stats` values and removed inaccurate “AI-powered title checker” copy; the lexical engine is not Gemini. Updated the docs to reflect English default + Burmese switch and Render-managed PostgreSQL.
+- Live audit found 14 published projects but 0 attached project files; 8/8 Website Kits have files. Live wiring has 338 mapped pairs across 10 boards, while `gallery.json` is 404. The reviewed workspace has empty wiring indexes and no Git remote, so it must not be deployed before assets/code are synced.
+- Verified: backend 82/82 tests + build; frontend lint + TypeScript + production build; both npm audits 0 vulnerabilities. Public live health/home/browse/search endpoints returned HTTP 200.
+- Full reports: [`docs/ENGINEERING_AUDIT_2026-10-02.md`](docs/ENGINEERING_AUDIT_2026-10-02.md) and [`docs/PROJECT_COMPLETION_REVIEW_2026-10-02_MM.md`](docs/PROJECT_COMPLETION_REVIEW_2026-10-02_MM.md). Paid production remains blocked on durable storage, live content, and a verified release path.
+
 ## [Unreleased] — Retention tools: Research Notes, Compare, Saved Searches (2026-09-08)
 - **Research Notes** — a private, per-project note editor on the project detail page and a dedicated `/notes` page that collects them all. Stored in localStorage (no login, private to the device), so students can jot literature-review notes while browsing and return to continue. Auto-loads, shows char count + "saved" confirmation; empty text deletes the note.
 - **Compare projects** — an "Add to compare" control on every project card and the detail page (up to 3), a floating Compare bar that follows the student across the site, and a `/compare` page showing the selected projects side by side across level, year, school, price/availability, keywords and abstract — for weighing directions for their own thesis. localStorage-backed.

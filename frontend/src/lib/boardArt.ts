@@ -1,10 +1,9 @@
 /**
- * boardArt.ts — recognizable, self-contained SVG illustrations of each dev board
- * for the Fritzing-style wiring view. We can't ship 16 pixel-perfect board photos
- * (and AI-generated boards get the silkscreen wrong), so each board is drawn as a
- * clean vector that is *clearly identifiable* — the classic blue Arduino outline
- * with USB-B + barrel jack, an ESP dev-board stick with a PCB antenna, a
- * Raspberry-Pi SBC with its 40-pin header, the ESP32-CAM with a camera, etc.
+ * boardArt.ts — generic, self-contained SVG silhouettes used only for
+ * illustrative pinout views. These archetypes are intentionally not represented
+ * as exact photographs or pin-position-accurate board artwork. Source-reviewed
+ * physical diagrams use the versioned Fritzing parts in the wiring-review
+ * pipeline instead.
  *
  * Every board maps to one of a handful of ARCHETYPES so the art stays consistent
  * and maintainable while still reading as the right kind of board. The drawing is

@@ -9,7 +9,7 @@ files made for exactly that — not the human-readable pack.
 
 | File | Use with | What it is |
 | --- | --- | --- |
-| `FLOW-AI-PROMPTS-ONELINE.txt` | Flow Bulk Gen, most "paste prompts, one per line" extensions | **1,504 prompts, one complete prompt per line.** The fixed art style is already baked into every line, so there is **nothing else to paste first**. |
+| `FLOW-AI-PROMPTS-ONELINE.txt` | Flow Bulk Gen, most "paste prompts, one per line" extensions | **1,040 prompts, one complete prompt per line.** The fixed art style is already baked into every line, so there is **nothing else to paste first**. |
 | `FLOW-AI-PROMPTS.csv` | Google Flow Automator, Flow Image Automator (CSV import) | Two columns: `filename`, `prompt`. The `filename` (e.g. `esp32__hc-sr04.png`) lets the extension name each saved file correctly. |
 | `FLOW-AI-WIRING-PROMPTS.txt` | reading/checking by hand | The human-readable master pack (nicely formatted, section per board). Not ideal for pasting into an extension. |
 
@@ -35,7 +35,7 @@ so the model cannot invent pins.
 
 ## Doing it in batches
 
-1,504 images is a lot in one run. To keep it manageable you can paste one board's
+1,040 images is a lot in one run. To keep it manageable you can paste one board's
 worth at a time:
 
 - Each board is **94 consecutive lines** in `FLOW-AI-PROMPTS-ONELINE.txt`

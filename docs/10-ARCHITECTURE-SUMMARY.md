@@ -9,7 +9,7 @@ the key decisions were made, and what is deliberately left for future work.
 
 The **Myanmar Technological Universities Project Archive & Intelligent Title Similarity Checker**
 is a decoupled web application. A **Next.js (App Router, TypeScript, Tailwind)** frontend — a
-Burmese-first, installable PWA — talks to a stateless **Node/Express (TypeScript) REST API**,
+English-default bilingual (Burmese switch), installable PWA — talks to a stateless **Node/Express (TypeScript) REST API**,
 which persists to **PostgreSQL via Prisma** using the **`pg_trgm`** extension for scalable fuzzy
 title search. Students search and browse for free; buying full project files requires an account
 and flows through a **human-verified manual MMK payment** process; a role-gated admin dashboard
@@ -19,7 +19,7 @@ addressable — every download passes a server-side `PurchaseAccess` check.
 ## 2. Component topology
 
 ```
-                     Browser (PWA, Burmese-first)
+                     Browser (PWA, English default + Burmese switch)
                               │  same-origin /api/*  (HttpOnly cookie)
                               ▼
    Vercel ───────────  Next.js frontend  ── rewrites /api/* ──▶  Express API (Render/Railway)
@@ -27,12 +27,12 @@ addressable — every download passes a server-side `PurchaseAccess` check.
                                         ┌──────────────────────────────┼───────────────┐
                                         ▼                              ▼                ▼
                                  PostgreSQL + pg_trgm         Private file storage   Audit + SearchLog
-                                 (Neon / Supabase)            (disk / S3 seam)       (analytics)
+                               (Render current; Neon alt.)     (disk / S3 seam)       (analytics)
 ```
 
 - **Why decoupled?** The frontend and API deploy, scale, and version independently; the API is a
   reusable product surface (a future mobile app or a bulk-import script can consume the same REST
-  endpoints). It also matches the brief's explicit hosting split (Vercel + Render + Neon).
+  endpoints). It matches the current hosting split: Vercel frontend + Render API and managed PostgreSQL.
 - **Why the `/api` rewrite?** The browser only ever sees one origin, so the JWT cookie stays
   first-party (`SameSite=Lax` + `Secure`) with no CORS preflight for normal use, while the API
   still enforces a strict CORS allowlist for defense in depth.
@@ -76,10 +76,10 @@ audited auth events. `npm audit`: **0 vulnerabilities** on both apps. Details in
 
 ## 7. Quality gates
 
-- **Backend:** `tsc --noEmit` clean; **31 automated tests** (Vitest + Supertest) — similarity unit
+- **Backend:** `tsc --noEmit` clean; **82 automated tests** (Vitest + Supertest) — similarity unit
   tests + API integration tests covering RBAC, consent gate, paid-file protection, and Wave 5
   hardening. Plus scripted live security probes (JWT forgery, stale role, MIME spoofing).
-- **Frontend:** `tsc --noEmit` clean; responsive Burmese-first UI with skeleton/empty/error/offline
+- **Frontend:** `tsc --noEmit` clean; responsive bilingual UI (English default, Burmese switch) with skeleton/empty/error/offline
   states and route-level error + 404 boundaries.
 
 ---

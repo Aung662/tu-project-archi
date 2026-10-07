@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "recipes": [
+    {
+      "id": "arduino-uno__hc-sr04",
+      "boardId": "arduino-uno",
+      "componentId": "hc-sr04",
+      "displayName": "Arduino Uno R3 + HC-SR04",
+      "diagramFile": "arduino-uno__hc-sr04.svg",
+      "license": "CC BY-SA 3.0",
+      "layout": {
+        "canvas": { "width": 1200, "height": 600 },
+        "board": {
+          "title": "Arduino Uno R3",
+          "sourceSvg": "svg/arduino-uno-r3.svg",
+          "sourceFzp": "arduino_Uno_Rev3.fzp",
+          "box": { "x": 40, "y": 105, "width": 520 },
+          "connectorMap": {
+            "5V": { "id": "connector40", "name": "5V" },
+            "GND": { "id": "connector44", "name": "GND" },
+            "D9": { "id": "connector52", "name": "D9 PWM" },
+            "D10": { "id": "connector53", "name": "D10 PWM/SS" }
+          }
+        },
+        "module": {
+          "title": "HC-SR04",
+          "sourceSvg": "svg/hc-sr04.svg",
+          "sourceFzp": "hc-sr04.fzp",
+          "box": { "x": 780, "y": 176, "width": 360 },
+          "pinGroupTranslation": { "x": 2.9994626, "y": 1.9779563 },
+          "connectorMap": {
+            "VCC": { "id": "connector0", "name": "VCC" },
+            "TRIG": { "id": "connector1", "name": "TRIG" },
+            "ECHO": { "id": "connector2", "name": "ECHO" },
+            "GND": { "id": "connector3", "name": "GND" }
+          }
+        }
+      },
+      "connections": [
+        {
+          "id": "uno-d9-to-hcsr04-trig",
+          "boardPin": "D9",
+          "componentPin": "TRIG",
+          "kind": "signal",
+          "color": "#2563eb",
+          "route": [{ "x": 355, "y": 70 }, { "x": 690, "y": 70 }, { "x": 690, "y": 430 }, { "x": 947, "y": 430 }]
+        },
+        {
+          "id": "uno-d10-to-hcsr04-echo",
+          "boardPin": "D10",
+          "componentPin": "ECHO",
+          "kind": "signal",
+          "color": "#f59e0b",
+          "route": [{ "x": 338, "y": 88 }, { "x": 730, "y": 88 }, { "x": 730, "y": 462 }, { "x": 968, "y": 462 }]
+        },
+        {
+          "id": "uno-5v-to-hcsr04-vcc",
+          "boardPin": "5V",
+          "componentPin": "VCC",
+          "kind": "power",
+          "color": "#dc2626",
+          "route": [{ "x": 625, "y": 264 }, { "x": 625, "y": 395 }, { "x": 927, "y": 395 }]
+        },
+        {
+          "id": "uno-gnd-to-hcsr04-gnd",
+          "boardPin": "GND",
+          "componentPin": "GND",
+          "kind": "ground",
+          "color": "#111827",
+          "route": [{ "x": 650, "y": 299 }, { "x": 650, "y": 505 }, { "x": 988, "y": 505 }]
+        }
+      ],
+      "connectionsNotes": [
+        {
+          "en": "5V → VCC; share GND; D9 → TRIG; D10 ← ECHO.",
+          "my": "5V မှ VCC၊ GND အတူချိတ်၊ D9 မှ TRIG၊ ECHO မှ D10 သို့ ချိတ်ပါ။"
+        },
+        {
+          "en": "This 5V Arduino Uno is compatible with the standard 5V HC-SR04 echo level. Do not reuse this direct connection on 3.3V-only GPIO boards; add a suitable level shifter/divider there.",
+          "my": "ဒီချိတ်ဆက်ပုံက 5V Arduino Uno အတွက်သာ ဖြစ်ပါတယ်။ 3.3V GPIO ဘုတ်တွင် ECHO ကို တိုက်ရိုက်မချိတ်ပါနှင့်—သင့်လျော်သော level shifter/voltage divider သုံးပါ။"
+        }
+      ],
+      "sources": [
+        {
+          "label": "Arduino UNO R3 datasheet — official pin definitions",
+          "url": "https://docs.arduino.cc/resources/datasheets/A000066-datasheet.pdf"
+        },
+        {
+          "label": "HC-SR04 user guide — pinout, 5V operation and trigger/echo behavior",
+          "url": "https://www.handsontec.com/dataspecs/HC-SR04-Ultrasonic.pdf"
+        },
+        {
+          "label": "Fritzing parts — Arduino Uno R3 and HC-SR04 connector artwork",
+          "url": "https://github.com/fritzing/fritzing-parts/tree/27535f2fd02097be9bed229b75aa8e9be282a4a0"
+        }
+      ],
+      "attribution": "Diagram artwork includes Fritzing parts by althaus (Arduino Uno R3) and Richard Bruneau (HC-SR04), from fritzing/fritzing-parts. Graphics are licensed CC BY-SA 3.0. The colored wires and pin-to-pin mapping are TU Archive additions."
+    }
+  ]
+}

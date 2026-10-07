@@ -2,7 +2,7 @@
 
 **Myanmar Technological Universities Project Archive and Intelligent Title Similarity Checker System**
 
-A production-grade, decoupled web application where students can search past project titles,
+A feature-rich, decoupled thesis/MVP web application where students can search past project titles,
 detect exact/similar previous titles before proposing their own, browse the archive by year /
 university / level / department, read summaries, and purchase access to full project files via
 manual MMK payment verification. Admins manage records, files, payments, and access.
@@ -39,7 +39,7 @@ manual MMK payment verification. Admins manage records, files, payments, and acc
   buyer creates an order → pays via KPay → uploads proof → (super-)admin approves → the **private**
   zip becomes downloadable. Zips are never served from a public URL. KPay payee details are
   configurable via `KPAY_NUMBER` / `KPAY_NAME`.
-- **Protected paid files** — streamed only after a server-side `PurchaseAccess` check; never a public URL.
+- **Protected paid files** — streamed only after a server-side `PurchaseAccess` check; never a public URL. **Render Free warning:** uploads (paid files and payment proofs) currently live on ephemeral local disk and can disappear after a restart/redeploy. Use a persistent disk or object storage before real paid production.
 - **Consent gate** — a project can't be published unless author consent is recorded.
 - **Password reset** — single-use, hashed, 30-minute tokens (emailed in prod; returned in dev where
   no SMTP is configured).
@@ -54,7 +54,7 @@ manual MMK payment verification. Admins manage records, files, payments, and acc
   **magic-byte-validated uploads** (not just extension/MIME). `npm audit`: **0 vulnerabilities**.
 - **Installable PWA** — web manifest, maskable icons, offline fallback page, and a service
   worker (network-first navigations, stale-while-revalidate assets; API never cached).
-- **Polished UX** — responsive Burmese-first UI with skeleton loaders, empty states, and
+- **Polished UX** — responsive bilingual UI (English default, Burmese language switch), with skeleton loaders, empty states, and
   route-level error / 404 / offline boundaries.
 
 ## 🧱 Tech stack
@@ -113,7 +113,7 @@ Cloudinary URL + poster + metadata are stored.
 ## 🧪 Tests
 
 ```bash
-cd backend && npm run seed && npm test    # 57/57 passing (unit + integration + hardening + payment + media)
+cd backend && npm run seed && npm test    # 82/82 passing (unit + integration + hardening + payment + media)
 ```
 
 ## 📚 Documentation (thesis-ready)
@@ -127,7 +127,7 @@ cd backend && npm run seed && npm test    # 57/57 passing (unit + integration + 
 | `docs/05-DATABASE-DESIGN.md` | ERD, tables, indexing, rules |
 | `docs/06-BACKEND-AND-FRONTEND-PLAN.md` | API surface + pages |
 | `docs/07-TESTING-QA.md` | test + security checklists |
-| `docs/08-DEPLOYMENT.md` | Vercel + Render + Neon guide |
+| `docs/08-DEPLOYMENT.md` | Vercel + Render-managed PostgreSQL guide (Neon/Supabase alternatives) |
 | `docs/09-SELF-REVIEW.md` | final critical self-review |
 | `docs/10-ARCHITECTURE-SUMMARY.md` | final architecture summary, limitations, future work |
 | `docs/11-THESIS-DEFENSE-NOTES.md` | viva/defense Q&A prep |
@@ -139,6 +139,8 @@ cd backend && npm run seed && npm test    # 57/57 passing (unit + integration + 
 | `docs/17-THESIS-DOCUMENTATION.md` | thesis-ready English documentation (14 sections) |
 | `docs/18-BURMESE-SUMMARY.md` | formal Burmese thesis summary (11 parts) |
 | `docs/19-DEFENSE-COACH.md` | thesis-defense coach — examiner Q&A with justifications |
+| `docs/ENGINEERING_AUDIT_2026-10-02.md` | current whole-project audit, verification results, fixes, and production-readiness findings |
+| `docs/PROJECT_COMPLETION_REVIEW_2026-10-02_MM.md` | Burmese completion status, live findings, and prioritized next steps |
 | `CHANGELOG.md` | dated summary of changes across all waves |
 
 **Ready-to-use deploy configs:** `render.yaml` (backend + Postgres blueprint),

@@ -5,22 +5,19 @@ import { buildFritzingSvg, type FritzingOpts } from '@/lib/fritzing';
 import { getBoardProfile } from '@/lib/boardProfiles';
 
 /**
- * FritzingDiagram — renders the realistic, Fritzing-style wiring illustration
- * (illustrated board + real module + colour-coded jumper wires to real pins) as
- * inline SVG. The SVG is built by lib/fritzing.ts so the on-screen image and the
- * downloadable file are byte-identical.
+ * FritzingDiagram — renders a self-contained, pinout-derived illustration for
+ * board/component pairs without a reviewed physical diagram. Its board/module
+ * shapes and synthetic pin pads are visual aids, not exact part artwork or
+ * physical connector locations. The UI labels it as an illustrative example.
  */
 export function FritzingDiagram(props: FritzingOpts) {
-  const svg = useMemo(() => buildFritzingSvg(props), [
-    props.componentName,
-    props.glyph,
-    props.category,
-    props.pinout,
-    props.boardId,
-    props.lang,
-  ]);
-  const board = getBoardProfile(props.boardId ?? 'arduino-uno');
-  const my = (props.lang ?? 'en') === 'my';
+  const { componentName, glyph, category, pinout, boardId, lang } = props;
+  const svg = useMemo(
+    () => buildFritzingSvg({ componentName, glyph, category, pinout, boardId, lang }),
+    [componentName, glyph, category, pinout, boardId, lang],
+  );
+  const board = getBoardProfile(boardId ?? 'arduino-uno');
+  const my = (lang ?? 'en') === 'my';
 
   if (!svg) return null;
 

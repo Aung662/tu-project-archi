@@ -55,8 +55,6 @@ export function SpinViewer({ frames, alt }: { frames: string[]; alt: string }) {
     [dragging, total, wrap],
   );
 
-  const onPointerUp = () => setDragging(false);
-
   // Global listeners while dragging so the spin continues off-element.
   useEffect(() => {
     if (!dragging) return;

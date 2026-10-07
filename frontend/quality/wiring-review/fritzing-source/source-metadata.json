@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/fritzing/fritzing-parts",
+  "commit": "27535f2fd02097be9bed229b75aa8e9be282a4a0",
+  "commitDate": "2026-07-23",
+  "license": {
+    "name": "Creative Commons Attribution-ShareAlike 3.0 Unported",
+    "spdx": "CC-BY-SA-3.0",
+    "url": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "noticeFile": "LICENSE.txt",
+    "noticeSha256": "f99c6c2e517171ec2011e8a69f6d320aafbbaefa35164642cb0d17b44484ea34"
+  },
+  "parts": {
+    "arduino-uno-r3": {
+      "credit": "althaus",
+      "fzp": {
+        "path": "arduino_Uno_Rev3.fzp",
+        "sha256": "0c5071db447a2209234ab7e7a4a5692c1f7503d5f341f4f1f96adc77bd86a980"
+      },
+      "breadboardSvg": {
+        "path": "svg/arduino-uno-r3.svg",
+        "sha256": "9f011ea86e51a4b2fe4d3bd1c11dbe844227334bf678d7db21d2df18c18b9205"
+      }
+    },
+    "hc-sr04": {
+      "credit": "Richard Bruneau",
+      "fzp": {
+        "path": "hc-sr04.fzp",
+        "sha256": "beb1c3a1ae8386b7833daed5758d2b5f0f38a8b4fed8e202518741b181ce6783"
+      },
+      "breadboardSvg": {
+        "path": "svg/hc-sr04.svg",
+        "sha256": "0c0141aa53fd3958ecdc9f31f5ef15dee32e836542b535d05e41a3b6e980fb23"
+      }
+    }
+  }
+}

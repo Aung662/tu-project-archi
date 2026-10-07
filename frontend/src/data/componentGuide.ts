@@ -6,9 +6,9 @@
  * it cost?", "What can I use instead?", and "What should I watch out for?".
  *
  * Localization policy — descriptive prose (whatFor / useCases / cautions) is
- * bilingual via Label {my,en} so the Burmese-first UI reads naturally, while
- * technical tokens (pin names, code, library names, prices) stay language-neutral
- * (standard engineering terminology) to avoid mistranslation.
+ * bilingual via Label {my,en}; English is the default and users can switch to
+ * Burmese. Technical tokens (pin names, code, library names, prices) stay
+ * language-neutral (standard engineering terminology) to avoid mistranslation.
  */
 import type { Label } from '@/lib/i18n';
 
@@ -703,8 +703,9 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('solar tracker', 'Solar trackers'),
     ],
     pinout: [
-      { pin: 'A', desc: L('တစ်ဖက် — VCC သို့', 'One leg — to VCC') },
-      { pin: 'B', desc: L('တစ်ဖက် — 10k နဲ့ GND + ADC pin', 'Other leg — 10k to GND + ADC pin') },
+      { pin: 'VCC', desc: L('တစ်ဖက် ခြေထောက် — VCC သို့', 'One leg — to VCC') },
+      { pin: 'AO', desc: L('အခြားခြေထောက် — analog ADC pin + 10k resistor မှတဆင့် GND', 'Other leg — to an analog (ADC) pin, and via a 10k resistor to GND') },
+      { pin: 'GND', desc: L('10k resistor ရဲ့ အခြားဘက် — GND', 'The 10k resistor’s other end — GND') },
     ],
     wiring: L(
       'LDR + 10k resistor ဖြင့် voltage divider ဆောက်ပြီး အလယ်ချက်ကို analog pin နဲ့ ဖတ်ပါ။',
@@ -736,7 +737,9 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     pinout: [
       { pin: 'VCC', desc: L('2.4–3.6V ပါဝါ', '2.4–3.6V power') },
-      { pin: 'SDA / SCL', desc: L('I2C bus', 'I2C bus') },
+      { pin: 'GND', desc: L('မြေ', 'Ground') },
+      { pin: 'SDA', desc: L('I2C data', 'I2C data') },
+      { pin: 'SCL', desc: L('I2C clock', 'I2C clock') },
       { pin: 'ADDR', desc: L('I2C address ရွေးရန်', 'Selects I2C address') },
     ],
     code: {
@@ -913,9 +916,9 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('အလိုအလျောက် pump ထိန်းချုပ်', 'Automatic pump control'),
     ],
     pinout: [
-      { pin: 'VCC / +', desc: L('3–5V ပါဝါ', '3–5V power') },
-      { pin: 'S (signal)', desc: L('analog level output', 'Analog level output') },
-      { pin: 'GND / -', desc: L('မြေ', 'Ground') },
+      { pin: '+', desc: L('3–5V ပါဝါ', '3–5V power') },
+      { pin: 'S', desc: L('analog level output', 'Analog level output') },
+      { pin: '-', desc: L('မြေ', 'Ground') },
     ],
     code: {
       lang: 'Arduino C++',
@@ -1089,11 +1092,12 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('smart storage / inventory', 'Smart storage / inventory'),
     ],
     pinout: [
-      { pin: 'E+ / E-', desc: L('load cell excitation', 'Load-cell excitation') },
-      { pin: 'A+ / A-', desc: L('load cell signal', 'Load-cell signal') },
-      { pin: 'DT / SCK', desc: L('HX711 → MCU ဒေတာ', 'HX711 → MCU data') },
-      { pin: 'VCC / GND', desc: L('ပါဝါ', 'Power') },
+      { pin: 'DT', desc: L('HX711 → MCU ဒေတာ (digital pin မည်သည်မဆို)', 'HX711 data → any digital pin') },
+      { pin: 'CLK', desc: L('HX711 clock (digital pin မည်သည်မဆို — bit-banged)', 'HX711 clock → any digital pin (bit-banged, not hardware SPI)') },
+      { pin: 'VCC', desc: L('2.7–5V ပါဝါ', '2.7–5V power') },
+      { pin: 'GND', desc: L('မြေ', 'Ground') },
     ],
+    // (E+/E-/A+/A- terminals wire to the load-cell body, not the MCU — see note.)
     code: {
       lang: 'Arduino C++',
       code: `#include <HX711.h>\nHX711 scale;\nvoid setup(){ Serial.begin(9600); scale.begin(3,2); scale.set_scale(2280); scale.tare(); }\nvoid loop(){\n  Serial.println(scale.get_units(5));  // grams\n  delay(500);\n}`,
@@ -1265,8 +1269,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('voltage logger', 'Voltage loggers'),
     ],
     pinout: [
-      { pin: 'VCC / GND (in)', desc: L('တိုင်းမည့် voltage (≤25V)', 'Voltage to measure (≤25V)') },
-      { pin: 'S / -', desc: L('scaled analog output → ADC', 'Scaled analog output → ADC') },
+      { pin: 'S', desc: L('scaled analog output → ADC', 'Scaled analog output → ADC') },
+      { pin: '-', desc: L('မြေ (board GND နှင့် တူ)', 'Ground (common with the board)') },
     ],
     code: {
       lang: 'Arduino C++',
@@ -1503,8 +1507,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     pinout: [
       { pin: 'IN1–IN4', desc: L('ဦးတည်ချက် control', 'Direction control') },
       { pin: 'EN1/EN2', desc: L('enable / PWM', 'Enable / PWM') },
-      { pin: 'OUT1–4', desc: L('motor terminals', 'Motor terminals') },
-      { pin: 'Vcc1/Vcc2', desc: L('logic + motor ပါဝါ', 'Logic + motor power') },
+      { pin: 'Vcc1', desc: L('logic ပါဝါ (5V)', 'Logic power (5V)') },
+      { pin: 'GND', desc: L('မြေ (board နှင့် တူ)', 'Ground (common with the board)') },
+      { pin: 'OUT1–4', desc: L('motor terminals (မော်တာသို့)', 'Motor terminals (to the motor)') },
+      { pin: 'Vcc2', desc: L('motor ပါဝါ (ပြင်ပ supply)', 'Motor power (external supply)') },
     ],
     code: {
       lang: 'Arduino C++',
@@ -1531,10 +1537,13 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('camera slider', 'Camera sliders'),
     ],
     pinout: [
-      { pin: 'STEP / DIR', desc: L('MCU control pin', 'MCU control pins') },
-      { pin: '1A/1B/2A/2B', desc: L('motor coil', 'Motor coils') },
-      { pin: 'VMOT / VDD', desc: L('motor + logic ပါဝါ', 'Motor + logic power') },
-      { pin: 'MS1–MS3', desc: L('microstep ရွေးရန်', 'Microstep select') },
+      { pin: 'STEP', desc: L('တစ်ဆင့်စီ ရွှေ့ pulse', 'One pulse = one step') },
+      { pin: 'DIR', desc: L('ဦးတည်ချက်', 'Direction') },
+      { pin: 'VDD', desc: L('logic ပါဝါ (3–5V)', 'Logic power (3–5V)') },
+      { pin: 'GND', desc: L('မြေ (board နှင့် တူ)', 'Ground (common with the board)') },
+      { pin: 'MS1', desc: L('microstep ရွေးရန်', 'Microstep select') },
+      { pin: '1A/1B/2A/2B', desc: L('motor coil (မော်တာသို့)', 'Motor coils (to the stepper)') },
+      { pin: 'VMOT', desc: L('motor ပါဝါ (ပြင်ပ 8–35V + 100µF)', 'Motor power (external 8–35V + 100µF cap)') },
     ],
     wiring: L(
       'VMOT နဲ့ GND ကြား 100µF capacitor မဖြစ်မနေ ထည့်ပါ။ Vref pot ကို current limit အတွက် ချိန်ပါ။',
@@ -1884,8 +1893,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('ဂဏန်း meter', 'Numeric meters'),
     ],
     pinout: [
-      { pin: 'a–g, dp', desc: L('segment pin (resistor လို)', 'Segment pins (need resistors)') },
-      { pin: 'common', desc: L('anode သို့ cathode', 'Common anode or cathode') },
+      { pin: 'a–g, dp', desc: L('segment pin — 220Ω resistor မှတဆင့် digital pin သို့', 'Segment pins — each to a digital pin via a 220Ω resistor') },
+      { pin: 'GND', desc: L('common cathode → GND (common anode ဆို 5V)', 'Common cathode → GND (or 5V for common anode)') },
     ],
     wiring: L(
       'pin များစားလို့ TM1637 (4-digit) module သုံးရင် pin ၂ ခုတည်းနဲ့ ရသည်။',
@@ -2215,8 +2224,12 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       L('cashless / token system', 'Cashless / token systems'),
     ],
     pinout: [
-      { pin: 'SPI (SCK/MOSI/MISO/SDA/RST)', desc: L('control bus', 'Control bus') },
-      { pin: 'VCC (3.3V!)', desc: L('3.3V သာ', '3.3V only') },
+      { pin: 'SCK', desc: L('SPI clock', 'SPI clock') },
+      { pin: 'MOSI', desc: L('SPI data in', 'SPI data in (master out)') },
+      { pin: 'MISO', desc: L('SPI data out', 'SPI data out (master in)') },
+      { pin: 'SS', desc: L('SPI chip-select (module မှာ "SDA" လို့ရေး)', 'SPI chip-select (labelled "SDA" on the module)') },
+      { pin: 'RST', desc: L('reset', 'Reset') },
+      { pin: 'VCC', desc: L('3.3V သာ', '3.3V only') },
       { pin: 'GND', desc: L('မြေ', 'Ground') },
     ],
     code: {
@@ -2749,8 +2762,8 @@ void loop(){
       L('light project', 'Light projects'),
     ],
     pinout: [
-      { pin: 'Anode (long)', desc: L('+ ဘက်', 'Positive side') },
-      { pin: 'Cathode (short)', desc: L('- ဘက် (flat edge)', 'Negative side (flat edge)') },
+      { pin: 'Anode', desc: L('+ ခြေထောက်ရှည် — 220Ω resistor မှတဆင့် digital pin သို့', 'Long + leg — to a digital pin via a 220Ω resistor') },
+      { pin: 'GND', desc: L('- ခြေထောက်တို (flat edge) — GND သို့', 'Short − leg (flat edge) — to GND') },
     ],
     wiring: L(
       'series resistor (~220Ω) မဖြစ်မနေ ထည့်ပါ။ long leg = +။',
@@ -2856,8 +2869,9 @@ void loop(){
       L('menu / value select', 'Menu / value selection'),
     ],
     pinout: [
-      { pin: 'Outer 1 / 2', desc: L('VCC နဲ့ GND', 'VCC and GND') },
-      { pin: 'Wiper (middle)', desc: L('analog output → ADC', 'Analog output → ADC') },
+      { pin: 'VCC', desc: L('အပြင်ဘက် ခြေထောက် တစ်ဖက် — VCC', 'One outer leg — VCC') },
+      { pin: 'GND', desc: L('အပြင်ဘက် ခြေထောက် အခြားတစ်ဖက် — GND', 'Other outer leg — GND') },
+      { pin: 'Wiper', desc: L('အလယ်ချက် — analog output → ADC', 'Middle tap — analog output → ADC') },
     ],
     code: {
       lang: 'Arduino C++',

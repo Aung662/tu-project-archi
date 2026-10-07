@@ -27,7 +27,9 @@ services:
     # Free tier does NOT support preDeployCommand, so we bootstrap the database as
     # part of the start command: create/update tables (prisma db push), enable
     # pg_trgm + trigram index, seed admin + reference data, then start the API.
-    # All steps are idempotent, so running them on every boot is safe.
+    # db push deliberately does NOT use --accept-data-loss: a destructive schema
+    # change must stop deployment for review instead of silently dropping data.
+    # The other steps are idempotent, so running them on every boot is safe.
     startCommand: npm run deploy:release && npm start
     healthCheckPath: /health
     autoDeploy: true

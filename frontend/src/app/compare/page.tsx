@@ -8,7 +8,7 @@ import { getCompare, removeCompare, clearCompare, COMPARE_EVENT } from '@/lib/co
 import { EmptyState, Spinner, LevelBadge } from '@/components/ui';
 import { Reveal } from '@/components/motion';
 import { formatMMK } from '@/lib/format';
-import { tr, t, levelLabel } from '@/lib/i18n';
+import { tr, t } from '@/lib/i18n';
 
 /**
  * Compare page — shows 2–3 selected projects side by side across the fields that

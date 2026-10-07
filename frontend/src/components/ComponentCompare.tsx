@@ -166,7 +166,6 @@ function CompareModal({
               <tr>
                 <th className="w-32 p-2" />
                 {items.map((it) => {
-                  const cat = catById[it.category];
                   const photo = photoFor(it.id);
                   return (
                     <th key={it.id} className="p-2 align-top">

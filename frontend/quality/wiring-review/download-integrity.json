@@ -1,0 +1,2378 @@
+{
+  "source": "https://tu-project-archi.vercel.app",
+  "status": "download-integrity-verified-only",
+  "boards": 10,
+  "pairs": 338,
+  "totalBytes": 17649192,
+  "assets": [
+    {
+      "board": "arduino-mega",
+      "component": "bh1750",
+      "file": "arduino-mega__bh1750.jpg",
+      "bytes": 56010,
+      "sha256": "4c1dc910b8287e5135f84dded37c57b2a3c4663348bf1d8b6a9118dc6e21beb7"
+    },
+    {
+      "board": "arduino-mega",
+      "component": "bmp280",
+      "file": "arduino-mega__bmp280.jpg",
+      "bytes": 53046,
+      "sha256": "fa08495e636f4f07095f09a942d8e80914ec68b6f5116b5ba3f43631e9e2162a"
+    },
+    {
+      "board": "arduino-mega",
+      "component": "color-sensor",
+      "file": "arduino-mega__color-sensor.jpg",
+      "bytes": 58971,
+      "sha256": "c49c02724b63bb3c5c89eb0fd768407296506e3808825750a14fbc081672066f"
+    },
+    {
+      "board": "arduino-mega",
+      "component": "cpp",
+      "file": "arduino-mega__cpp.jpg",
+      "bytes": 53467,
+      "sha256": "760bbafbea06b31f5b0d3375ee2c42ac530561334cf911425264eb9d38e391a3"
+    },
+    {
+      "board": "arduino-mega",
+      "component": "dht11",
+      "file": "arduino-mega__dht11.jpg",
+      "bytes": 48183,
+      "sha256": "560b4ea0d121570f5e03d804020a6ed612e134295ad099018481efbac4b740ea"
+    },
+    {
+      "board": "arduino-mega",
+      "component": "flame-sensor",
+      "file": "arduino-mega__flame-sensor.jpg",
+      "bytes": 42203,
+      "sha256": "093de1e9d28c3140188819a98b34c3796deae49f898765c82555050551c05949"
+    },
+    {
+      "board": "arduino-mega",
+      "component": "flow-sensor",
+      "file": "arduino-mega__flow-sensor.jpg",
+      "bytes": 51356,
+      "sha256": "d2f692dcfafd0090a74dc289c66130159b1a5174f1ccd23e087474792c0f2304"
+    },
+    {
+      "board": "arduino-mega",
+      "component": "hc-sr04",
+      "file": "arduino-mega__hc-sr04.jpg",
+      "bytes": 46451,
+      "sha256": "61352a33a2d337d91405a8412a1403e401a5df4ad12b3bfe852afeb1289a13e1"
+    },
+    {
+      "board": "arduino-mega",
+      "component": "ir-sensor",
+      "file": "arduino-mega__ir-sensor.jpg",
+      "bytes": 52592,
+      "sha256": "ddc0f68385886fd789aec4058684b055c6f63771e42a22b991030cdb91b551ab"
+    },
+    {
+      "board": "arduino-mega",
+      "component": "ldr",
+      "file": "arduino-mega__ldr.jpg",
+      "bytes": 43100,
+      "sha256": "93e7c8f345fdd1f845cde5ebe3e5d14f2d75a44a4eea2b394b58ab4eedc0e059"
+    },
+    {
+      "board": "arduino-mega",
+      "component": "lm35",
+      "file": "arduino-mega__lm35.jpg",
+      "bytes": 43791,
+      "sha256": "3b8ce72bee06c26f0fb9fadba1353085b2991b94f16666a30653bded2e2ead55"
+    },
+    {
+      "board": "arduino-mega",
+      "component": "load-cell",
+      "file": "arduino-mega__load-cell.jpg",
+      "bytes": 57309,
+      "sha256": "0333108cbfe143fe541a3bc4cc47d8ac1230035e4100d2c2b465eb73a2aefae7"
+    },
+    {
+      "board": "arduino-mega",
+      "component": "mq135",
+      "file": "arduino-mega__mq135.jpg",
+      "bytes": 53048,
+      "sha256": "8a4b79288954e3be41aa41d3b4cb76316fc325989d0a1ff59995c1ebadc24150"
+    },
+    {
+      "board": "arduino-mega",
+      "component": "mq7",
+      "file": "arduino-mega__mq7.jpg",
+      "bytes": 51324,
+      "sha256": "f1565f5f68e2d0625059ce8685afa87c8206192c24d1dfa64401f9ebf6da4667"
+    },
+    {
+      "board": "arduino-mega",
+      "component": "ph-sensor",
+      "file": "arduino-mega__ph-sensor.jpg",
+      "bytes": 45935,
+      "sha256": "d60d7bc74558fc3caedccc72120382a9931a6c79efdb387fc0c232af573b0d22"
+    },
+    {
+      "board": "arduino-mega",
+      "component": "pir",
+      "file": "arduino-mega__pir.jpg",
+      "bytes": 46311,
+      "sha256": "62e1238b9edcded89edb13363e6aa94ac95a50e243868159a821ba9e6be247be"
+    },
+    {
+      "board": "arduino-mega",
+      "component": "rain-sensor",
+      "file": "arduino-mega__rain-sensor.jpg",
+      "bytes": 46464,
+      "sha256": "23961f873449306b759c0bf19cfcb070d2da962abb3b84b7e44e5f5690bf7a1f"
+    },
+    {
+      "board": "arduino-mega",
+      "component": "soil-moisture",
+      "file": "arduino-mega__soil-moisture.jpg",
+      "bytes": 54516,
+      "sha256": "4320e9b93bd95c7cba5c65f8c7bd34464c6c71fda0850314c8da8ca62fc050d4"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "a4988",
+      "file": "arduino-nano__a4988.jpg",
+      "bytes": 59523,
+      "sha256": "12d3a959f8406511ebf3f9b92d97fd8cd7fcb2e55bc4193786b688c607bb277c"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "bh1750",
+      "file": "arduino-nano__bh1750.jpg",
+      "bytes": 48007,
+      "sha256": "100e0da185caabb39fcec80aee2270c53878b09dc1e2698495856f0dd7abeaad"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "ble",
+      "file": "arduino-nano__ble.jpg",
+      "bytes": 44422,
+      "sha256": "a720b7f07f6a3e0ba857f671df916adbe46cbc8b27f8951eb9cc2ccea19cffc9"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "buzzer",
+      "file": "arduino-nano__buzzer.jpg",
+      "bytes": 39981,
+      "sha256": "74b91120100fbc66cc8238fd84d2a9da947dbd7c529866317f3763e0ea10498c"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "cpp",
+      "file": "arduino-nano__cpp.jpg",
+      "bytes": 58663,
+      "sha256": "323b514adba40629ab6835c605678d621e4bbd1c186bb1044b1bd20665515003"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "current-sensor",
+      "file": "arduino-nano__current-sensor.jpg",
+      "bytes": 75475,
+      "sha256": "56d2bfd722b4f3caba88c4200754ab9845aa9eb5618bb1d077de260339b08be9"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "dc-motor",
+      "file": "arduino-nano__dc-motor.jpg",
+      "bytes": 43527,
+      "sha256": "2d3b3621fc65c20e9f07260189c42de66a80d7ce596b6a2926848379fb0e9698"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "ds18b20",
+      "file": "arduino-nano__ds18b20.jpg",
+      "bytes": 42505,
+      "sha256": "bcc52b09a8ead5f805f6fc417a4f84daa4d5f0a9eb6e219dd8d4272f3ff08c3f"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "flame-sensor",
+      "file": "arduino-nano__flame-sensor.jpg",
+      "bytes": 52900,
+      "sha256": "24a68e94bea4d218a860186fcd348696f5943f305c17d42c9f9686c18afc04c1"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "flow-sensor",
+      "file": "arduino-nano__flow-sensor.jpg",
+      "bytes": 44217,
+      "sha256": "b415e7671786c5cfda0c7aa96b3dc22d553b9408c364cf6dbc679361301c7f89"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "gripper",
+      "file": "arduino-nano__gripper.jpg",
+      "bytes": 41772,
+      "sha256": "5a1c6e3871e5043ed5c8ed98ac958704d3f05bb05a51c0877d1e0f2cfbb4e9aa"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "hc05",
+      "file": "arduino-nano__hc05.jpg",
+      "bytes": 58092,
+      "sha256": "198b23939e1615f6dc87418614c0db05c2e84305329fcb187e5104b05aa84afa"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "hmc5883l",
+      "file": "arduino-nano__hmc5883l.jpg",
+      "bytes": 54208,
+      "sha256": "1443ddcfda9dc802eb9f90dc105bb7b834985460bef8a8207a334bc61649c197"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "hmi",
+      "file": "arduino-nano__hmi.jpg",
+      "bytes": 51328,
+      "sha256": "f48744390d1a9d3df1a33dee77f02569239c6f52b1261d8454a3ee3e676801f2"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "inductor",
+      "file": "arduino-nano__inductor.jpg",
+      "bytes": 36649,
+      "sha256": "7c96356781e4df32ab857f182f206d2a33b0d6dfbfc7a8af7887e65a076dfc8f"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "ir-sensor",
+      "file": "arduino-nano__ir-sensor.jpg",
+      "bytes": 44713,
+      "sha256": "0636e037ee4d1a4aeea9dd227538fc87d2fcf047296f11c4fc83b88bf92b0197"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "joystick",
+      "file": "arduino-nano__joystick.jpg",
+      "bytes": 48708,
+      "sha256": "ac89db54a243c544b02295e4091a4178186ea883db6cf7a101fe4ad79850229e"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "keypad",
+      "file": "arduino-nano__keypad.jpg",
+      "bytes": 56667,
+      "sha256": "8ddefd587b91e62a4b3964c5a6ba42831603b4daacac30893838f07813b11459"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "l293d",
+      "file": "arduino-nano__l293d.jpg",
+      "bytes": 81934,
+      "sha256": "ba9dd1ccf039a4fc75df983a90a1526d65cf63770590d4aabcbb2fb749da5ce7"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "lcd1602",
+      "file": "arduino-nano__lcd1602.jpg",
+      "bytes": 52127,
+      "sha256": "2147387e7e933674530a7da077ec9ad49c0a021131a3c9c3a38993ed51edb0c2"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "ldr",
+      "file": "arduino-nano__ldr.jpg",
+      "bytes": 46072,
+      "sha256": "dd2c6a36c16af0198bc9a087e7bf443c2e0e8030f1c54cc7d2cc151ee2e4f06e"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "led-matrix",
+      "file": "arduino-nano__led-matrix.jpg",
+      "bytes": 60262,
+      "sha256": "0ee09931664817f8696ee9d4e8f36893ce94f3a0b3fbf8647c94ed4831ce81c0"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "lidar-robot",
+      "file": "arduino-nano__lidar-robot.jpg",
+      "bytes": 47797,
+      "sha256": "24c56bb2d9c2439e72f7fea13c24b25d7c2b988727136e282c08f1f2a45176bf"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "lidar-sensor",
+      "file": "arduino-nano__lidar-sensor.jpg",
+      "bytes": 65897,
+      "sha256": "d0b5ba764b87469073695b41593fdf1902171353b7a4d92b71b82b51c7a20188"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "linear-actuator",
+      "file": "arduino-nano__linear-actuator.jpg",
+      "bytes": 47045,
+      "sha256": "405cbc69a291034972ad9bbd13f028e056f87505c1c687b7be30c9e9465d7a5e"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "lm35",
+      "file": "arduino-nano__lm35.jpg",
+      "bytes": 51124,
+      "sha256": "eff0f54cfcef774c38a75bf79b9bd8f6438152658c2b805646d4c97a18a6c9e1"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "load-cell",
+      "file": "arduino-nano__load-cell.jpg",
+      "bytes": 64243,
+      "sha256": "e6538367b680513b27e604282330e082d6f21943fcd12feb4b23f6cf14ef7809"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "mpu6050",
+      "file": "arduino-nano__mpu6050.jpg",
+      "bytes": 51320,
+      "sha256": "a65bebf71ee7cb91929a7f94e8b2380281808f273c84627cce6df50d0b3cc38e"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "mq2",
+      "file": "arduino-nano__mq2.jpg",
+      "bytes": 52742,
+      "sha256": "aa5a2c20ce147a3612d8948eca57d5af0e45023eabaa2d1ff0a5bb73cfcc4711"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "mq7",
+      "file": "arduino-nano__mq7.jpg",
+      "bytes": 64425,
+      "sha256": "c7d4d33c3558eacb7aa7bcb5ac51b6b7332a44576c9a40264ba73931becef668"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "oled",
+      "file": "arduino-nano__oled.jpg",
+      "bytes": 64707,
+      "sha256": "1a775e398ea763ffbb0c82ae5f9ed2a8e77bc9a8a71faa83ecb3865e38e6ced8"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "ph-sensor",
+      "file": "arduino-nano__ph-sensor.jpg",
+      "bytes": 48605,
+      "sha256": "dbdff9f45bcbc79fc2c3fb5669077fbdb21c186b360508066b3a53e78afe2fe9"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "pir",
+      "file": "arduino-nano__pir.jpg",
+      "bytes": 51708,
+      "sha256": "45d44eb7edfeb88cb362d1b05c63c52884f7a5e59028df757650be89dfa0e2c7"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "plc",
+      "file": "arduino-nano__plc.jpg",
+      "bytes": 40769,
+      "sha256": "9c6ee85e770b2cb474abd22f04da867b2a9721c5c1b09d59f896d33c09658fbf"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "proximity",
+      "file": "arduino-nano__proximity.jpg",
+      "bytes": 43987,
+      "sha256": "a5beb67c5c8ce0d81ea4d9f10a5bc9713e23b66153e449c40f6a9137215d6ce1"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "push-button",
+      "file": "arduino-nano__push-button.jpg",
+      "bytes": 42475,
+      "sha256": "2d8fc3a8ea272eef994b77eae12768f72fc0f569dddd77eb023f6e8655d95648"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "rain-sensor",
+      "file": "arduino-nano__rain-sensor.jpg",
+      "bytes": 50188,
+      "sha256": "8051ccc434d08d1f4f0a382c6d1dd8473d6230cf2719d36e298d03ba1bd073ec"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "relay-module",
+      "file": "arduino-nano__relay-module.jpg",
+      "bytes": 48138,
+      "sha256": "b328fb9e373a3e130f894eeb192eaedc682cfd2a30cc37d93180c7b5d75bb887"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "robot-arm",
+      "file": "arduino-nano__robot-arm.jpg",
+      "bytes": 41096,
+      "sha256": "e07e2d7d02d7c3ccda64c4ab46e89a560047c5270c68c871dc126461cf183461"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "rotary-encoder",
+      "file": "arduino-nano__rotary-encoder.jpg",
+      "bytes": 56985,
+      "sha256": "0bab04f0f5581d27baf1a82b2c1b47fe2177e73a2987b4027d1ae2552c605b82"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "rtc",
+      "file": "arduino-nano__rtc.jpg",
+      "bytes": 57217,
+      "sha256": "c7d3bc3115674ec11f165cf234847227ea691b579e2750945101eb22b04cdec2"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "servo",
+      "file": "arduino-nano__servo.jpg",
+      "bytes": 52193,
+      "sha256": "bbead943ad737ff7369532a1f771a31b2dfd3c332fc2e409fa34ec63cef781f7"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "seven-seg",
+      "file": "arduino-nano__seven-seg.jpg",
+      "bytes": 57390,
+      "sha256": "4280d8e447d15968b3879c3ab54d53daed275b596a77fc9d3ea23fb017ff68f7"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "soil-moisture",
+      "file": "arduino-nano__soil-moisture.jpg",
+      "bytes": 43125,
+      "sha256": "fb9e7c7cf73fce5f9210a36358cc9841b9e7a16d74c85e472fdde3816bcd51d9"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "tft",
+      "file": "arduino-nano__tft.jpg",
+      "bytes": 59265,
+      "sha256": "0fdd0b0c7ecc7aed6dc75c10b474b29bd2a7d13a1ed6303703b411f4776a3909"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "voltage-sensor",
+      "file": "arduino-nano__voltage-sensor.jpg",
+      "bytes": 55637,
+      "sha256": "ae412056c7b33157b23bf16e64f08320184d839a63742259ec396abc2229d664"
+    },
+    {
+      "board": "arduino-nano",
+      "component": "water-pump",
+      "file": "arduino-nano__water-pump.jpg",
+      "bytes": 49213,
+      "sha256": "ccbb7fe2c0968c11adc1e75bcabe1bffa9c4709c9d4b7eda30e3a6ae2861c753"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "bh1750",
+      "file": "arduino-uno__bh1750.jpg",
+      "bytes": 64986,
+      "sha256": "9599cf28b3fe2df756f0e8ad1447dc34f7ea3a911f5483d1ca8345a86dc21eee"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "ble",
+      "file": "arduino-uno__ble.jpg",
+      "bytes": 59533,
+      "sha256": "a4864fe3241f3b4fc0b1b242fe5d2381c433a289c3d68ee2f04f76f1423e0aa0"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "bmp280",
+      "file": "arduino-uno__bmp280.jpg",
+      "bytes": 58462,
+      "sha256": "33f7859a0c804a2b2c61beb3c47befcddd80204c9d01bff2bf2807c2023282c4"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "boost",
+      "file": "arduino-uno__boost.jpg",
+      "bytes": 47970,
+      "sha256": "95abbff4aca9538093653104944bd8a14b37cc1bd055bd14b506d6afb144286c"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "buzzer",
+      "file": "arduino-uno__buzzer.jpg",
+      "bytes": 40190,
+      "sha256": "23b3042ff6d696920484e8e2d58d2d868918255cfa65535e892af9a3f178a60b"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "color-sensor",
+      "file": "arduino-uno__color-sensor.jpg",
+      "bytes": 56145,
+      "sha256": "509e1f0a99c8b0d46c5c2fc79c616bf997876a5393883074546014591ca1e441"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "cpp",
+      "file": "arduino-uno__cpp.jpg",
+      "bytes": 65943,
+      "sha256": "6839f0f1f4b043e12c79470c722c1993c9afe69b791f0a1f018664370c873c77"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "crystal",
+      "file": "arduino-uno__crystal.jpg",
+      "bytes": 42097,
+      "sha256": "e832bd12681606eeb853f7bef668235388d487e9231b73fdefa63f517af497b9"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "dc-motor",
+      "file": "arduino-uno__dc-motor.jpg",
+      "bytes": 50374,
+      "sha256": "7c4c466c84bb355cc8ec697750b05fce88cb3f44ec1de3d67b60a2cdc7dc3d4e"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "ds18b20",
+      "file": "arduino-uno__ds18b20.jpg",
+      "bytes": 50601,
+      "sha256": "4ba59b5e23c4ddfd69d3bdd44284b66fef9dc8c29c707178018ecac6896a2471"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "ethernet-mod",
+      "file": "arduino-uno__ethernet-mod.jpg",
+      "bytes": 63078,
+      "sha256": "6b4d4da8b0056e4e778ed762597223e838033e5537bd7c8aeb03d52250be6e1a"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "fingerprint-mod",
+      "file": "arduino-uno__fingerprint-mod.jpg",
+      "bytes": 51476,
+      "sha256": "230f1f30ce338379535ebeae3aa0ea315c690c34e0ced4b894c9064e1fcf5c07"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "flame-sensor",
+      "file": "arduino-uno__flame-sensor.jpg",
+      "bytes": 53850,
+      "sha256": "24d84f91fd5933ba9591bd98a037c72ac7395f6001d526aefd577bab1016cd12"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "flow-sensor",
+      "file": "arduino-uno__flow-sensor.jpg",
+      "bytes": 63383,
+      "sha256": "e1c9d997db03e2c04b20be40162179a0a6816bde7d39a4c12dda607d0ae2a988"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "gps-neo6",
+      "file": "arduino-uno__gps-neo6.jpg",
+      "bytes": 64469,
+      "sha256": "bbec8e5676ef42c63454eed07f1a5ebd1794ab1f60b7ac7dfd3087661aaaa4c7"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "gripper",
+      "file": "arduino-uno__gripper.jpg",
+      "bytes": 46545,
+      "sha256": "fb1b2091dd42d2f2d69aa09e784cc0460cedc721af03507b4f0cfe2eb3f4ac47"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "heart-rate",
+      "file": "arduino-uno__heart-rate.jpg",
+      "bytes": 65978,
+      "sha256": "ea2c510990332e75d0f225f33013c6d876b5b095df77c11af4a81a6bc34043f8"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "hmc5883l",
+      "file": "arduino-uno__hmc5883l.jpg",
+      "bytes": 49448,
+      "sha256": "0b498b5b26dc3cf51a729891402dd5844e96f739000f9aa3669e9699d2889c9f"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "hmi",
+      "file": "arduino-uno__hmi.jpg",
+      "bytes": 53239,
+      "sha256": "d2c73d21e07dc13af0cac6c91e1386a94328a9125018a89ac1f6650dd7f29f3a"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "ir-flame-array",
+      "file": "arduino-uno__ir-flame-array.jpg",
+      "bytes": 59923,
+      "sha256": "20b039477bad7fdc485f9b09f35fe9579f7ab699cbf14edbb1c21a425827f052"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "joystick",
+      "file": "arduino-uno__joystick.jpg",
+      "bytes": 53624,
+      "sha256": "78a07c6f93fbd99b1bce164370e03ff4c83acfe735dc92826254bd458db78a68"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "keypad",
+      "file": "arduino-uno__keypad.jpg",
+      "bytes": 72527,
+      "sha256": "00cd5b417fb92464526022059f9bcc69c0a0cb7e5a4ef243d6bf4183641e1989"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "l298n",
+      "file": "arduino-uno__l298n.jpg",
+      "bytes": 59501,
+      "sha256": "489fac9a976e215715dbee380198ac7a7288a088ce9288f0b52b249c93c3e70b"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "lcd1602",
+      "file": "arduino-uno__lcd1602.jpg",
+      "bytes": 51161,
+      "sha256": "de3e72228fb544e4bf1f6386b22aa5f29bc17447005d76f7627654774b7d302e"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "ldr",
+      "file": "arduino-uno__ldr.jpg",
+      "bytes": 48436,
+      "sha256": "58d3cac4f0a0b9f0ddb3d15921cf8d1b26837af93e70e3193e21998bb0f60b5f"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "led",
+      "file": "arduino-uno__led.jpg",
+      "bytes": 42413,
+      "sha256": "60ecf5fdcb80a14f289c306e0522e7cada2c3b6e26ded2d1ffe63407aff53157"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "led-matrix",
+      "file": "arduino-uno__led-matrix.jpg",
+      "bytes": 58166,
+      "sha256": "c9dcbd0185bd5cbfba812ee4da51eb99c2fe2b8e33e7f43bfb3249ad37aeba47"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "lidar-robot",
+      "file": "arduino-uno__lidar-robot.jpg",
+      "bytes": 59256,
+      "sha256": "84582389d587641a38914086768b76b37f6dd9267b0f498ca370d63065534108"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "lidar-sensor",
+      "file": "arduino-uno__lidar-sensor.jpg",
+      "bytes": 46134,
+      "sha256": "1cf19a361dec5eada4cb99971240c184cf60a4a9d92c2c486a059c801dcf8db5"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "linear-actuator",
+      "file": "arduino-uno__linear-actuator.jpg",
+      "bytes": 49838,
+      "sha256": "6088bf3a54818ac8fa5421c2e5ee0802b1cb5c2fe09d6f507f0f6d058fde47a2"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "lipo",
+      "file": "arduino-uno__lipo.jpg",
+      "bytes": 53892,
+      "sha256": "6f3a65dfa13f84370e736c4bee55f6659ea910a2181435950112a5de8d8b4dfc"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "lm35",
+      "file": "arduino-uno__lm35.jpg",
+      "bytes": 42161,
+      "sha256": "7a8c800090025b44c970e0fde002bc1667ef856add8923751c1f2077beb0fbdf"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "lora",
+      "file": "arduino-uno__lora.jpg",
+      "bytes": 58477,
+      "sha256": "1f71cc10e50675b48c45f768b08ee788abb276ea2d7f8f0bc26ffced958352e8"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "mpu6050",
+      "file": "arduino-uno__mpu6050.jpg",
+      "bytes": 46243,
+      "sha256": "4ded2dd98db64dd6d9112e66ae4ce90a4e690875f70dbc0f4f26d0bc21ebfdb4"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "mq135",
+      "file": "arduino-uno__mq135.jpg",
+      "bytes": 58701,
+      "sha256": "c8e1ea8e1a6c9822af2ca8f49e5a098bafbe904669028efd9fe242a1c739b70a"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "mq2",
+      "file": "arduino-uno__mq2.jpg",
+      "bytes": 54698,
+      "sha256": "dbf1db009b456d986062dd78e3a2a994d1b9b581bb4b5d2141696d2e029d532e"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "mq7",
+      "file": "arduino-uno__mq7.jpg",
+      "bytes": 51186,
+      "sha256": "d8d97c4ade0e1e7bec5c179d177110ff6f370a7be8bc53d6509b43900974ce50"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "ph-sensor",
+      "file": "arduino-uno__ph-sensor.jpg",
+      "bytes": 69559,
+      "sha256": "886bcdd93558add2316c5ff65bfac9f629edbfd168f4fd1798491872aeb045e1"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "plc",
+      "file": "arduino-uno__plc.jpg",
+      "bytes": 64257,
+      "sha256": "63750cac0a4d0af0ab2573536554dbc5cb5d70ff553eb5dd1aeba6db2e3be787"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "potentiometer",
+      "file": "arduino-uno__potentiometer.jpg",
+      "bytes": 43366,
+      "sha256": "c39843dca7899ea409401d37139752f3122e983636b3a9ef032d0caf9aab6334"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "proximity",
+      "file": "arduino-uno__proximity.jpg",
+      "bytes": 52575,
+      "sha256": "b9fa3779636de721bbd4470f568d45c55eed1b81f80c927328890ef29763b855"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "push-button",
+      "file": "arduino-uno__push-button.jpg",
+      "bytes": 42325,
+      "sha256": "de69b9561776162ca4db675368dfcf51df961770e15639705f8e8100c511426b"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "rain-sensor",
+      "file": "arduino-uno__rain-sensor.jpg",
+      "bytes": 59155,
+      "sha256": "f90c9efd3664cf27b240542e087c780f909c4714a1886e183e87b704387980f3"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "relay-module",
+      "file": "arduino-uno__relay-module.jpg",
+      "bytes": 74119,
+      "sha256": "0eae702ffc1c379c60e0505439f31a3fd46208b31d279177c573fc63a4558a82"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "resistor",
+      "file": "arduino-uno__resistor.jpg",
+      "bytes": 42454,
+      "sha256": "bcdbc91fc0713200d165d327839fce40d70f53f755652f462838e4af3216a589"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "rfid-rc522",
+      "file": "arduino-uno__rfid-rc522.jpg",
+      "bytes": 67152,
+      "sha256": "7f621835e9be561fb3b17c69cba5290dc8a5b6d36c4d0a018b27f5f23347fd71"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "robot-arm",
+      "file": "arduino-uno__robot-arm.jpg",
+      "bytes": 46980,
+      "sha256": "b6f0545edee8099ce6bbe7c56fba9c5bac19079ea3a95c265cc6ddd13c059d04"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "rotary-encoder",
+      "file": "arduino-uno__rotary-encoder.jpg",
+      "bytes": 52297,
+      "sha256": "938bcfbc4ab8842f3fe2b41fb38292829b1fe5edd7815298be8601027e280d7a"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "sd-module",
+      "file": "arduino-uno__sd-module.jpg",
+      "bytes": 51854,
+      "sha256": "c719730017b481958c80be33843540613a4a27b1cefee3cccd25abed60941acb"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "servo-continuous",
+      "file": "arduino-uno__servo-continuous.jpg",
+      "bytes": 51276,
+      "sha256": "32fb97dae59fea49b5bed4c541448a9b30e7768c3995c1a15b925982a5903506"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "seven-seg",
+      "file": "arduino-uno__seven-seg.jpg",
+      "bytes": 61317,
+      "sha256": "444f09c86e890777d7cb17c8bec2f53a13d48d26797a0a24dc1e06b39dece923"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "sim900",
+      "file": "arduino-uno__sim900.jpg",
+      "bytes": 61914,
+      "sha256": "909f206aefc6576adbb3e6dfe79014dc7e07c08a5bdb99ed2fad5ba4b84a2bb6"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "soil-moisture",
+      "file": "arduino-uno__soil-moisture.jpg",
+      "bytes": 45428,
+      "sha256": "b9c1e75afe193b20df63db17652fda509d9e1e23cf319cde78c271250db0945e"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "solar-panel",
+      "file": "arduino-uno__solar-panel.jpg",
+      "bytes": 58552,
+      "sha256": "2b6e636b13c938508112e92c778b0962a76ba12aded5e003495976940174cae0"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "speaker",
+      "file": "arduino-uno__speaker.jpg",
+      "bytes": 61749,
+      "sha256": "0636bf633158ab5fc8b7603120eaedbecb29d443c3c719f6c35e88686ecf1053"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "tft",
+      "file": "arduino-uno__tft.jpg",
+      "bytes": 65122,
+      "sha256": "86e966790fd8ff19d3dda98709d23c1e129ba11528b477a178658d8691783b79"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "ups-module",
+      "file": "arduino-uno__ups-module.jpg",
+      "bytes": 55306,
+      "sha256": "af697c28c5b271143417b3515f96a7b6ccc09d120e27d701248506959d0eca2d"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "voltage-sensor",
+      "file": "arduino-uno__voltage-sensor.jpg",
+      "bytes": 51799,
+      "sha256": "57447fe9b4bd5c1868ab3811884aae7e076a5c0014599868624b7636ebd6a529"
+    },
+    {
+      "board": "arduino-uno",
+      "component": "water-pump",
+      "file": "arduino-uno__water-pump.jpg",
+      "bytes": 44341,
+      "sha256": "9c44f52775f4be57aed77dc3352f1aa8f1f421eaf0e0242eba8038992745e280"
+    },
+    {
+      "board": "esp32",
+      "component": "a4988",
+      "file": "esp32__a4988.jpg",
+      "bytes": 70112,
+      "sha256": "f8cedaa1ddc7a8a7bf8c7f9e3edac978c180d4a8b39b4ca9190a8832ba4be1b2"
+    },
+    {
+      "board": "esp32",
+      "component": "bh1750",
+      "file": "esp32__bh1750.jpg",
+      "bytes": 44904,
+      "sha256": "e154e4707c23e8af475b4c24606701086bbf0e8e98b380f193bbf65f86f80e94"
+    },
+    {
+      "board": "esp32",
+      "component": "ble",
+      "file": "esp32__ble.jpg",
+      "bytes": 52473,
+      "sha256": "8a4601ed285fd42a86090206cd6dbdb49312fb9874c81c5be4d137944e69fabb"
+    },
+    {
+      "board": "esp32",
+      "component": "bmp280",
+      "file": "esp32__bmp280.jpg",
+      "bytes": 42542,
+      "sha256": "3725ddfb7ef96d90233c0bafc4dfa47f018cd2daede8605cf0b6d9b0da643ea9"
+    },
+    {
+      "board": "esp32",
+      "component": "boost",
+      "file": "esp32__boost.jpg",
+      "bytes": 55400,
+      "sha256": "0772fb0a009a9dcc1f49df3ca01b02ea9d90595eacf122ca948ef006e7e13305"
+    },
+    {
+      "board": "esp32",
+      "component": "buzzer",
+      "file": "esp32__buzzer.jpg",
+      "bytes": 42347,
+      "sha256": "43ca07aaebff92dbfc61a17482616ef6a5e0ab60b3630f7bb92c31bf6ba4b263"
+    },
+    {
+      "board": "esp32",
+      "component": "current-sensor",
+      "file": "esp32__current-sensor.jpg",
+      "bytes": 56846,
+      "sha256": "f013c8fb11b2f33c2cde4be538968d03960a7c0414f383bb71b7b2bf57f483e1"
+    },
+    {
+      "board": "esp32",
+      "component": "dht11",
+      "file": "esp32__dht11.jpg",
+      "bytes": 52366,
+      "sha256": "18b14f77813e297c1a97361359d38efba75ac0009acfb20c943161aca0e760b4"
+    },
+    {
+      "board": "esp32",
+      "component": "diode",
+      "file": "esp32__diode.jpg",
+      "bytes": 47731,
+      "sha256": "3a768c2ce6c793edc7d5ce1e301ebdcd67a37c984269924ecc1f885cf2dccb16"
+    },
+    {
+      "board": "esp32",
+      "component": "ds18b20",
+      "file": "esp32__ds18b20.jpg",
+      "bytes": 46473,
+      "sha256": "e925d28b29940bfb82e132bd81d3deee5f08210302b5e6c91a3bad434bab8124"
+    },
+    {
+      "board": "esp32",
+      "component": "epaper",
+      "file": "esp32__epaper.jpg",
+      "bytes": 50252,
+      "sha256": "ce90ec8785e62812076b6f21a9b9fd09e7ecdabdb4b9b632d1a10498b6c65bb6"
+    },
+    {
+      "board": "esp32",
+      "component": "ethernet-mod",
+      "file": "esp32__ethernet-mod.jpg",
+      "bytes": 66913,
+      "sha256": "eb5685fa7dd3c9e328bdf280497d48fd2857fcdb3c8834868c1872e40a066da3"
+    },
+    {
+      "board": "esp32",
+      "component": "gps-neo6",
+      "file": "esp32__gps-neo6.jpg",
+      "bytes": 60495,
+      "sha256": "b4e7c987fd6525db9521c0b2cf22d36888ce6695874af2ba8ba20965fbe27bfc"
+    },
+    {
+      "board": "esp32",
+      "component": "hmc5883l",
+      "file": "esp32__hmc5883l.jpg",
+      "bytes": 53709,
+      "sha256": "a320dff350f4b0954ad06b856fddfbe74da1ae810dd1f5c2722ec3efc1578fe1"
+    },
+    {
+      "board": "esp32",
+      "component": "ir-sensor",
+      "file": "esp32__ir-sensor.jpg",
+      "bytes": 43257,
+      "sha256": "b4011397ba72bf96ebd54c172cb06fad954b38d014b76e58e1b645c0f9d8b128"
+    },
+    {
+      "board": "esp32",
+      "component": "l293d",
+      "file": "esp32__l293d.jpg",
+      "bytes": 54397,
+      "sha256": "11cdc4248dea66d0d0c4e68e14836cc608281647551cb80fdf845b58f3fbf68e"
+    },
+    {
+      "board": "esp32",
+      "component": "lcd1602",
+      "file": "esp32__lcd1602.jpg",
+      "bytes": 56240,
+      "sha256": "fb4bacdeb82e5054860a543db0a1e340bb9101251ed8bff1ed5c692221639b29"
+    },
+    {
+      "board": "esp32",
+      "component": "ldr",
+      "file": "esp32__ldr.jpg",
+      "bytes": 64612,
+      "sha256": "1e67523e3f9523340e3742b762c052bb33eefb0a462ab7c89a59cb83cf2a3b86"
+    },
+    {
+      "board": "esp32",
+      "component": "led-matrix",
+      "file": "esp32__led-matrix.jpg",
+      "bytes": 70059,
+      "sha256": "d2e2ea1df4ae38176782c9e014ad2129974f8b2467796f066db5b07cf527d80d"
+    },
+    {
+      "board": "esp32",
+      "component": "lidar-sensor",
+      "file": "esp32__lidar-sensor.jpg",
+      "bytes": 48654,
+      "sha256": "43f5b30e06bb5dd0c05e2b019b3ca7585e2af09af52056a3bb17cd334516fdef"
+    },
+    {
+      "board": "esp32",
+      "component": "linear-actuator",
+      "file": "esp32__linear-actuator.jpg",
+      "bytes": 42267,
+      "sha256": "a3538518369a439677a05353050d4de51fed827b84e6bbc57005946b5a3541c4"
+    },
+    {
+      "board": "esp32",
+      "component": "lipo",
+      "file": "esp32__lipo.jpg",
+      "bytes": 49494,
+      "sha256": "3e69ffde7a500262766c7553d9830fc194dbd143be83daf91befd17da071fcc9"
+    },
+    {
+      "board": "esp32",
+      "component": "lora",
+      "file": "esp32__lora.jpg",
+      "bytes": 69462,
+      "sha256": "5f25c103c6da51b13aa6abda1dfb7b64d712ce0675b88aebed085b1e278f9dc7"
+    },
+    {
+      "board": "esp32",
+      "component": "mq2",
+      "file": "esp32__mq2.jpg",
+      "bytes": 50574,
+      "sha256": "fea7434de8c6f1a1b4cdf868a8719bcbf9eadab7fe9ce40e4b1e6495a0aa1237"
+    },
+    {
+      "board": "esp32",
+      "component": "mq7",
+      "file": "esp32__mq7.jpg",
+      "bytes": 65566,
+      "sha256": "0c2123ede6b0430ef409b3b7d361fe2a0315d1699be955c3c3f1491d7a9cb363"
+    },
+    {
+      "board": "esp32",
+      "component": "neopixel",
+      "file": "esp32__neopixel.jpg",
+      "bytes": 40160,
+      "sha256": "312328275cc864e5fda2bf6fa413514a2ebf142a8f080fbe6e70da4b09056e7e"
+    },
+    {
+      "board": "esp32",
+      "component": "nrf24",
+      "file": "esp32__nrf24.jpg",
+      "bytes": 59047,
+      "sha256": "98d892a5f589291bec39f148462bc72a47177a55b560309ba9d42d6612641617"
+    },
+    {
+      "board": "esp32",
+      "component": "oled",
+      "file": "esp32__oled.jpg",
+      "bytes": 57725,
+      "sha256": "6453d7a9df5556eee775290fdb5d1a893a62df3195a2b983bc675193e760d5ab"
+    },
+    {
+      "board": "esp32",
+      "component": "ph-sensor",
+      "file": "esp32__ph-sensor.jpg",
+      "bytes": 56052,
+      "sha256": "6e9b33b4576daed10781e688e21f5639b4d875ed091e3abcf02ab7f5ceca3bfb"
+    },
+    {
+      "board": "esp32",
+      "component": "pir",
+      "file": "esp32__pir.jpg",
+      "bytes": 47164,
+      "sha256": "e413ac10571a3c51b47a74d51b3d33b484b8463da316d3b830f99d155afdf857"
+    },
+    {
+      "board": "esp32",
+      "component": "potentiometer",
+      "file": "esp32__potentiometer.jpg",
+      "bytes": 62493,
+      "sha256": "97a1a321ef395693695194a136e7979f86b30fb1f5863f6fd6d9d34f54bba1cb"
+    },
+    {
+      "board": "esp32",
+      "component": "rain-sensor",
+      "file": "esp32__rain-sensor.jpg",
+      "bytes": 50121,
+      "sha256": "64fe2d21791c4b0dc8377943071721a255f3b01d847f3c509925255491a3211d"
+    },
+    {
+      "board": "esp32",
+      "component": "relay-module",
+      "file": "esp32__relay-module.jpg",
+      "bytes": 51494,
+      "sha256": "5bad777b9967b49ea3614f3ed5b1424d7fde83bd931f6c2f6074ec2f9940598f"
+    },
+    {
+      "board": "esp32",
+      "component": "rfid-rc522",
+      "file": "esp32__rfid-rc522.jpg",
+      "bytes": 61221,
+      "sha256": "87b89d46dde460219bfec1272467465cda1acdfc031bf228049a3ff49042d303"
+    },
+    {
+      "board": "esp32",
+      "component": "seven-seg",
+      "file": "esp32__seven-seg.jpg",
+      "bytes": 51495,
+      "sha256": "cb6748888fffe8e9c1b07ab4fbf8ecb858fdce3be86009ad3c6f982146854320"
+    },
+    {
+      "board": "esp32",
+      "component": "sim900",
+      "file": "esp32__sim900.jpg",
+      "bytes": 58618,
+      "sha256": "db8107ffb1775b126abdf6b03445315303669c6e861f4363a968e97a7e98f946"
+    },
+    {
+      "board": "esp32",
+      "component": "solar-panel",
+      "file": "esp32__solar-panel.jpg",
+      "bytes": 47893,
+      "sha256": "af9f2654820c39d6c386476726a24662aeb0e4eb6ad62dcbbcae13b588186b1c"
+    },
+    {
+      "board": "esp32",
+      "component": "tp4056",
+      "file": "esp32__tp4056.jpg",
+      "bytes": 61781,
+      "sha256": "29ac521368a60fffde26167c7d78f713b6885f668a7ab5e096790ae2610ad31d"
+    },
+    {
+      "board": "esp32",
+      "component": "ups-module",
+      "file": "esp32__ups-module.jpg",
+      "bytes": 59292,
+      "sha256": "d93876b439f1306cecc77136e7052246478c69a4e4cfbe36f24c5985082fb528"
+    },
+    {
+      "board": "esp32",
+      "component": "water-level",
+      "file": "esp32__water-level.jpg",
+      "bytes": 57932,
+      "sha256": "bc5763b10aa6b48ae9bc21ef73456f8257a4ec0c8726c5e5247aee65846998ce"
+    },
+    {
+      "board": "esp32",
+      "component": "water-pump",
+      "file": "esp32__water-pump.jpg",
+      "bytes": 45654,
+      "sha256": "da6c943128224b0307bb4cdbef1029df7a92ae5422e7a38060eb3c139d8009c7"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "a4988",
+      "file": "esp32-cam__a4988.jpg",
+      "bytes": 61941,
+      "sha256": "33ec4a8e7bcb00b0504fd280b4b980a8f71493bcd294f5740ea50795cfba8da4"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "bh1750",
+      "file": "esp32-cam__bh1750.jpg",
+      "bytes": 42721,
+      "sha256": "e3e2603667f99cb1a281d456e0383f64cd85ffea2fd9c94d112d4618454126ea"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "ble",
+      "file": "esp32-cam__ble.jpg",
+      "bytes": 43289,
+      "sha256": "e737e23a44065504b0024faa81064d50a69b90c66ce22b9e5faf659d965a5884"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "boost",
+      "file": "esp32-cam__boost.jpg",
+      "bytes": 60063,
+      "sha256": "ce9fb85397150aeacfd67f2768e341ac8c3d3e271e4b2408479297b03a0614c6"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "buck",
+      "file": "esp32-cam__buck.jpg",
+      "bytes": 42148,
+      "sha256": "6bf8560c2fac9a6c00b8d0dd2d78f3687a32b7a5ede61b1ed3cf5067b03448ae"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "color-sensor",
+      "file": "esp32-cam__color-sensor.jpg",
+      "bytes": 45236,
+      "sha256": "b7cc3f0c6fd8213b20e0ba67043aebbc1447a26019e689cefc34a09f1cb6c74d"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "contactor",
+      "file": "esp32-cam__contactor.jpg",
+      "bytes": 59995,
+      "sha256": "f62fb09d1a07cdb7e68df70a216addd63bb6074ab5121bdc59bad0785e8e9964"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "current-sensor",
+      "file": "esp32-cam__current-sensor.jpg",
+      "bytes": 46136,
+      "sha256": "abee2bd4c81fc18b9c20dc7458fb017a80aa00b5978b197f9f918a20ffc71b2e"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "dc-motor",
+      "file": "esp32-cam__dc-motor.jpg",
+      "bytes": 50883,
+      "sha256": "3063bd29945589872bb1ee2670d1cc15070a84d1537d092dd1095197b001c8e3"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "dht11",
+      "file": "esp32-cam__dht11.jpg",
+      "bytes": 44706,
+      "sha256": "eab4dfcce36c84fc878bfe55f1494e84a3566bb4ff388455d621924c0ea23c59"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "diode",
+      "file": "esp32-cam__diode.jpg",
+      "bytes": 43102,
+      "sha256": "3825c239b24a22fd7f9f813ac12d39b8c1392c8532089f643d3b7cf2f3e7c4db"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "ds18b20",
+      "file": "esp32-cam__ds18b20.jpg",
+      "bytes": 36801,
+      "sha256": "598d557ba227dbf04341d640443d508054067a705327c13dad44203a5186acc6"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "epaper",
+      "file": "esp32-cam__epaper.jpg",
+      "bytes": 59197,
+      "sha256": "4806e2345f1328e55c64350f48a61c7c6dd7e8fcb89e9995f436720162c23480"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "ethernet-mod",
+      "file": "esp32-cam__ethernet-mod.jpg",
+      "bytes": 54911,
+      "sha256": "a3359da793158017e31822bcc901e7d2f9eec54d90cc7a0d7c2efbbb2609b54f"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "fingerprint-mod",
+      "file": "esp32-cam__fingerprint-mod.jpg",
+      "bytes": 48030,
+      "sha256": "926e60d5dd3c6ce797efc2c28ff1ccce88d9e0e61621306c0128d41e43fba575"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "flame-sensor",
+      "file": "esp32-cam__flame-sensor.jpg",
+      "bytes": 50241,
+      "sha256": "83ea85529ae45d50f05008c440370769ca92f3fab4853bfd0db1a589688dcba0"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "flow-sensor",
+      "file": "esp32-cam__flow-sensor.jpg",
+      "bytes": 47452,
+      "sha256": "fbcff1ca48030665f67fd574f23a02c129892aeb4f8b5283fcdfeb618a8476d5"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "gps-neo6",
+      "file": "esp32-cam__gps-neo6.jpg",
+      "bytes": 48488,
+      "sha256": "b475b70bfa1b7c4e516e16272cc5ece01947d130203df05c983bf3e95652f3f5"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "gripper",
+      "file": "esp32-cam__gripper.jpg",
+      "bytes": 37220,
+      "sha256": "f310e6fc5cf21c1f5c53ec366f19d8c8a9408364f33b9e1467727a29c9b20b6a"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "hc-sr04",
+      "file": "esp32-cam__hc-sr04.jpg",
+      "bytes": 52587,
+      "sha256": "54008ff195c54d0fbe0424e485299c16324b6eae33028aca116798ec13a06028"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "hc05",
+      "file": "esp32-cam__hc05.jpg",
+      "bytes": 55994,
+      "sha256": "ef5ddcf6a8d7ff6e730c85635aabf3971c0c25751e8bf9cd342a91540b11f71e"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "heart-rate",
+      "file": "esp32-cam__heart-rate.jpg",
+      "bytes": 48470,
+      "sha256": "176454f56ba3c3a79c5f1f50c151f3ce99e222b565fceed11ebf7369c506a65c"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "hmi",
+      "file": "esp32-cam__hmi.jpg",
+      "bytes": 47283,
+      "sha256": "beec8a23d1eefcd7cad5aace599f1fa26ac058bd625303511603dedb73db000c"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "inductor",
+      "file": "esp32-cam__inductor.jpg",
+      "bytes": 39679,
+      "sha256": "d78773d6533cdc2a53620033d04d8960ff2df21401424c6ed7116c8b111f1d48"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "ir-flame-array",
+      "file": "esp32-cam__ir-flame-array.jpg",
+      "bytes": 48120,
+      "sha256": "31ab9b2f768fae946d0303643d7a586dee47ad005d9f638b51e0020a15e0029e"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "ir-sensor",
+      "file": "esp32-cam__ir-sensor.jpg",
+      "bytes": 49345,
+      "sha256": "fb09eba787d32858cf6e55312e3a1204bba0ae9ac5bab5334819853717210055"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "joystick",
+      "file": "esp32-cam__joystick.jpg",
+      "bytes": 52692,
+      "sha256": "de2d3329d5458ffd7bbaa96c9004e84f0447a9df88de97a0c968cf5bc31c753e"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "keypad",
+      "file": "esp32-cam__keypad.jpg",
+      "bytes": 48414,
+      "sha256": "04fe7a8198f40290e8c812c07697e2a3eefd522f06a05b912b717748ff9ffd9d"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "l293d",
+      "file": "esp32-cam__l293d.jpg",
+      "bytes": 52408,
+      "sha256": "d225045539054971a874688cdf3b499b05d7ced4e107a6c9a7cc87387112af32"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "lcd1602",
+      "file": "esp32-cam__lcd1602.jpg",
+      "bytes": 46838,
+      "sha256": "600c51bc0940657dfb4110e31a96bbb325d96784093d552631000d3b9509c9dd"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "ldo",
+      "file": "esp32-cam__ldo.jpg",
+      "bytes": 57897,
+      "sha256": "91d8b47a7f0d763c031879736b0cf12fd31cdcd8c0f3eb0a58de9c3df870265a"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "ldr",
+      "file": "esp32-cam__ldr.jpg",
+      "bytes": 44798,
+      "sha256": "a09488389c52e890dcc126b0956941e8f0fdc30cad1a21a76206410d47c6b8e7"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "led",
+      "file": "esp32-cam__led.jpg",
+      "bytes": 36372,
+      "sha256": "f02cc039fd80eadbf6393d7353f4627b86e18788dd1325f1ef4b98be3adcbdb9"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "led-matrix",
+      "file": "esp32-cam__led-matrix.jpg",
+      "bytes": 42848,
+      "sha256": "a190e89d384ce25842403a93eabefcf6f7bc80795a3d206528f3bb337e699a2c"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "lidar-sensor",
+      "file": "esp32-cam__lidar-sensor.jpg",
+      "bytes": 50747,
+      "sha256": "beab824f90284f19d32de38e22c720bb6b0f65cc0b1da9161537814c490f0439"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "linear-actuator",
+      "file": "esp32-cam__linear-actuator.jpg",
+      "bytes": 40220,
+      "sha256": "3301ffdc5bee6e6bf01488f4a56dd73e1023d3527ae15e87e71f3f6d8d2e329a"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "lm35",
+      "file": "esp32-cam__lm35.jpg",
+      "bytes": 51766,
+      "sha256": "9200a7254fe9cdb51c56e967767b8d55cf0707bdc60f27bbe28988781c405bce"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "load-cell",
+      "file": "esp32-cam__load-cell.jpg",
+      "bytes": 54091,
+      "sha256": "fc312ef46dbdb76f4399143efe0794be77e4fdb17671c8d6c739f89fe29fd418"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "lora",
+      "file": "esp32-cam__lora.jpg",
+      "bytes": 54738,
+      "sha256": "5f71c0e6b1a8183ea2f0c37c1cc818527595be22eba68bbab8dd906143954327"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "mq135",
+      "file": "esp32-cam__mq135.jpg",
+      "bytes": 46633,
+      "sha256": "da171ddaca211e87166774e5b8380564848d1ba6052f4d912e6921863f668a97"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "mq2",
+      "file": "esp32-cam__mq2.jpg",
+      "bytes": 47709,
+      "sha256": "78be771cb30d1ead8841110163b23371b77a8e1ccfc0544cafb5ab1fd711044f"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "mq7",
+      "file": "esp32-cam__mq7.jpg",
+      "bytes": 41039,
+      "sha256": "42b8ff408bf3175d9973bc5c20a460482b4d9e072311e3e27bc2afe7fef1aaa5"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "nrf24",
+      "file": "esp32-cam__nrf24.jpg",
+      "bytes": 53005,
+      "sha256": "7a803a217fbf9452a1d0f689f200ab5785b4efe99e837430c3404417751ea37b"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "oled",
+      "file": "esp32-cam__oled.jpg",
+      "bytes": 41271,
+      "sha256": "7b18339ff78f1fa12f46e8bfca1da5500deb3485308b887c0668ac62b25fba5e"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "ph-sensor",
+      "file": "esp32-cam__ph-sensor.jpg",
+      "bytes": 40129,
+      "sha256": "2683784507ba2909ed6a6051bb46fb8a1164fdb9b90faf2883d71aed01c627d0"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "pir",
+      "file": "esp32-cam__pir.jpg",
+      "bytes": 52252,
+      "sha256": "1695f22ed0dddfbf7c31a9d7b3b7e309bf4b5b8606e53727947552cbb0c3ba9b"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "plc",
+      "file": "esp32-cam__plc.jpg",
+      "bytes": 52290,
+      "sha256": "befda9e469a49d440cff1b7dd80f16f0183d71c09ef710de4c137cd43b855a02"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "potentiometer",
+      "file": "esp32-cam__potentiometer.jpg",
+      "bytes": 46634,
+      "sha256": "a33dcf058748d992139bcd4877ef73102dd2eab10d9a165c7d374e7922808aa7"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "proximity",
+      "file": "esp32-cam__proximity.jpg",
+      "bytes": 56077,
+      "sha256": "c6c017f0d13f924fdaaa2286ce9222da5f3399d39fcc8cf0ce8bf73f89739257"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "push-button",
+      "file": "esp32-cam__push-button.jpg",
+      "bytes": 56003,
+      "sha256": "8b1f361397337aef91550e046fecd9b5c77a7f756a09ea2efa50a6c346f46c87"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "rain-sensor",
+      "file": "esp32-cam__rain-sensor.jpg",
+      "bytes": 61044,
+      "sha256": "d385c498c8caf11b05b326ef785e5f30775313aaf379f16304b7f0876c33497e"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "relay-module",
+      "file": "esp32-cam__relay-module.jpg",
+      "bytes": 55101,
+      "sha256": "2dfc4123f3d96857668b3f3c1e8e3a7a606345e8a91bd325d81072eed7c439a4"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "robot-arm",
+      "file": "esp32-cam__robot-arm.jpg",
+      "bytes": 45967,
+      "sha256": "9169fa37079faa0e703164c88c7a6860e28314474426af69a98835d5e0f4c8b4"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "rotary-encoder",
+      "file": "esp32-cam__rotary-encoder.jpg",
+      "bytes": 53095,
+      "sha256": "778a8d161812c6b6dd6ac465a2d3d9e13ffce3f83bed03fa9a325ae574101d63"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "rtc",
+      "file": "esp32-cam__rtc.jpg",
+      "bytes": 47641,
+      "sha256": "9d35b587ab493946e56f90774bd3d01b597baba77bbcc8912ce17476fb265cfa"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "sd-module",
+      "file": "esp32-cam__sd-module.jpg",
+      "bytes": 46253,
+      "sha256": "e69e71ebea917962d886582e54fcf2ca3754bc0483662d8aab7ae3d263352245"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "sensor-industrial",
+      "file": "esp32-cam__sensor-industrial.jpg",
+      "bytes": 48703,
+      "sha256": "9a3c25d3f744a1ac1d308638257c8e06907cd56fa8a111293b493449f8970bbd"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "servo",
+      "file": "esp32-cam__servo.jpg",
+      "bytes": 48100,
+      "sha256": "761f9ea56b9cba137f8d4498299a2a2d9cda3a56295d0bcb8c75088ac6e7dfe2"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "seven-seg",
+      "file": "esp32-cam__seven-seg.jpg",
+      "bytes": 62995,
+      "sha256": "e143a22cced46602e0adb4fba9be64ade6ed96c59c5a7e28f88ddaeb80238668"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "sim900",
+      "file": "esp32-cam__sim900.jpg",
+      "bytes": 50430,
+      "sha256": "bcc965e51539b087b6648d1daad9495536b98a31ab52e3cf841201caf197ccea"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "soil-moisture",
+      "file": "esp32-cam__soil-moisture.jpg",
+      "bytes": 40853,
+      "sha256": "0f8277ef04858dfb2e786dfd410ed91fcab292a47d68de69cf45d645bcc1a6a9"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "solar-panel",
+      "file": "esp32-cam__solar-panel.jpg",
+      "bytes": 46641,
+      "sha256": "1f1674bf7375ce5fddf10e3ddbf5a95255ba0b31a968b586a8d788ecb372f912"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "speaker",
+      "file": "esp32-cam__speaker.jpg",
+      "bytes": 52511,
+      "sha256": "2f71b1bf111537634e7408807d78d78e156d22f48c089cc367731a30e6446c00"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "tft",
+      "file": "esp32-cam__tft.jpg",
+      "bytes": 56077,
+      "sha256": "aeb2fd0727f7f091f2c9565bd59df92ac7924592732cea08af5824397495c3ea"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "tp4056",
+      "file": "esp32-cam__tp4056.jpg",
+      "bytes": 60002,
+      "sha256": "975df0888d78388212b62edc904fbf9c04061c5f79d97b28524a1f9cc31325e0"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "ups-module",
+      "file": "esp32-cam__ups-module.jpg",
+      "bytes": 44526,
+      "sha256": "8c905b6bd1de8ab542338ce31f00bd1312f2717e63d33ff701c5c08d0f306586"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "usb-ttl",
+      "file": "esp32-cam__usb-ttl.jpg",
+      "bytes": 53054,
+      "sha256": "9c6c1ec32d3a756a93cb3660354324e4899e22da3fd3ed0e5e2caae6c886ce1c"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "vfd",
+      "file": "esp32-cam__vfd.jpg",
+      "bytes": 56209,
+      "sha256": "105ffa903a807fa2313af90bc5d4066adf1b997bdfb286b88affced7a07b09da"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "voltage-sensor",
+      "file": "esp32-cam__voltage-sensor.jpg",
+      "bytes": 40213,
+      "sha256": "42fbc00e0e0688af3804af696cd19c4065b481b3fb2dbc3585120085eb2ec685"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "water-level",
+      "file": "esp32-cam__water-level.jpg",
+      "bytes": 45772,
+      "sha256": "e5380de055f84e6a155346632a3b9ab9af7dd15a073b3591e84d415b7d8fe7b0"
+    },
+    {
+      "board": "esp32-cam",
+      "component": "water-pump",
+      "file": "esp32-cam__water-pump.jpg",
+      "bytes": 49489,
+      "sha256": "e72fa20e05f20b65c9c8c0603149e18c5815d900963fa145bee47bdd6edbdbe0"
+    },
+    {
+      "board": "esp8266",
+      "component": "bh1750",
+      "file": "esp8266__bh1750.jpg",
+      "bytes": 47975,
+      "sha256": "ad785a4aa1c444ffbe2557b28a81496cc7dbdc272e6319146d245baa09a702ab"
+    },
+    {
+      "board": "esp8266",
+      "component": "current-sensor",
+      "file": "esp8266__current-sensor.jpg",
+      "bytes": 66171,
+      "sha256": "eb890cdf8e4e4cfe799c6849aa3a776cdeda7524c3a1ac514ad90dde32b12613"
+    },
+    {
+      "board": "esp8266",
+      "component": "dht11",
+      "file": "esp8266__dht11.jpg",
+      "bytes": 42777,
+      "sha256": "bede0426214c7fb1fb7cda3c822696a53329a2476d785f70ac5b21682ee1388e"
+    },
+    {
+      "board": "esp8266",
+      "component": "ds18b20",
+      "file": "esp8266__ds18b20.jpg",
+      "bytes": 42344,
+      "sha256": "1997f68af8527a1a2ce3b36d6edd4c526a72c73bb1e92254105eab2093f481a7"
+    },
+    {
+      "board": "esp8266",
+      "component": "flame-sensor",
+      "file": "esp8266__flame-sensor.jpg",
+      "bytes": 44309,
+      "sha256": "bc845effbceb27d9d2efbf59fd96efb1b226ba115d43cb5d92a77b58d30a5b46"
+    },
+    {
+      "board": "esp8266",
+      "component": "hc-sr04",
+      "file": "esp8266__hc-sr04.jpg",
+      "bytes": 50419,
+      "sha256": "c75e0cacf217807d2578ec34ecd6236e731ce86739a0153e2dbc85cd75d1a717"
+    },
+    {
+      "board": "esp8266",
+      "component": "heart-rate",
+      "file": "esp8266__heart-rate.jpg",
+      "bytes": 53411,
+      "sha256": "06ea160b504722847a40373519bd146ae5794221b5c9ef97476473217b8323f1"
+    },
+    {
+      "board": "esp8266",
+      "component": "hmc5883l",
+      "file": "esp8266__hmc5883l.jpg",
+      "bytes": 45202,
+      "sha256": "b3bad3a878994def2d4e204775cd7e491cb86cec4b6b4d27425b841e4cebb5ae"
+    },
+    {
+      "board": "esp8266",
+      "component": "ir-sensor",
+      "file": "esp8266__ir-sensor.jpg",
+      "bytes": 41757,
+      "sha256": "5e57f7b276edafc428bc43088ebbafe83d966131df86513b461e0c369512f0ac"
+    },
+    {
+      "board": "esp8266",
+      "component": "ldr",
+      "file": "esp8266__ldr.jpg",
+      "bytes": 66436,
+      "sha256": "80f0f198c2a91e855b027a7cf1eadb1d846465f514c6b2fe4e128a3dc96e4b00"
+    },
+    {
+      "board": "esp8266",
+      "component": "lm35",
+      "file": "esp8266__lm35.jpg",
+      "bytes": 37713,
+      "sha256": "a2430f56931ada86a360d6bb98a6639aaf36cc29b21be2d57bbd9c52ea2c2f6e"
+    },
+    {
+      "board": "esp8266",
+      "component": "mq135",
+      "file": "esp8266__mq135.jpg",
+      "bytes": 61865,
+      "sha256": "40a3cda9a8e6e90fbc3095d3e4e4edbf1e5de9a1e7a86afe77364a1150bb87cf"
+    },
+    {
+      "board": "esp8266",
+      "component": "mq7",
+      "file": "esp8266__mq7.jpg",
+      "bytes": 57641,
+      "sha256": "5de2a371a1f5441d65648680d816cf1535c4b653f3a3db2a6e16d7475998ed10"
+    },
+    {
+      "board": "esp8266",
+      "component": "ph-sensor",
+      "file": "esp8266__ph-sensor.jpg",
+      "bytes": 44458,
+      "sha256": "d72cb1e092360f8200ac07bc4838c9ffd711f10984a0ffc9f1147c77ed983659"
+    },
+    {
+      "board": "esp8266",
+      "component": "pir",
+      "file": "esp8266__pir.jpg",
+      "bytes": 59267,
+      "sha256": "30440edec0b3125da9afddaf2f7ac90a2dcc44c4a1778c157280d0734b4169c0"
+    },
+    {
+      "board": "esp8266",
+      "component": "rain-sensor",
+      "file": "esp8266__rain-sensor.jpg",
+      "bytes": 51843,
+      "sha256": "11c5970851e576bc18fdece81289ac3cf721ef23732986ac6f37566c7ce50d88"
+    },
+    {
+      "board": "esp8266",
+      "component": "soil-moisture",
+      "file": "esp8266__soil-moisture.jpg",
+      "bytes": 46740,
+      "sha256": "e5b3ea38e578aca8e9f1b3c8d65e732771b1a12bfa33ac87dd0ff3c4b2340350"
+    },
+    {
+      "board": "esp8266",
+      "component": "water-level",
+      "file": "esp8266__water-level.jpg",
+      "bytes": 53953,
+      "sha256": "8d2dcb01b443e14e0afd2934d9e454205ce586c73d9431855d5d5fd0c69e1070"
+    },
+    {
+      "board": "raspberry-pi",
+      "component": "bh1750",
+      "file": "raspberry-pi__bh1750.jpg",
+      "bytes": 55413,
+      "sha256": "1166f27e225bf98a11edec0234f80dafe039ebcebbdca78768935fc7a8666efb"
+    },
+    {
+      "board": "raspberry-pi",
+      "component": "color-sensor",
+      "file": "raspberry-pi__color-sensor.jpg",
+      "bytes": 59695,
+      "sha256": "4d47574fac45c7142487f1691d493de8dea9630728dc8108af4fdc11fbf95b5c"
+    },
+    {
+      "board": "raspberry-pi",
+      "component": "current-sensor",
+      "file": "raspberry-pi__current-sensor.jpg",
+      "bytes": 63834,
+      "sha256": "ac35c61ec18d3a5079f4f75e329a37169ebc2eb24084f5d36f864a9c222a5a3e"
+    },
+    {
+      "board": "raspberry-pi",
+      "component": "lm35",
+      "file": "raspberry-pi__lm35.jpg",
+      "bytes": 54808,
+      "sha256": "01933644bed5b5b92f57318d56de7dff15671a8b2e603f54dfdf3e6c8fd41b9f"
+    },
+    {
+      "board": "raspberry-pi",
+      "component": "load-cell",
+      "file": "raspberry-pi__load-cell.jpg",
+      "bytes": 60894,
+      "sha256": "97f268603d18f2d2d270268d7fc6f362e000bc1c13922a050bdadae3da3ffd8d"
+    },
+    {
+      "board": "raspberry-pi",
+      "component": "mq135",
+      "file": "raspberry-pi__mq135.jpg",
+      "bytes": 56928,
+      "sha256": "1f392607f85ce078f75abca1669a196574f7720ce8304a3edface23febdd5067"
+    },
+    {
+      "board": "raspberry-pi",
+      "component": "ph-sensor",
+      "file": "raspberry-pi__ph-sensor.jpg",
+      "bytes": 53684,
+      "sha256": "9ac1e7d1491c6f1f6cd7157dec0040e0a509aff4829738e63678095a13583d5b"
+    },
+    {
+      "board": "raspberry-pi",
+      "component": "rain-sensor",
+      "file": "raspberry-pi__rain-sensor.jpg",
+      "bytes": 59693,
+      "sha256": "4f633541d2ed66219f7b23cb60b9489c6d4bf102d6e1b810bd825458537c51f7"
+    },
+    {
+      "board": "raspberry-pi",
+      "component": "water-level",
+      "file": "raspberry-pi__water-level.jpg",
+      "bytes": 53975,
+      "sha256": "9fd579a202af299fdf460041c89d2bce8452874509db3c46cab0479eacab755a"
+    },
+    {
+      "board": "raspberry-pi-pico",
+      "component": "bh1750",
+      "file": "raspberry-pi-pico__bh1750.jpg",
+      "bytes": 51647,
+      "sha256": "bf54060ff63dc2f6ce02296b10c2248869c4aa73bcee66eb7fce1d7659a50b52"
+    },
+    {
+      "board": "raspberry-pi-pico",
+      "component": "boost",
+      "file": "raspberry-pi-pico__boost.jpg",
+      "bytes": 49305,
+      "sha256": "799e1d2b0087af8546f511ac49d8cf678bd2f20744f4b8059eb8b277ae23246b"
+    },
+    {
+      "board": "raspberry-pi-pico",
+      "component": "dc-motor",
+      "file": "raspberry-pi-pico__dc-motor.jpg",
+      "bytes": 44734,
+      "sha256": "44c11b2af0b095dc8cdf4d12ced24556496a8c3a78a4ba78cd2df59e5a608ac6"
+    },
+    {
+      "board": "raspberry-pi-pico",
+      "component": "ds18b20",
+      "file": "raspberry-pi-pico__ds18b20.jpg",
+      "bytes": 51904,
+      "sha256": "a3f605088e3a53b89ce196cc7f3b2d62d26be22c83ec0b0349e9459ecc92bb07"
+    },
+    {
+      "board": "raspberry-pi-pico",
+      "component": "flame-sensor",
+      "file": "raspberry-pi-pico__flame-sensor.jpg",
+      "bytes": 62187,
+      "sha256": "d888c6574f6bc5b5d8d25029699644f161cca80e2588d1ff2e6815fb8af33f1b"
+    },
+    {
+      "board": "raspberry-pi-pico",
+      "component": "ir-flame-array",
+      "file": "raspberry-pi-pico__ir-flame-array.jpg",
+      "bytes": 53361,
+      "sha256": "dc6b78862b8a7dfccd67fb11a76c004747e023411a07ed7fffd738d121f3c48d"
+    },
+    {
+      "board": "raspberry-pi-pico",
+      "component": "ir-sensor",
+      "file": "raspberry-pi-pico__ir-sensor.jpg",
+      "bytes": 52929,
+      "sha256": "5375447468e05be51df0f3b29bed36bcd2358604bab85bc2af71d35cd65fef9b"
+    },
+    {
+      "board": "raspberry-pi-pico",
+      "component": "l298n",
+      "file": "raspberry-pi-pico__l298n.jpg",
+      "bytes": 59981,
+      "sha256": "89fc0ee3aeb8e6de8d51fc5e52da456bab91cf75d2f22b2bbffd14b09d20a2bc"
+    },
+    {
+      "board": "raspberry-pi-pico",
+      "component": "linear-actuator",
+      "file": "raspberry-pi-pico__linear-actuator.jpg",
+      "bytes": 54647,
+      "sha256": "3ae2caf237f48e46d2111c14c5721b255c2041a668404ea6b437b9e0743dae90"
+    },
+    {
+      "board": "raspberry-pi-pico",
+      "component": "lipo",
+      "file": "raspberry-pi-pico__lipo.jpg",
+      "bytes": 48353,
+      "sha256": "59832407c238afad72e1666dff877f1df686d44033a7f177532183f589465717"
+    },
+    {
+      "board": "raspberry-pi-pico",
+      "component": "lm35",
+      "file": "raspberry-pi-pico__lm35.jpg",
+      "bytes": 56781,
+      "sha256": "5d4d7c21d1fdabd3eabdd737e6edd4cb04ec6df1a2839154540f00ede7a6f3c4"
+    },
+    {
+      "board": "raspberry-pi-pico",
+      "component": "lora",
+      "file": "raspberry-pi-pico__lora.jpg",
+      "bytes": 63899,
+      "sha256": "2b746760fdf59c122f470d206a0f1d7200b0d560e2f94484fa0b74745fc1e516"
+    },
+    {
+      "board": "raspberry-pi-pico",
+      "component": "ph-sensor",
+      "file": "raspberry-pi-pico__ph-sensor.jpg",
+      "bytes": 63288,
+      "sha256": "48a95317a4dbfd35aa8422941f30dc085f0543651b2d7f4dd9be17d835c402af"
+    },
+    {
+      "board": "raspberry-pi-pico",
+      "component": "rain-sensor",
+      "file": "raspberry-pi-pico__rain-sensor.jpg",
+      "bytes": 50051,
+      "sha256": "c90498cdc22e60fc3c8eb71073a7b6549c0f6a40023858cd9d8618f41abce1b6"
+    },
+    {
+      "board": "raspberry-pi-pico",
+      "component": "servo",
+      "file": "raspberry-pi-pico__servo.jpg",
+      "bytes": 46183,
+      "sha256": "ad5f7c2ee36a0b74b2b8e512e9f3f2617ff69db812dd8d775455c41054b6ae66"
+    },
+    {
+      "board": "raspberry-pi-pico",
+      "component": "sim900",
+      "file": "raspberry-pi-pico__sim900.jpg",
+      "bytes": 64874,
+      "sha256": "f6bd9c109a37c5043c51b044f8cfc814c3138e28443c4bf6cf5bddb2c873e9e9"
+    },
+    {
+      "board": "raspberry-pi-pico",
+      "component": "voltage-sensor",
+      "file": "raspberry-pi-pico__voltage-sensor.jpg",
+      "bytes": 48792,
+      "sha256": "f6c8971df75c64c5a5b66ad407511b30660ab2a17e169d19e765285f5ab565f4"
+    },
+    {
+      "board": "stm32",
+      "component": "ds18b20",
+      "file": "stm32__ds18b20.jpg",
+      "bytes": 48314,
+      "sha256": "579c7b23813e410c11b94655427d54051774ddd2f473b9565fb0339de56bc638"
+    },
+    {
+      "board": "stm32",
+      "component": "mq135",
+      "file": "stm32__mq135.jpg",
+      "bytes": 54686,
+      "sha256": "57ddef6f4b2205ec598b3aa7db7626962208d5c667e627a42cba189a5a03a09e"
+    },
+    {
+      "board": "stm32",
+      "component": "rain-sensor",
+      "file": "stm32__rain-sensor.jpg",
+      "bytes": 53906,
+      "sha256": "51c3244ecf25ada993576790651f8f14eb7fb17b681944e6892085bf86691ba6"
+    },
+    {
+      "board": "teensy",
+      "component": "a4988",
+      "file": "teensy__a4988.jpg",
+      "bytes": 67805,
+      "sha256": "e165afdc44db2ebbbb291a364ce4031dd6be35db3cba94720cfe43d3238289b1"
+    },
+    {
+      "board": "teensy",
+      "component": "ams1117",
+      "file": "teensy__ams1117.jpg",
+      "bytes": 41022,
+      "sha256": "057f68e23aa38857f8fd0bc92d0fdf9beefdcfa0e81ec19f00b3d870c68bdcb8"
+    },
+    {
+      "board": "teensy",
+      "component": "bh1750",
+      "file": "teensy__bh1750.jpg",
+      "bytes": 48113,
+      "sha256": "39838dc491d88428de32c79fe10263c8d0f85f85f3a35ccdc41bff11630b838c"
+    },
+    {
+      "board": "teensy",
+      "component": "ble",
+      "file": "teensy__ble.jpg",
+      "bytes": 47214,
+      "sha256": "dc8f3b001c5e2aa5ac816a965ae241769f8c1dfc19b0dd069ff3984052a12bd9"
+    },
+    {
+      "board": "teensy",
+      "component": "bmp280",
+      "file": "teensy__bmp280.jpg",
+      "bytes": 46964,
+      "sha256": "861b967c41025775c5fb5e06fbd4fe1598aa11c1016eff344583dbc77c9a427d"
+    },
+    {
+      "board": "teensy",
+      "component": "boost",
+      "file": "teensy__boost.jpg",
+      "bytes": 72285,
+      "sha256": "e2c1673d5469314599b43bdf09e310f1d5ef19754c2c933dff9962a5feff56ee"
+    },
+    {
+      "board": "teensy",
+      "component": "buck",
+      "file": "teensy__buck.jpg",
+      "bytes": 63155,
+      "sha256": "0f1ed0e23fdcbb445104335e32cdcf977330c78d0bfa1e226aaec711aba8b3f1"
+    },
+    {
+      "board": "teensy",
+      "component": "buzzer",
+      "file": "teensy__buzzer.jpg",
+      "bytes": 43528,
+      "sha256": "870a8bfcdd88c8c05e124fb4544af742f2fd98cc6f7ad3649b5cb53e0f041b2b"
+    },
+    {
+      "board": "teensy",
+      "component": "color-sensor",
+      "file": "teensy__color-sensor.jpg",
+      "bytes": 43305,
+      "sha256": "28cf8e35221bec52e8d16565cdf25c2146f555c10cdd396c55a783c6679fed28"
+    },
+    {
+      "board": "teensy",
+      "component": "contactor",
+      "file": "teensy__contactor.jpg",
+      "bytes": 56609,
+      "sha256": "6c36a4712d0a092e4e0ad6ccdd67d1807f6521616671747b533d6bdda1885c2c"
+    },
+    {
+      "board": "teensy",
+      "component": "current-sensor",
+      "file": "teensy__current-sensor.jpg",
+      "bytes": 50795,
+      "sha256": "e4177883be9be1350eb653db755ff9ac8bf95ca29e72a0472c5d39b8a603b8b3"
+    },
+    {
+      "board": "teensy",
+      "component": "dc-motor",
+      "file": "teensy__dc-motor.jpg",
+      "bytes": 38119,
+      "sha256": "bd3eb2521e19e733fef2778f3aee0dc87658e52b939c82b2b1af6303496bbad0"
+    },
+    {
+      "board": "teensy",
+      "component": "dht11",
+      "file": "teensy__dht11.jpg",
+      "bytes": 41092,
+      "sha256": "6d182dfa0adb333d1147f98e0deac7a1431b971aaef68424990643ceab9489bc"
+    },
+    {
+      "board": "teensy",
+      "component": "ds18b20",
+      "file": "teensy__ds18b20.jpg",
+      "bytes": 42203,
+      "sha256": "9e5e5268b76a61e0f0c3099b441b2b54c85680662b4a310a31d10fc9f7ebf700"
+    },
+    {
+      "board": "teensy",
+      "component": "epaper",
+      "file": "teensy__epaper.jpg",
+      "bytes": 59618,
+      "sha256": "7e8a40b7ecc76df35fd69c1bbdeaa6f2400b5e73faf48c3ea7b793ffc470c2bf"
+    },
+    {
+      "board": "teensy",
+      "component": "ethernet-mod",
+      "file": "teensy__ethernet-mod.jpg",
+      "bytes": 47875,
+      "sha256": "2d86ed8145e9c9dbe3fe89fbc525d1a50e1c90c6488871d942887ec879fbf348"
+    },
+    {
+      "board": "teensy",
+      "component": "fingerprint-mod",
+      "file": "teensy__fingerprint-mod.jpg",
+      "bytes": 57458,
+      "sha256": "057e69976af9fdae55778681c31c0957de5a4bedeb26d2d8f0689f6a4421cc2f"
+    },
+    {
+      "board": "teensy",
+      "component": "flame-sensor",
+      "file": "teensy__flame-sensor.jpg",
+      "bytes": 50273,
+      "sha256": "bdeb68b9d8081990d4d26ba91b1d9d1b5912130078af9834d59ed96616a343cf"
+    },
+    {
+      "board": "teensy",
+      "component": "flow-sensor",
+      "file": "teensy__flow-sensor.jpg",
+      "bytes": 47979,
+      "sha256": "4d9304d34554749e8df2433cb6dc9460f886ebd25dc6f5a106b4d8797be53517"
+    },
+    {
+      "board": "teensy",
+      "component": "gps-neo6",
+      "file": "teensy__gps-neo6.jpg",
+      "bytes": 43023,
+      "sha256": "60cc648474a890bd41c2bd474b85adc14918cd621bc45f3de331ff7549ce474f"
+    },
+    {
+      "board": "teensy",
+      "component": "hc05",
+      "file": "teensy__hc05.jpg",
+      "bytes": 45296,
+      "sha256": "d0bee579a20656f0a178d8befe20289ca914e3fd59fe468355450b7142605a42"
+    },
+    {
+      "board": "teensy",
+      "component": "heart-rate",
+      "file": "teensy__heart-rate.jpg",
+      "bytes": 54707,
+      "sha256": "e595a18c1d7d4c2c9f4df36ce101d78ce4a3b3bef0112d1ac9a206c308bc17b2"
+    },
+    {
+      "board": "teensy",
+      "component": "hmc5883l",
+      "file": "teensy__hmc5883l.jpg",
+      "bytes": 51809,
+      "sha256": "7c34a5009726156477cadc805fd3868ae4042b5f5f79051e9d0f9f2fa7e907a7"
+    },
+    {
+      "board": "teensy",
+      "component": "hmi",
+      "file": "teensy__hmi.jpg",
+      "bytes": 43616,
+      "sha256": "71f560f95d4f11fbe61df91550e233587f5047fae467f9ec2da68e7015672222"
+    },
+    {
+      "board": "teensy",
+      "component": "ir-flame-array",
+      "file": "teensy__ir-flame-array.jpg",
+      "bytes": 45619,
+      "sha256": "a1ebc8cba6455a996dce3a750bbdbf8aadc476bd9820a671b8d2cce2daf377e3"
+    },
+    {
+      "board": "teensy",
+      "component": "ir-sensor",
+      "file": "teensy__ir-sensor.jpg",
+      "bytes": 40071,
+      "sha256": "58e11d57f5218e80afe9cbee70a22a32632c12538ee3bb10ca2d5b00036fbb5b"
+    },
+    {
+      "board": "teensy",
+      "component": "l293d",
+      "file": "teensy__l293d.jpg",
+      "bytes": 57470,
+      "sha256": "a680c527a113e53ff80dd74c0e8ac1a6928b90583b4715de6f935534fa1995c0"
+    },
+    {
+      "board": "teensy",
+      "component": "l298n",
+      "file": "teensy__l298n.jpg",
+      "bytes": 70652,
+      "sha256": "c9a93a9cd8d8e59e11a772015046f770950bc70540511460fdef6a0b63ddc209"
+    },
+    {
+      "board": "teensy",
+      "component": "ldr",
+      "file": "teensy__ldr.jpg",
+      "bytes": 51489,
+      "sha256": "269cde9b2cf4d19c64e9e5d731cd1515027cabcd66fa90597cb4fe46a21e1608"
+    },
+    {
+      "board": "teensy",
+      "component": "led-matrix",
+      "file": "teensy__led-matrix.jpg",
+      "bytes": 61045,
+      "sha256": "e20f8d05ae75fe3390441c76bc32f8b3f69817239f76bcd0d0f185ae7d9c37c6"
+    },
+    {
+      "board": "teensy",
+      "component": "lidar-sensor",
+      "file": "teensy__lidar-sensor.jpg",
+      "bytes": 59131,
+      "sha256": "157e392568817053772d77d27a43f8072e41e2035b11912e181426356648f2e5"
+    },
+    {
+      "board": "teensy",
+      "component": "lipo",
+      "file": "teensy__lipo.jpg",
+      "bytes": 53026,
+      "sha256": "97f5076bc4d029b141a4198c8192aa96d1976eb00d801d98a3ce33279b69b70f"
+    },
+    {
+      "board": "teensy",
+      "component": "lm35",
+      "file": "teensy__lm35.jpg",
+      "bytes": 45031,
+      "sha256": "cb1656b3499292173539aed43981c5a3533cb24acadc613024cc6e10e08f9538"
+    },
+    {
+      "board": "teensy",
+      "component": "load-cell",
+      "file": "teensy__load-cell.jpg",
+      "bytes": 59272,
+      "sha256": "a4147cb840b989546883a81ffa227e70fbf28176a58916c31a4d0b6b5f15cece"
+    },
+    {
+      "board": "teensy",
+      "component": "lora",
+      "file": "teensy__lora.jpg",
+      "bytes": 55394,
+      "sha256": "c7184e360e9b0e55d1ba319b51c25a31359303df5802bf87af9f4fce2e3de601"
+    },
+    {
+      "board": "teensy",
+      "component": "mpu6050",
+      "file": "teensy__mpu6050.jpg",
+      "bytes": 53550,
+      "sha256": "efba8896806f2aa45d09f6ce3521a5422d6eef230353dcf0b5d02f7ac59f0135"
+    },
+    {
+      "board": "teensy",
+      "component": "mq135",
+      "file": "teensy__mq135.jpg",
+      "bytes": 51247,
+      "sha256": "30bb3cca86ed117b912de5682ba91a7c5a5ed08a774c6eae2f42f4347dd236a1"
+    },
+    {
+      "board": "teensy",
+      "component": "mq7",
+      "file": "teensy__mq7.jpg",
+      "bytes": 51099,
+      "sha256": "44590ca0f8ba23b329ed8c1a046a13b1af877a2deb4da8f695cc28559c5c0212"
+    },
+    {
+      "board": "teensy",
+      "component": "nrf24",
+      "file": "teensy__nrf24.jpg",
+      "bytes": 59511,
+      "sha256": "5101e48fc951ff45dfc20efb19d79d8914b74c46debe06a565b0a4ff4048a383"
+    },
+    {
+      "board": "teensy",
+      "component": "ph-sensor",
+      "file": "teensy__ph-sensor.jpg",
+      "bytes": 62686,
+      "sha256": "d382eb464142e6b7c53b3b8bd3cc9b4f368a815ced8a8a720ca237f13c2de0bd"
+    },
+    {
+      "board": "teensy",
+      "component": "plc",
+      "file": "teensy__plc.jpg",
+      "bytes": 37244,
+      "sha256": "2a210cf1fc140740961908d64158eaec038b219bed354aa175cd53fa2c00ed2b"
+    },
+    {
+      "board": "teensy",
+      "component": "proximity",
+      "file": "teensy__proximity.jpg",
+      "bytes": 51575,
+      "sha256": "4821f892e4644fd5577729b71356cdacf658ffeb8886cacd4752259d92612acd"
+    },
+    {
+      "board": "teensy",
+      "component": "rain-sensor",
+      "file": "teensy__rain-sensor.jpg",
+      "bytes": 55366,
+      "sha256": "0365f2f585aff1cf088a08bd8d3b053563783caa4cb2c9317b661269b4a3df06"
+    },
+    {
+      "board": "teensy",
+      "component": "relay-module",
+      "file": "teensy__relay-module.jpg",
+      "bytes": 49659,
+      "sha256": "7d13cb78500f57aa44b73f3356ec75453835f94f07c8656e682bb4ddfff72e04"
+    },
+    {
+      "board": "teensy",
+      "component": "rfid-rc522",
+      "file": "teensy__rfid-rc522.jpg",
+      "bytes": 61004,
+      "sha256": "bea6c7dc77fac35fe06c7dff446d7a267bc374b1dc9f4f522f35e090b287b496"
+    },
+    {
+      "board": "teensy",
+      "component": "servo",
+      "file": "teensy__servo.jpg",
+      "bytes": 51895,
+      "sha256": "c2c48870401c285127987d732806f319bca56d24254df5b33e60ba2300429d8b"
+    },
+    {
+      "board": "teensy",
+      "component": "sim900",
+      "file": "teensy__sim900.jpg",
+      "bytes": 52627,
+      "sha256": "47ca40fdf2f5f0fec40568a55a5e4e96675192639debc065ddda8a42c3c27b2f"
+    },
+    {
+      "board": "teensy",
+      "component": "soil-moisture",
+      "file": "teensy__soil-moisture.jpg",
+      "bytes": 45886,
+      "sha256": "2f9ca2258bc179a4aa645a09dd1979207194decd459252270cfb8a5bf8b75ca0"
+    },
+    {
+      "board": "teensy",
+      "component": "solar-panel",
+      "file": "teensy__solar-panel.jpg",
+      "bytes": 37241,
+      "sha256": "c8d7deb7f3b6fe471d6ab143811bdc1a2d39a3a40f93a0517b22a7b10dc47f37"
+    },
+    {
+      "board": "teensy",
+      "component": "stepper",
+      "file": "teensy__stepper.jpg",
+      "bytes": 52389,
+      "sha256": "8cee92256002ad9516cd466cca7a9789a7c8b8755a0975a7655e4cb442413f05"
+    },
+    {
+      "board": "teensy",
+      "component": "tp4056",
+      "file": "teensy__tp4056.jpg",
+      "bytes": 60561,
+      "sha256": "836b97d56dc163942a357d049f5ccdfea055ee4a57755b0c8aff5e14d0772eed"
+    },
+    {
+      "board": "teensy",
+      "component": "ups-module",
+      "file": "teensy__ups-module.jpg",
+      "bytes": 46036,
+      "sha256": "485baf923a7b1de6baf6ddfef9b7faf5e4a7dbf1d6f83ce38d1920ddd6ee2279"
+    },
+    {
+      "board": "teensy",
+      "component": "voltage-sensor",
+      "file": "teensy__voltage-sensor.jpg",
+      "bytes": 50153,
+      "sha256": "3774a3b1800505eb576d50b112a82295b692ca475d8486d3f59f78a1f25460bd"
+    },
+    {
+      "board": "teensy",
+      "component": "water-level",
+      "file": "teensy__water-level.jpg",
+      "bytes": 47329,
+      "sha256": "020d6fd2fb5e120304e76a64ad1c033310a1911b8e3a435a3fa281796065f755"
+    },
+    {
+      "board": "teensy",
+      "component": "water-pump",
+      "file": "teensy__water-pump.jpg",
+      "bytes": 46051,
+      "sha256": "7304a37351ac8212e9a8ac1f134d4c307047d6deaa13aebfd6c27aa1d0f51357"
+    }
+  ],
+  "hardwareAccuracy": "unreviewed",
+  "displayedInProduct": false,
+  "note": "HTTP status, MIME, JPEG signature, byte length and SHA-256 were checked. This does NOT verify component artwork, pin labels, wire endpoints, voltage safety, or electrical correctness."
+}

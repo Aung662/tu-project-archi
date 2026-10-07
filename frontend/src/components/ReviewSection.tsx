@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import type { ReviewSummary } from '@/lib/types';
 import { useAuth } from '@/context/AuthContext';
-import { Spinner, Alert } from '@/components/ui';
+import { Spinner } from '@/components/ui';
 import { formatDate } from '@/lib/format';
 import { tr, t } from '@/lib/i18n';
 
