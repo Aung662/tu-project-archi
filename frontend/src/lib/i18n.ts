@@ -46,15 +46,23 @@ export function tr(label: Label | undefined | null): string {
 }
 
 export const t = {
-  authWelcome: L('ပြန်လည်ကြိုဆိုပါသည်', 'Welcome back'),
   // Brand / chrome
   brandTitle: L('မြန်မာနည်းပညာတက္ကသိုလ် စီမံကိန်းမှတ်တမ်း', 'Project Archive'),
+
+  // Welcome overlay (kept for compatibility with deployments that still include it)
+  welcomeGreeting: L('ကျွန်ုပ်၏ Project Library သို့ ကြိုဆိုပါသည်', 'Welcome To My Project Library'),
+  welcomeGreetingBack: L('ပြန်လည်ကြိုဆိုပါသည်', 'Welcome back'),
+  welcomeBody: L(
+    'စီမံကိန်းဟောင်းများ ရှာဖွေခြင်း၊ သင့်ခေါင်းစဉ် ထပ်တူဖြစ်မဖြစ် စစ်ဆေးခြင်းနှင့် မှတ်တမ်းများကို လေ့လာနိုင်ပါသည်။ အတူတကွ အကောင်းဆုံးကို ရှာဖွေကြရအောင်!',
+    'Search past projects, check your title for duplicates, and explore the archive. Let’s find something great together!',
+  ),
+  welcomeCta: L('စတင်ရန် →', 'Let’s go →'),
 
   brandSubtitle: L('စီမံကိန်းမှတ်တမ်းနှင့် ခေါင်းစဉ်တူ စစ်ဆေးရေး', 'Student project archive & title checker'),
 
   // Nav
   navSearch: L('ရှာဖွေရန်', 'Search'),
-  navBrowse: L('အားလုံးကြည့်ရန်', 'Browse'),
+  navBrowse: L('လှော်လှန်ကြည့်ရန်', 'Browse'),
   navCheck: L('ခေါင်းစဉ်စစ်ဆေးရန်', 'Title Check'),
   navTitles: L('ခေါင်းစဉ်စာရင်း', 'All Titles'),
   navLibrary: L('ကျွန်ုပ်၏စာကြည့်တိုက်', 'My Library'),
@@ -499,8 +507,7 @@ export const t = {
 
   // Auth
   authAdminTitle: L('ဝန်ထမ်း / စီမံခန့်ခွဲသူ ဝင်ရောက်ခြင်း', 'Staff / Admin Access'),
- welcomeGreetingBack: L('ပြန်လည်ကြိုဆိုပါသည်', 'Welcome back'),
-  welcomeGreeting: L('ကြိုဆိုပါသည်', 'Welcome'),
+  authWelcome: L('ပြန်လည်ကြိုဆိုပါသည်', 'Welcome back'),
   authCreate: L('အကောင့်အသစ် ဖွင့်ရန်', 'Create account'),
   authAdminHint: L(
     'သင့်အခွင့်အာဏာရှိအကောင့်ဖြင့် ဝင်ပါ။ ခွင့်ပြုချက်ကို ဤစာမျက်နှာမှမဟုတ်ဘဲ role အလိုက် ပေးသည်။',
