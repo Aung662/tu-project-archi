@@ -53,7 +53,7 @@ export const t = {
 
   // Nav
   navSearch: L('ရှာဖွေရန်', 'Search'),
-  navBrowse: L('လှော်လှန်ကြည့်ရန်', 'Browse'),
+  navBrowse: L('အားလုံးကြည့်ရန်', 'Browse'),
   navCheck: L('ခေါင်းစဉ်စစ်ဆေးရန်', 'Title Check'),
   navTitles: L('ခေါင်းစဉ်စာရင်း', 'All Titles'),
   navLibrary: L('ကျွန်ုပ်၏စာကြည့်တိုက်', 'My Library'),
@@ -498,7 +498,8 @@ export const t = {
 
   // Auth
   authAdminTitle: L('ဝန်ထမ်း / စီမံခန့်ခွဲသူ ဝင်ရောက်ခြင်း', 'Staff / Admin Access'),
-  authWelcome: L('ပြန်လည်ကြိုဆိုပါသည်', 'Welcome back'),
+ welcomeGreetingBack: L('ပြန်လည်ကြိုဆိုပါသည်', 'Welcome back'),
+  welcomeGreeting: L('ကြိုဆိုပါသည်', 'Welcome'),
   authCreate: L('အကောင့်အသစ် ဖွင့်ရန်', 'Create account'),
   authAdminHint: L(
     'သင့်အခွင့်အာဏာရှိအကောင့်ဖြင့် ဝင်ပါ။ ခွင့်ပြုချက်ကို ဤစာမျက်နှာမှမဟုတ်ဘဲ role အလိုက် ပေးသည်။',
