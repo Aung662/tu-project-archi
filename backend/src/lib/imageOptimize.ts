@@ -18,6 +18,8 @@ export interface OptimizedImage {
 
 const MAX_EDGE = { GALLERY: 1600, SPIN: 1024 } as const;
 const QUALITY = { GALLERY: 82, SPIN: 78 } as const;
+// Bound decompression work while still accepting current high-resolution phones.
+const MAX_INPUT_PIXELS = 50_000_000;
 
 export async function optimizeImage(
   input: Buffer,
@@ -27,7 +29,7 @@ export async function optimizeImage(
   const quality = QUALITY[kind];
 
   // `rotate()` with no args auto-applies EXIF orientation, then we strip metadata.
-  const data = await sharp(input)
+  const data = await sharp(input, { limitInputPixels: MAX_INPUT_PIXELS })
     .rotate()
     .resize(maxEdge, maxEdge, { fit: 'inside', withoutEnlargement: true })
     .webp({ quality })

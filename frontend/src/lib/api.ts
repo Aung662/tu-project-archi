@@ -35,7 +35,7 @@ async function fetchWithTimeout(url: string, init: RequestInit, timeoutMs: numbe
   }
 }
 
-async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+async function request<T>(path: string, init: RequestInit = {}, timeoutMsOverride?: number): Promise<T> {
   const options: RequestInit = {
     ...init,
     credentials: 'include',
@@ -52,7 +52,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   // once it's warm — far better UX than one long hang or an instant error.
   const isRetriable = !init.method || init.method.toUpperCase() === 'GET';
   const maxAttempts = isRetriable ? 3 : 1;
-  const perAttemptTimeout = isRetriable ? 8000 : 20000;
+  const perAttemptTimeout = isRetriable ? 8000 : (timeoutMsOverride ?? 20000);
 
   let res: Response | null = null;
   let lastErr: unknown = null;
@@ -116,6 +116,6 @@ export const api = {
   put: <T>(path: string, body?: unknown) =>
     request<T>(path, { method: 'PUT', body: body ? JSON.stringify(body) : undefined }),
   del: <T>(path: string) => request<T>(path, { method: 'DELETE' }),
-  postForm: <T>(path: string, form: FormData) =>
-    request<T>(path, { method: 'POST', body: form }),
+  postForm: <T>(path: string, form: FormData, timeoutMs?: number) =>
+    request<T>(path, { method: 'POST', body: form }, timeoutMs),
 };

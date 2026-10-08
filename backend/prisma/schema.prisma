@@ -281,6 +281,35 @@ model ProjectImage {
   @@index([projectId, kind, sortOrder])
 }
 
+// ── Wiring image library ──────────────────────────────────────────────────────
+// Bulk-uploaded reference images are stored as optimized WebP in the database,
+// staged privately until an administrator approves publication. `searchText` is
+// a normalized, non-displayed index made from the original file hint, board and
+// batch keywords; raw filenames/paths are never returned by public endpoints.
+model WiringImage {
+  id              String   @id @default(cuid())
+  data            Bytes
+  mimeType        String   @default("image/webp")
+  sizeBytes       Int      @default(0)
+  sha256          String   @unique
+  boardId         String   @default("other")
+  tags            String   @default("") // semicolon-separated shared batch keywords
+  searchText      String   @default("") // normalized hidden search index; never displayed
+  uploadBatchId   String
+  status          String   @default("PENDING") // PENDING | APPROVED | REJECTED
+  contentChecked  Boolean  @default(false)
+  rightsConfirmed Boolean  @default(false)
+  reviewNote      String   @default("")
+  uploadedById    String?
+  reviewedById    String?
+  createdAt       DateTime @default(now())
+  reviewedAt      DateTime?
+
+  @@index([status, createdAt])
+  @@index([boardId, status, createdAt])
+  @@index([uploadBatchId])
+}
+
 // ── Public project videos (short demo clips, hosted on Cloudinary) ────────────
 // Unlike images, video bytes are NOT stored in the DB (that would bloat Postgres
 // and is unsuitable for large binaries). Instead the file lives on Cloudinary's

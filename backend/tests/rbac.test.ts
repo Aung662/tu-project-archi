@@ -186,3 +186,13 @@ describe('Super-admin manages department admin bindings', () => {
     if (superCount <= 1) expect(demote.status).toBe(400);
   });
 });
+
+describe('Global wiring image administration', () => {
+  it('restricts the global wiring review queue to super-admins', async () => {
+    const scoped = await ecAdmin.get('/api/images/wiring/admin?status=PENDING');
+    expect(scoped.status).toBe(403);
+
+    const platform = await superAdmin.get('/api/images/wiring/admin?status=PENDING');
+    expect(platform.status).toBe(200);
+  });
+});

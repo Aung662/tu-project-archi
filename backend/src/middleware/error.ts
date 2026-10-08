@@ -43,10 +43,17 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
     });
     return;
   }
-  if (anyErr?.code === 'LIMIT_FILE_COUNT' || anyErr?.code === 'LIMIT_UNEXPECTED_FILE') {
+  if (anyErr?.code === 'LIMIT_FIELD_VALUE') {
+    res.status(413).json({
+      success: false,
+      error: { code: 'FIELD_TOO_LARGE', message: 'An upload field exceeds the size limit' },
+    });
+    return;
+  }
+  if (['LIMIT_FILE_COUNT', 'LIMIT_UNEXPECTED_FILE', 'LIMIT_FIELD_COUNT', 'LIMIT_PART_COUNT'].includes(anyErr?.code ?? '')) {
     res.status(400).json({
       success: false,
-      error: { code: 'UPLOAD_REJECTED', message: 'Unexpected or too many files in upload' },
+      error: { code: 'UPLOAD_REJECTED', message: 'Unexpected or too many files/fields in upload' },
     });
     return;
   }

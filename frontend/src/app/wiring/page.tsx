@@ -12,6 +12,7 @@ import { VerifiedWiringDiagram } from '@/components/VerifiedWiringDiagram';
 import { verifiedWiringFor } from '@/lib/verifiedWiring';
 import { downloadFritzingSvg } from '@/lib/fritzing';
 import { ComponentDetail } from '@/components/ComponentDetail';
+import { WiringImageLibrary } from '@/components/WiringImageLibrary';
 import { WIRE_KIND_LABEL } from '@/lib/wiring';
 import { BOARD_ORDER, getBoardProfile } from '@/lib/boardProfiles';
 import { EmptyState } from '@/components/ui';
@@ -21,22 +22,17 @@ import {
   loadWiringManifest,
   wiringPhotoUrl,
   wiringPhotoCount,
-  loadWiringGallery,
-  wiringGalleryUrl,
   type WiringManifest,
-  type WiringGalleryItem,
 } from '@/lib/wiringPhotos';
 
 /**
- * "Wiring & Pin Connections" hub — every Arduino ↔ component connection in ONE
- * place. For each hardware component that has pinout data we auto-derive a
- * typical Arduino-UNO wiring plan (see lib/wiring.ts) and render BOTH a diagram
- * and a pin-to-pin connection table. Searchable + category-grouped, with a
- * per-card SVG download and a jump into the full component detail modal.
+ * Concise Wiring hub with two user paths: generated/verified connection guides
+ * and a database-backed, searchable reference-image library. The library never
+ * labels user-uploaded images as pin-verified; guide recipes keep their own
+ * source/safety checks and illustrative fallbacks.
  *
- * Boards are intentionally excluded here: a board IS the Arduino, so an
- * "Arduino ↔ board" wiring diagram is meaningless. Everything else with pinout
- * data (sensors, displays/LCD, actuators, comms, power, io, …) appears.
+ * Boards are intentionally excluded from the component guide cards: a board
+ * IS the controller, so an "Arduino ↔ board" wiring diagram is meaningless.
  */
 
 // Precompute the wireable set once (module scope) — the catalogue is static.
@@ -78,7 +74,7 @@ export default function WiringPage() {
   const [boardId, setBoardId] = useState<string>('arduino-uno');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [manifest, setManifest] = useState<WiringManifest | null>(null);
-  const [gallery, setGallery] = useState<WiringGalleryItem[]>([]);
+  const [section, setSection] = useState<'guides' | 'images'>('guides');
 
   const board = getBoardProfile(boardId);
   const photoCount = wiringPhotoCount(manifest, boardId);
@@ -96,7 +92,6 @@ export default function WiringPage() {
   useEffect(() => {
     setLangState(getLang());
     loadWiringManifest().then(setManifest);
-    loadWiringGallery().then(setGallery);
   }, []);
 
   // Keep the selected board valid when the reviewed-image set is non-empty.
@@ -146,6 +141,29 @@ export default function WiringPage() {
         <p className="mt-2 max-w-3xl text-sm text-slate-400">{tr(t.wiringSubtitle)}</p>
       </Reveal>
 
+      <div className="inline-flex rounded-xl border border-white/10 bg-white/[0.03] p-1" role="tablist" aria-label={tr(t.wiringTitle)}>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={section === 'guides'}
+          onClick={() => setSection('guides')}
+          className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${section === 'guides' ? 'bg-brand-500 text-white' : 'text-slate-300 hover:bg-white/10 hover:text-white'}`}
+        >
+          {tr(t.wiringGuidesTab)}
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={section === 'images'}
+          onClick={() => setSection('images')}
+          className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${section === 'images' ? 'bg-brand-500 text-white' : 'text-slate-300 hover:bg-white/10 hover:text-white'}`}
+        >
+          {tr(t.wiringImagesTab)}
+        </button>
+      </div>
+
+      {section === 'images' ? <WiringImageLibrary lang={lang} /> : (
+        <>
       <p className="rounded-xl border border-amber-400/25 bg-amber-400/[0.05] px-4 py-3 text-xs leading-relaxed text-amber-100/85">
         <span className="mr-1.5" aria-hidden="true">⚠</span>
         {lang === 'my'
@@ -298,10 +316,6 @@ export default function WiringPage() {
         </section>
       ))}
 
-      {/* This only renders indexed, approved public references. Quarantined
-          candidates are intentionally not exposed to visitors. */}
-      {gallery.length > 0 && <WiringGallerySection gallery={gallery} lang={lang} />}
-
       <p className="rounded-xl border border-amber-400/20 bg-amber-400/5 px-4 py-3 text-xs leading-relaxed text-amber-200/80">
         {tr(t.wiringNote)}
       </p>
@@ -312,6 +326,8 @@ export default function WiringPage() {
           category={catById[selected.category]}
           onClose={() => setSelectedId(null)}
         />
+      )}
+        </>
       )}
     </div>
   );
@@ -508,88 +524,5 @@ function Chip({
     >
       {children}
     </button>
-  );
-}
-
-/**
- * Optional gallery for separately reviewed, pair-specific image references.
- * Unmatched/duplicate candidates stay outside the public folder and are never
- * fetched here. The current release gate intentionally keeps this gallery empty.
- */
-function WiringGallerySection({
-  gallery,
-  lang,
-}: {
-  gallery: WiringGalleryItem[];
-  lang: Lang;
-}) {
-  const my = lang === 'my';
-
-  // Group by board id, following BOARD_ORDER; unknown-board items land in "other".
-  const byBoard = useMemo(() => {
-    const map = new Map<string, WiringGalleryItem[]>();
-    for (const it of gallery) {
-      const key = it.board ?? 'other';
-      const arr = map.get(key) ?? [];
-      arr.push(it);
-      map.set(key, arr);
-    }
-    const ordered: { board: string; label: string; items: WiringGalleryItem[] }[] = [];
-    for (const id of BOARD_ORDER) {
-      const items = map.get(id);
-      if (items?.length) ordered.push({ board: id, label: getBoardProfile(id).name, items });
-    }
-    const other = map.get('other');
-    if (other?.length) ordered.push({ board: 'other', label: my ? 'အခြား' : 'Other', items: other });
-    return ordered;
-  }, [gallery, my]);
-
-  return (
-    <section className="space-y-5 rounded-2xl border border-white/10 bg-white/[0.02] p-4 sm:p-5">
-      <div className="flex items-center justify-between gap-2">
-        <div>
-          <h2 className="flex items-center gap-2 text-lg font-bold text-slate-100">
-            🖼️ {my ? 'စစ်ဆေးထားသော ကိုးကားပုံများ' : 'Reviewed reference images'}
-          </h2>
-          <p className="mt-0.5 text-xs text-slate-500">
-            {my
-              ? 'board အလိုက် စုစည်းထားသော စစ်ဆေးပြီးသား ကိုးကားပုံများ။'
-              : 'Additional reviewed reference images, grouped by board.'}
-          </p>
-        </div>
-        <span className="shrink-0 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-0.5 text-[11px] text-slate-400">
-          {gallery.length} {my ? 'ပုံ' : 'images'}
-        </span>
-      </div>
-
-      {byBoard.map(({ board, label, items }) => (
-        <div key={board} className="space-y-3">
-          <h3 className="flex items-center gap-2 text-sm font-semibold text-slate-200">
-            <span className="rounded-md border border-white/10 bg-white/[0.03] px-2 py-0.5">{label}</span>
-            <span className="font-latin text-xs font-normal text-slate-500">{items.length}</span>
-          </h3>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {items.map((it) => (
-              <a
-                key={it.file}
-                href={wiringGalleryUrl(it)}
-                target="_blank"
-                rel="noreferrer"
-                className="group relative block overflow-hidden rounded-xl border border-white/10 bg-white transition hover:border-brand-400/40"
-                title={my ? 'အပြည့်ကြည့်ရန် နှိပ်ပါ' : 'Click to view full size'}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={wiringGalleryUrl(it)}
-                  alt={`${label} wiring`}
-                  loading="lazy"
-                  className="aspect-[4/3] h-auto w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-              </a>
-            ))}
-          </div>
-        </div>
-      ))}
-    </section>
   );
 }

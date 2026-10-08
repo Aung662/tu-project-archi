@@ -6,8 +6,8 @@ Only assets that have passed the source/pin review belong under `frontend/public
 
 - `manifest.json` is the **approved image** index consumed by the UI. It is currently `{}` because the available Flow-generated images have not been checked for electrical accuracy.
 - `verified/` contains self-contained, source-backed Fritzing-style SVG diagrams generated from `src/data/verifiedWiring.json` and the pinned source parts. The build checks every board/module connector ID and places each wire at that connector's coordinates.
-- `gallery.json` is currently `[]`; no extra candidate image gallery is published.
-- The UI must not label an image as “real” or “verified” simply because its URL returns 200.
+- `gallery.json` is currently `[]`; no extra *static* candidate image gallery is published. The user-facing searchable library is separate and database-backed (`WiringImage`), served by `/api/images/wiring`; newly uploaded items stay private until super-admin review.
+- The UI must not label an image as “real” or “verified” simply because its URL returns 200. Database library entries are labelled reference-only.
 
 ## Candidate images are deliberately not public
 

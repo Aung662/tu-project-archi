@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
+import { readFileSync } from 'node:fs';
 import { createApp } from '../src/app.js';
+import { prisma } from '../src/lib/prisma.js';
 
 /**
  * Integration tests against the real app + seeded SQLite DB.
@@ -503,5 +505,116 @@ describe('Discovery — similar projects & autocomplete', () => {
     const res = await request(app).get('/api/projects/autocomplete?q=a');
     expect(res.status).toBe(200);
     expect(res.body.data).toEqual([]);
+  });
+});
+
+describe('Wiring image bulk library', () => {
+  const batchId = 'cd9a1a1d-5100-4b92-9a1a-675404dc1a05';
+  const searchToken = 'wiringbulkuniquetest';
+  const admin = request.agent(app);
+  const student = request.agent(app);
+  let imageId = '';
+  const jpeg = readFileSync(new URL('../prisma/seed-assets/gallery/agri-1.jpg', import.meta.url));
+
+  beforeAll(async () => {
+    await prisma.wiringImage.deleteMany({ where: { uploadBatchId: batchId } });
+    await admin.post('/api/auth/login').send({ email: 'admin@tu-archive.mm', password: process.env.SEED_ADMIN_PASSWORD || 'ChangeMe_Admin#2026' });
+    await student.post('/api/auth/login').send({ email: 'student@tu-archive.mm', password: 'Student#2026' });
+  });
+
+  afterAll(async () => {
+    await prisma.wiringImage.deleteMany({ where: { uploadBatchId: batchId } });
+  });
+
+  it('lets only a platform admin upload a bounded image batch', async () => {
+    const blocked = await student
+      .post('/api/images/wiring/bulk')
+      .field('batchId', batchId)
+      .attach('images', jpeg, { filename: 'wiring.jpg', contentType: 'image/jpeg' });
+    expect(blocked.status).toBe(403);
+
+    const uploaded = await admin
+      .post('/api/images/wiring/bulk')
+      .field('batchId', batchId)
+      .field('boardId', 'arduino-uno')
+      .field('boardName', 'Arduino Uno')
+      .field('tags', `sensor, ${searchToken}`)
+      .field('searchHints', 'arduino-uno/HC-SR04_wiring.jpg')
+      .attach('images', jpeg, { filename: 'source.jpg', contentType: 'image/jpeg' });
+
+    expect(uploaded.status).toBe(201);
+    expect(uploaded.body.data).toMatchObject({ received: 1, uploaded: 1, duplicates: 0 });
+
+    const repeated = await admin
+      .post('/api/images/wiring/bulk')
+      .field('batchId', batchId)
+      .field('boardId', 'arduino-uno')
+      .field('boardName', 'Arduino Uno')
+      .field('tags', searchToken)
+      .field('searchHints', 'repeat.jpg')
+      .attach('images', jpeg, { filename: 'repeat.jpg', contentType: 'image/jpeg' });
+    expect(repeated.status).toBe(201);
+    expect(repeated.body.data).toMatchObject({ received: 1, uploaded: 0, duplicates: 1 });
+  });
+
+  it('keeps new images private until reviewed and protects admin previews', async () => {
+    const publicPending = await request(app).get(`/api/images/wiring?q=${searchToken}`);
+    expect(publicPending.status).toBe(200);
+    expect(publicPending.body.data.items).toEqual([]);
+
+    const denied = await student.get('/api/images/wiring/admin?status=PENDING');
+    expect(denied.status).toBe(403);
+
+    const queue = await admin.get(`/api/images/wiring/admin?status=PENDING&q=${searchToken}`);
+    expect(queue.status).toBe(200);
+    expect(queue.body.data.total).toBe(1);
+    const image = queue.body.data.items[0];
+    imageId = image.id;
+    expect(image.previewUrl).toContain('/api/images/wiring/admin/');
+    expect(image).not.toHaveProperty('searchText');
+    expect(image).not.toHaveProperty('sha256');
+    expect(image).not.toHaveProperty('originalName');
+
+    const preview = await admin.get(image.previewUrl);
+    expect(preview.status).toBe(200);
+    expect(preview.headers['content-type']).toContain('image/webp');
+
+    const badReview = await admin.post('/api/images/wiring/review-batch').send({
+      ids: [imageId], decision: 'APPROVED', contentChecked: true, rightsConfirmed: false,
+      reviewNote: 'I checked the picture',
+    });
+    expect(badReview.status).toBe(400);
+  });
+
+  it('publishes only after both review checks and supports public search', async () => {
+    const reviewed = await admin.post('/api/images/wiring/review-batch').send({
+      ids: [imageId],
+      decision: 'APPROVED',
+      contentChecked: true,
+      rightsConfirmed: true,
+      reviewNote: 'Original project reference; rights confirmed.',
+    });
+    expect(reviewed.status).toBe(200);
+    expect(reviewed.body.data).toMatchObject({ reviewed: 1, decision: 'APPROVED' });
+
+    const found = await request(app).get(`/api/images/wiring?q=${searchToken}&boardId=arduino-uno`);
+    expect(found.status).toBe(200);
+    expect(found.body.data.total).toBe(1);
+    const publicImage = found.body.data.items[0];
+    expect(publicImage.title).toBe('Wiring');
+    expect(publicImage.referenceOnly).toBe(true);
+    expect(publicImage).not.toHaveProperty('searchText');
+    expect(publicImage).not.toHaveProperty('sha256');
+
+    const byFilenameWords = await request(app).get('/api/images/wiring?q=HC-SR04');
+    expect(byFilenameWords.status).toBe(200);
+    expect(byFilenameWords.body.data.total).toBe(1);
+    const byCommonTitle = await request(app).get('/api/images/wiring?q=Wiring');
+    expect(byCommonTitle.body.data.total).toBe(1);
+
+    const bytes = await request(app).get(publicImage.url);
+    expect(bytes.status).toBe(200);
+    expect(bytes.headers['content-type']).toContain('image/webp');
+    expect(bytes.body.length).toBeGreaterThan(100);
   });
 });

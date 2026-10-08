@@ -1,5 +1,7 @@
 # Google Flow wiring-image candidates: safe review workflow
 
+> For a normal owner-uploaded photo folder, use the super-admin bulk library at `/admin/wiring`; see `docs/WIRING-BULK-IMAGE-IMPORT.md`. Those uploads are database-backed and are kept pending until reviewed. The static generated-candidate workflow below remains separate and is stricter: exact board/component, pinout, safety, rights and sources must be checked before promotion.
+
 > **Important:** the organizer does not publish images. Google Flow output can have wrong boards, invented labels, missing power/ground, and unsafe wiring. Treat every render as an unverified candidate until a human checks its exact hardware and connections. One sampled Uno/LDR candidate has already been rejected; the rest remain pending.
 
 ## Current state

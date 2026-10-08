@@ -12,6 +12,7 @@ import { tr, t } from '@/lib/i18n';
 const TABS = [
   { href: '/admin', label: t.tabOverview, super: false },
   { href: '/admin/projects', label: t.tabProjects, super: false },
+  { href: '/admin/wiring', label: t.tabWiringImages, super: true },
   { href: '/admin/schools', label: t.tabSchools, super: true },
   { href: '/admin/payments', label: t.tabPayments, super: false },
   { href: '/admin/kits', label: t.tabKits, super: true },

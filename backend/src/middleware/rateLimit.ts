@@ -34,6 +34,19 @@ export const uploadLimiter = rateLimit({
 });
 
 /**
+ * Folder imports are split into eight-image chunks by the admin UI. A separate,
+ * still conservative limit permits a few hundred images per maintenance session
+ * without raising the stricter limits for paid files or student uploads.
+ */
+export const wiringUploadLimiter = rateLimit({
+  windowMs: env.RATE_LIMIT_WINDOW_MS,
+  max: 150,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: json,
+});
+
+/**
  * Search/duplicate-check limiter — similarity scanning is comparatively heavy
  * and the endpoint is public, so throttle scraping without hurting real users.
  */

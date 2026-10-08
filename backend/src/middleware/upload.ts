@@ -65,6 +65,22 @@ export const projectImageUpload = multer({
   },
 });
 
+// ── Wiring library bulk uploads ──────────────────────────────────────────────
+// Administrators may upload a directory in small multipart batches. Each
+// request is intentionally capped at eight images (8 MB each) to bound memory;
+// the browser sends larger selections sequentially and the API deduplicates by
+// SHA-256 so interrupted uploads can be safely retried.
+export const wiringImageUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 8 * 1024 * 1024, files: 8, fields: 32, fieldSize: 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (!IMAGE_MIME.includes(file.mimetype)) {
+      return cb(BadRequest(`Unsupported image type ${file.mimetype} (use JPEG, PNG or WebP)`));
+    }
+    cb(null, true);
+  },
+});
+
 // ── Short project videos (uploaded to Cloudinary, not the DB) ─────────────────
 // Kept in memory so we can stream the buffer straight to Cloudinary. Size is
 // capped by env (VIDEO_MAX_BYTES). Only common web-playable containers allowed.

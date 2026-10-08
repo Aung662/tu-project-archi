@@ -12,6 +12,7 @@ import { optimizeImage } from '../../lib/imageOptimize.js';
 import { audit } from '../../lib/audit.js';
 import { cloudinaryConfigured } from '../../config/env.js';
 import { uploadVideo, deleteVideo } from '../../lib/cloudinary.js';
+import { wiringImagesRouter } from './wiring.routes.js';
 
 /**
  * Project images: public gallery photos + ordered 360° turntable frames.
@@ -23,6 +24,10 @@ import { uploadVideo, deleteVideo } from '../../lib/cloudinary.js';
 export const imagesRouter = Router();
 
 const ImageKind = z.enum(['GALLERY', 'SPIN']);
+
+// The searchable Wiring library lives in the same image API namespace, but has
+// its own admin-only bulk upload and moderation lifecycle.
+imagesRouter.use('/wiring', wiringImagesRouter);
 
 /**
  * GET /api/images/project/:projectId
