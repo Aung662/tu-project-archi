@@ -46,6 +46,7 @@ export function tr(label: Label | undefined | null): string {
 }
 
 export const t = {
+  authWelcome: L('ပြန်လည်ကြိုဆိုပါသည်', 'Welcome back'),
   // Brand / chrome
   brandTitle: L('မြန်မာနည်းပညာတက္ကသိုလ် စီမံကိန်းမှတ်တမ်း', 'Project Archive'),
 
