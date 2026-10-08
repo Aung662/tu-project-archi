@@ -12,7 +12,7 @@ export function Footer() {
           <img src="/logo.png" alt="Technological University Taunggyi" className="h-8 w-auto" />
           <p>© {new Date().getFullYear()} {tr(t.footerRights)}</p>
         </div>
-        <div className="flex items-center gap-4 text-xs">
+        <div className="flex w-full max-w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs sm:w-auto sm:justify-end">
           <Link href="/new" className="font-medium text-slate-300 transition hover:text-white">
             {tr(t.navNew)}
           </Link>

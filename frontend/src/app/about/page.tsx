@@ -99,10 +99,10 @@ export default function AboutPage() {
                       loading="lazy"
                       className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
                     />
-                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ink-900/90 to-transparent" />
+                    <div className="photo-gradient pointer-events-none absolute inset-x-0 bottom-0 h-24" />
                     <div className="absolute bottom-3 left-4 right-4">
-                      <h3 className="text-lg font-bold text-white drop-shadow">{f.name}</h3>
-                      <p className="text-xs font-semibold text-brand-200">{f.role.en}</p>
+                      <h3 className="media-overlay-text text-lg font-bold">{f.name}</h3>
+                      <p className="media-overlay-accent text-xs font-semibold">{f.role.en}</p>
                     </div>
                   </div>
 

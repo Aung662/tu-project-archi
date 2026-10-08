@@ -9,7 +9,8 @@ import type { PublicStats, SearchResult } from '@/lib/types';
 import { SimilarityMeter, Alert, SkeletonList, EmptyState, LevelBadge } from '@/components/ui';
 import { formatMMK } from '@/lib/format';
 import { tr, t } from '@/lib/i18n';
-import { Reveal, StaggerGrid, StaggerItem, TiltCard, Magnetic } from '@/components/motion';
+import { Icon } from '@/components/Icon';
+import { Reveal, StaggerGrid, StaggerItem, TiltCard } from '@/components/motion';
 import { RecentlyViewed } from '@/components/RecentlyViewed';
 import { TrendingProjects } from '@/components/TrendingProjects';
 import { NewArrivals } from '@/components/NewArrivals';
@@ -139,22 +140,13 @@ export default function HomePage() {
   return (
     <div className="space-y-16">
       {/* ── Hero ─────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden rounded-3xl border border-white/10 px-6 py-16 text-center sm:px-12 sm:py-20">
-        {/* hero inner glow */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 -z-10"
-          style={{
-            background:
-              'radial-gradient(600px 300px at 50% 0%, rgba(109,139,255,0.25), transparent 60%), radial-gradient(500px 260px at 80% 100%, rgba(165,107,255,0.2), transparent 60%)',
-          }}
-        />
+      <section className="home-hero relative overflow-hidden rounded-3xl border border-white/10 px-6 py-12 text-center sm:px-12 sm:py-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          <span className="eyebrow font-latin animate-shine">✦ Project Title Similarity</span>
+          <span className="eyebrow font-latin">✦ {tr(t.homeEyebrow)}</span>
           <h1 className="mx-auto mt-5 max-w-3xl text-4xl font-extrabold leading-tight tracking-tight sm:text-6xl">
             <span className="text-gradient-animated">{tr(t.heroTitle)}</span>
           </h1>
@@ -171,8 +163,8 @@ export default function HomePage() {
           className="mx-auto mt-8 flex max-w-2xl flex-col gap-3 sm:flex-row"
         >
           <div className="relative flex-1" ref={boxRef}>
-            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-lg">
-              🔍
+            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2" aria-hidden="true">
+              <Icon name="search" className="h-5 w-5 text-slate-400" />
             </span>
             <input
               value={q}
@@ -207,9 +199,7 @@ export default function HomePage() {
                           i === activeIdx ? 'bg-brand-500/25 text-white' : 'text-slate-200 hover:bg-white/5'
                         }`}
                       >
-                        <span className="text-slate-400" aria-hidden>
-                          🔎
-                        </span>
+                        <Icon name="search" className="h-4 w-4 shrink-0 text-slate-400" />
                         <span className="flex-1 truncate">{s.title}</span>
                         <span className="shrink-0 text-xs text-slate-400">
                           {s.deptCode} · {s.year}
@@ -221,7 +211,7 @@ export default function HomePage() {
               )}
             </AnimatePresence>
           </div>
-          <button type="submit" className="btn-primary px-8 py-3.5 text-base animate-shine">
+          <button type="submit" className="btn-primary px-8 py-3.5 text-base">
             {tr(t.searchBtn)}
           </button>
         </motion.form>
@@ -229,23 +219,19 @@ export default function HomePage() {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.3 }}
-          className="mt-8 flex flex-col items-stretch justify-center gap-4 sm:flex-row sm:items-center"
+          transition={{ duration: 0.45, delay: 0.2 }}
+          className="mt-7 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center"
         >
-          <Magnetic>
-            <Link href="/browse" className="cta3d cta3d-blue sheen group">
-              <span className="cta3d-icon" aria-hidden>🗂️</span>
-              <span className="cta3d-label">{tr(t.projectLibraryCta)}</span>
-              <span className="cta3d-arrow transition-transform group-hover:translate-x-1">→</span>
-            </Link>
-          </Magnetic>
-          <Magnetic>
-            <Link href="/check" className="cta3d cta3d-plum sheen group">
-              <span className="cta3d-icon" aria-hidden>🛡️</span>
-              <span className="cta3d-label">{tr(t.searchSameTitlesCta)}</span>
-              <span className="cta3d-arrow transition-transform group-hover:translate-x-1">→</span>
-            </Link>
-          </Magnetic>
+          <Link href="/browse" className="btn-primary home-action gap-2.5 px-5 sm:min-w-56">
+            <Icon name="browse" className="h-4 w-4" />
+            <span>{tr(t.browseCta)}</span>
+            <span aria-hidden="true">→</span>
+          </Link>
+          <Link href="/check" className="btn-secondary home-action gap-2.5 px-5 sm:min-w-56">
+            <Icon name="check" className="h-4 w-4" />
+            <span>{tr(t.checkCta)}</span>
+            <span aria-hidden="true">→</span>
+          </Link>
         </motion.div>
 
         {/* Recent searches — auto-captured, one tap to re-run. */}
@@ -262,10 +248,11 @@ export default function HomePage() {
                 key={r}
                 type="button"
                 onClick={() => runSearch(undefined, r)}
-                className="max-w-[220px] truncate rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs text-slate-300 transition hover:border-brand-400/40 hover:bg-white/10 hover:text-white"
+                className="inline-flex max-w-[220px] items-center gap-1.5 truncate rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs text-slate-300 transition hover:border-brand-400/40 hover:bg-white/10 hover:text-white"
                 title={r}
               >
-                🔎 {r}
+                <Icon name="search" className="h-3.5 w-3.5 shrink-0" />
+                <span className="truncate">{r}</span>
               </button>
             ))}
             <button
@@ -364,7 +351,7 @@ export default function HomePage() {
             <Feature
               title={tr(t.featSearchTitle)}
               desc={tr(t.featSearchDesc)}
-              icon="🔎"
+              icon={<Icon name="search" className="h-6 w-6 text-brand-300" />}
               tint="from-brand-500/20 to-brand-500/0"
               details={[
                 'Type any proposed title and see the closest existing projects ranked instantly.',
@@ -377,8 +364,8 @@ export default function HomePage() {
             <Feature
               title={tr(t.featRankTitle)}
               desc={tr(t.featRankDesc)}
-              icon="📊"
-              tint="from-plum-500/20 to-plum-500/0"
+              icon={<Icon name="trending" className="h-6 w-6 text-brand-300" />}
+              tint="from-brand-500/20 to-brand-500/0"
               details={[
                 'Combines three signals: trigram overlap (55%), shared tokens (30%) and edit distance (15%).',
                 'Scores from 0–100%. A match of 85%+ is flagged as a likely duplicate.',
@@ -389,7 +376,7 @@ export default function HomePage() {
             <Feature
               title={tr(t.featBuyTitle)}
               desc={tr(t.featBuyDesc)}
-              icon="📄"
+              icon={<Icon name="file" className="h-6 w-6 text-accent-text" />}
               tint="from-mint-500/20 to-mint-500/0"
               details={[
                 'Preview every project free; the full file is paid and protected.',
@@ -438,7 +425,7 @@ function Feature({
 }: {
   title: string;
   desc: string;
-  icon: string;
+  icon: React.ReactNode;
   tint: string;
   details: string[];
   cta: { label: string; href: string };

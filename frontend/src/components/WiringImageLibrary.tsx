@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Alert, Spinner } from '@/components/ui';
 import { api } from '@/lib/api';
 import { BOARD_ORDER, getBoardProfile } from '@/lib/boardProfiles';
-import type { Lang } from '@/lib/i18n';
+import { tr, t, type Lang } from '@/lib/i18n';
 
 interface WiringImageItem {
   id: string;
@@ -43,6 +43,7 @@ export function WiringImageLibrary({ lang }: { lang: Lang }) {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const hasActiveFilters = Boolean(boardId || query.trim());
   const filterKey = `${boardId}\u0000${query.trim()}`;
   const filterKeyRef = useRef(filterKey);
   filterKeyRef.current = filterKey;
@@ -114,7 +115,9 @@ export function WiringImageLibrary({ lang }: { lang: Lang }) {
           <span className="sr-only">{my ? 'ပုံ ရှာရန်' : 'Search images'}</span>
           <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">🔎</span>
           <input
+            type="search"
             value={query}
+            autoComplete="off"
             onChange={(event) => setQuery(event.target.value)}
             placeholder={my ? 'ဘုတ်၊ module သို့မဟုတ် keyword ဖြင့် ရှာရန်…' : 'Search board, module or keyword…'}
             className="w-full rounded-xl border border-white/10 bg-white/[0.03] py-3 pl-11 pr-4 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-brand-400/50 focus:bg-white/[0.05]"
@@ -147,11 +150,22 @@ export function WiringImageLibrary({ lang }: { lang: Lang }) {
       {loading ? (
         <Spinner label={my ? 'ပုံများ ဖွင့်နေသည်…' : 'Loading images…'} />
       ) : items.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-white/15 px-5 py-12 text-center">
-          <p className="text-sm font-medium text-slate-300">{my ? 'ကိုက်ညီသော Wiring ပုံ မတွေ့ပါ' : 'No matching wiring images'}</p>
-          <p className="mt-1 text-xs text-slate-500">
-            {my ? 'စကားလုံးတစ်မျိုးဖြင့် ရှာပါ၊ သို့မဟုတ် စစ်ထုတ်မှုကို ပြောင်းပါ။' : 'Try another search term or clear the board filter.'}
+        <div role="status" aria-live="polite" className="rounded-2xl border border-dashed border-white/15 bg-white/[0.015] px-5 py-12 text-center">
+          <span className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-2xl border border-white/10 bg-white/[0.04] text-slate-400">
+            <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+              <circle cx="10.8" cy="10.8" r="6.8" />
+              <path strokeLinecap="round" d="m16 16 4.2 4.2M8.2 10.8h5.2m-2.6-2.6v5.2" />
+            </svg>
+          </span>
+          <p className="text-sm font-semibold text-slate-200">{tr(hasActiveFilters ? t.wiringImageEmpty : t.wiringImageAwaiting)}</p>
+          <p className="mx-auto mt-1 max-w-lg text-xs leading-relaxed text-slate-500">
+            {tr(hasActiveFilters ? t.wiringImageEmptyHint : t.wiringImageAwaitingHint)}
           </p>
+          {hasActiveFilters && (
+            <button type="button" onClick={() => { setQuery(''); setBoardId(''); }} className="btn-secondary mt-4 px-3 py-2 text-xs">
+              {tr(t.wiringClearFilters)}
+            </button>
+          )}
         </div>
       ) : (
         <>

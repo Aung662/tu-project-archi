@@ -58,7 +58,7 @@ export function CompareBar() {
           </button>
           <Link
             href="/compare"
-            className="rounded-lg bg-gradient-to-r from-brand-500 to-brand-400 px-3 py-1.5 text-xs font-semibold text-white shadow-glow transition hover:brightness-110"
+            className="rounded-lg bg-gradient-to-r from-brand-500 to-brand-600 px-3 py-1.5 text-xs font-semibold text-white shadow-glow transition hover:brightness-110"
           >
             {tr(t.compareBarLabel)} →
           </Link>

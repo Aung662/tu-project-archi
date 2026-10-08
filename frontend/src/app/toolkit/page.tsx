@@ -194,7 +194,7 @@ function Chip({
       aria-pressed={active}
       className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition ${
         active
-          ? 'border-transparent bg-gradient-to-r from-brand-500 to-brand-400 text-white shadow-glow'
+          ? 'border-transparent bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-glow'
           : 'border-white/10 bg-white/[0.03] text-slate-300 hover:bg-white/10 hover:text-white'
       }`}
     >

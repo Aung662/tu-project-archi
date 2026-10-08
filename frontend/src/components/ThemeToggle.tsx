@@ -1,6 +1,7 @@
 'use client';
 
 import { useTheme } from '@/context/ThemeContext';
+import { Icon } from '@/components/Icon';
 
 /** Small sun/moon button that switches between dark and light themes. */
 export function ThemeToggle({ className = '' }: { className?: string }) {
@@ -11,10 +12,11 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
       type="button"
       onClick={toggle}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+      aria-pressed={isDark}
       title={isDark ? 'Light mode' : 'Dark mode'}
-      className={`grid h-9 w-9 place-items-center rounded-xl border border-white/10 bg-white/5 text-lg transition hover:bg-white/10 ${className}`}
+      className={`theme-toggle grid h-11 w-11 place-items-center rounded-xl text-lg transition ${className}`}
     >
-      {isDark ? '☀️' : '🌙'}
+      <Icon name={isDark ? 'sun' : 'moon'} className="h-5 w-5" />
     </button>
   );
 }

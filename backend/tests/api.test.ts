@@ -543,7 +543,9 @@ describe('Wiring image bulk library', () => {
       .attach('images', jpeg, { filename: 'source.jpg', contentType: 'image/jpeg' });
 
     expect(uploaded.status).toBe(201);
-    expect(uploaded.body.data).toMatchObject({ received: 1, uploaded: 1, duplicates: 0 });
+    expect(uploaded.body.data).toMatchObject({ received: 1, uploaded: 1, duplicates: 0, sourceBytes: jpeg.length });
+    expect(uploaded.body.data.storedBytes).toBeGreaterThan(0);
+    expect(uploaded.body.data.storedBytes).toBeLessThan(jpeg.length);
 
     const repeated = await admin
       .post('/api/images/wiring/bulk')
@@ -554,7 +556,7 @@ describe('Wiring image bulk library', () => {
       .field('searchHints', 'repeat.jpg')
       .attach('images', jpeg, { filename: 'repeat.jpg', contentType: 'image/jpeg' });
     expect(repeated.status).toBe(201);
-    expect(repeated.body.data).toMatchObject({ received: 1, uploaded: 0, duplicates: 1 });
+    expect(repeated.body.data).toMatchObject({ received: 1, uploaded: 0, duplicates: 1, sourceBytes: 0, storedBytes: 0 });
   });
 
   it('keeps new images private until reviewed and protects admin previews', async () => {

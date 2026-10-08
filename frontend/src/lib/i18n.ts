@@ -49,15 +49,7 @@ export const t = {
   // Brand / chrome
   brandTitle: L('မြန်မာနည်းပညာတက္ကသိုလ် စီမံကိန်းမှတ်တမ်း', 'Project Archive'),
 
-  // Welcome overlay
-  welcomeGreeting: L('ကျွန်ုပ်၏ Project Library သို့ ကြိုဆိုပါသည်', 'Welcome To My Project Library'),
-  welcomeGreetingBack: L('ပြန်လည်ကြိုဆိုပါသည်', 'Welcome back'),
-  welcomeBody: L(
-    'စီမံကိန်းဟောင်းများ ရှာဖွေခြင်း၊ သင့်ခေါင်းစဉ် ထပ်တူဖြစ်မဖြစ် စစ်ဆေးခြင်းနှင့် မှတ်တမ်းများကို လေ့လာနိုင်ပါသည်။ အတူတကွ အကောင်းဆုံးကို ရှာဖွေကြရအောင်!',
-    'Search past projects, check your title for duplicates, and explore the archive. Let’s find something great together!',
-  ),
-  welcomeCta: L('စတင်ရန် →', 'Let’s go →'),
-  brandSubtitle: L('ခေါင်းစဉ်တူ စစ်ဆေးရေးစနစ်', '& Title Similarity Checker'),
+  brandSubtitle: L('စီမံကိန်းမှတ်တမ်းနှင့် ခေါင်းစဉ်တူ စစ်ဆေးရေး', 'Student project archive & title checker'),
 
   // Nav
   navSearch: L('ရှာဖွေရန်', 'Search'),
@@ -72,6 +64,12 @@ export const t = {
   navContact: L('ဆက်သွယ်ရန်', 'Contact'),
   navAbout: L('ဤဝဘ်ဆိုက်အကြောင်း', 'About this website'),
   navStats: L('စာရင်းအင်း', 'Statistics'),
+  navMore: L('အခြား', 'More'),
+  navExplore: L('ရှာဖွေကြည့်ရန်', 'Explore'),
+  navWorkspace: L('ကိုယ်ပိုင်နေရာ', 'My workspace'),
+  navMainNavigation: L('အဓိက လမ်းညွှန်', 'Main navigation'),
+  navOpenMenu: L('မီနူးဖွင့်ရန်', 'Open menu'),
+  navCloseMenu: L('မီနူးပိတ်ရန်', 'Close menu'),
   navTopics: L('ခေါင်းစဉ်များ', 'Topics'),
   navNew: L('အသစ်များ', 'New'),
   navToolkit: L('ကွန်ပိုနင့်များ', 'Components'),
@@ -167,6 +165,9 @@ export const t = {
   wiringImageCount: L('ပုံ', 'images'),
   wiringImageEmpty: L('ကိုက်ညီသော Wiring ပုံ မတွေ့ပါ', 'No matching wiring images'),
   wiringImageEmptyHint: L('စကားလုံးတစ်မျိုးဖြင့် ရှာပါ၊ သို့မဟုတ် စစ်ထုတ်မှုကို ပြောင်းပါ။', 'Try another search term or clear the board filter.'),
+  wiringImageAwaiting: L('အတည်ပြုပြီးထုတ်ဝေထားသော Wiring ပုံ မရှိသေးပါ', 'No approved Wiring images yet'),
+  wiringImageAwaitingHint: L('ပုံအသစ်များကို စီမံခန့်ခွဲသူက စစ်ဆေးအတည်ပြုပြီးနောက် ဤနေရာတွင် မြင်ရပါမည်။', 'New images appear here after an administrator reviews and approves them.'),
+  wiringClearFilters: L('စစ်ထုတ်မှု ရှင်းရန်', 'Clear filters'),
   wiringLoadMore: L('နောက်ထပ်ပုံများ', 'Load more'),
   wiringCount: L('ချိတ်ဆက်ပုံ', 'diagrams'),
   wiringEmpty: L('ကိုက်ညီသော ချိတ်ဆက်ပုံ မတွေ့ပါ', 'No matching wiring diagrams'),
@@ -339,6 +340,7 @@ export const t = {
   ),
 
   // Home / hero
+  homeEyebrow: L('ကျောင်းသားစီမံကိန်းမှတ်တမ်း', 'Student project archive'),
   heroTitle: L(
     'သင့်စီမံကိန်းခေါင်းစဉ် ရှိပြီးသားလားဆိုတာ ရှာဖွေပါ',
     'Find out if your project title already exists',
@@ -583,7 +585,14 @@ export const t = {
   wiringAdminSubtitle: L('Folder တစ်ခုလုံး သို့မဟုတ် ပုံအများအပြားကို တစ်ခါတည်းတင်ပါ။ အမည်ပြောင်းရန်မလိုပါ — ပုံအားလုံးကို “Wiring” ခေါင်းစဉ်အောက် စုစည်းမည်။ မူရင်းဖိုင်အမည်များကို ရှာဖွေရန်အတွက်သာ လျှို့ဝှက်အသုံးပြုပြီး၊ စစ်ဆေးအတည်ပြုပြီးမှသာ အများမြင်နိုင်မည်။', 'Upload a whole folder or many images at once. No renaming needed — everything is grouped under “Wiring”. Original filename words are used only as hidden search hints; images remain private until reviewed.'),
   wiringChooseFolder: L('Folder ရွေးရန်', 'Choose folder'),
   wiringChooseFiles: L('ပုံများ ရွေးရန်', 'Choose images'),
-  wiringUploadHint: L('JPEG, PNG, WebP · ပုံတစ်ပုံလျှင် 8 MB အထိ · တစ်ကြိမ် 1,000 ပုံ သို့မဟုတ် စုစုပေါင်း 512 MB အထိ။ ပုံများကို အပိုင်းလိုက်တင်ပြီး WebP အဖြစ် အလိုအလျောက်ချုံ့မည်။', 'JPEG, PNG, WebP · up to 8 MB each · up to 1,000 images or 512 MB total per selection. Uploads run in small chunks and are optimized to WebP.'),
+  wiringUploadHint: L('JPEG, PNG, WebP · ပုံတစ်ပုံလျှင် 8 MB အထိ · တစ်ကြိမ်လျှင် ပုံ 1,000 သို့မဟုတ် စုစုပေါင်း 512 MB အထိ ရွေးနိုင်သည်။', 'JPEG, PNG, WebP · up to 8 MB each · select up to 1,000 images or 512 MB per batch.'),
+  wiringCompressionTitle: L('သိုလှောင်ရန် အလိုအလျောက်ချုံ့ခြင်း', 'Automatic image compression'),
+  wiringCompressionHint: L('တင်သည့်အခါ ပုံကို အရှည်ဆုံးဘက် ၁၆၀၀ px အထိ ချုံ့ပြီး WebP အဖြစ် ပြောင်းသိမ်းသည်။ မူရင်းဖိုင်ကို မသိမ်းပါ။ အောက်ပါအရွယ်အစားမှာ ချုံ့ပြီးသား ပုံဒေတာကို ပြထားသည်။', 'Images are resized to a maximum 1,600 px long edge and re-encoded as WebP on upload. Originals are not retained; the size shown below is the optimized image data.'),
+  wiringSourceSize: L('မူရင်းအရွယ်', 'Source size'),
+  wiringOptimizedSize: L('ချုံ့ပြီးသိမ်းသောအရွယ်', 'Optimized size'),
+  wiringSpaceSaved: L('သိုလှောင်မှု လျှော့ချ', 'storage saved'),
+  wiringNoSpaceSaved: L('ချုံ့ပြီးသိမ်းထားသည်', 'optimized and stored'),
+  wiringStorageUsage: L('သိမ်းထားသော ပုံဒေတာ', 'Stored image data'),
   wiringCommonTitle: L('ခေါင်းစဉ်', 'Shared heading'),
   wiringBoardForBatch: L('ဤအစုအတွက် ဘုတ်', 'Board for this batch'),
   wiringTagsForBatch: L('ရှာဖွေရန် စကားလုံးများ (ရွေးချယ်နိုင်)', 'Search keywords (optional)'),

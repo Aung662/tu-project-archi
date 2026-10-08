@@ -10,7 +10,6 @@ import { PageViewTracker } from '@/components/PageViewTracker';
 import { BookmarksProvider } from '@/context/BookmarksContext';
 import { ThemeProvider, themeInitScript } from '@/context/ThemeContext';
 import { LanguageProvider } from '@/context/LanguageContext';
-import { WelcomeOverlay } from '@/components/WelcomeOverlay';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { CompareBar } from '@/components/CompareBar';
 import { ScrollProgress } from '@/components/motion';
@@ -56,7 +55,9 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#0b1220',
+  // Matches the initial dark fallback; themeInitScript updates browser chrome
+  // to the saved or operating-system theme before the first paint.
+  themeColor: '#081120',
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
@@ -66,19 +67,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${jakarta.variable} ${myanmar.variable}`}>
       <head>
-        {/* Apply the saved theme before first paint to avoid a flash of the
-            wrong theme (FOUC). */}
+        {/* Apply the saved or operating-system theme before first paint. */}
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <AdSenseScript />
       </head>
       <body>
-        {/* Ambient animated background — sits behind everything */}
-        <div className="app-aurora" aria-hidden="true">
-          <span className="aurora-blob aurora-1" />
-          <span className="aurora-blob aurora-2" />
-          <span className="aurora-blob aurora-3" />
-          <div className="aurora-grid" />
-        </div>
+        {/* Subtle ambient wash sits behind content without competing with it. */}
+        <div className="app-aurora" aria-hidden="true" />
 
         <ThemeProvider>
         <LanguageProvider>
@@ -90,7 +85,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">{children}</main>
               <Footer />
             </div>
-            <WelcomeOverlay />
             <CompareBar />
             <AiChat />
             <ScrollToTop />

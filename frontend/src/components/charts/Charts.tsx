@@ -3,7 +3,7 @@
 /**
  * Dependency-free inline-SVG charts. Kept intentionally small so they render
  * everywhere (including the sandboxed in-app preview, which blocks external
- * scripts/CDNs). All colors use the brand/plum/mint palette.
+ * scripts/CDNs). Chart colors use semantic theme roles so the marks and labels stay visible in both themes.
  */
 
 type Series = { date: string; views: number; uniques: number; searches: number; checks: number };
@@ -33,8 +33,8 @@ export function ActivityChart({ data }: { data: Series[] }) {
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full min-w-[560px]" role="img" aria-label="Daily activity chart">
         <defs>
           <linearGradient id="gViews" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#6d8bff" stopOpacity="0.35" />
-            <stop offset="100%" stopColor="#6d8bff" stopOpacity="0" />
+            <stop offset="0%" stopColor="var(--chart-primary)" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="var(--chart-primary)" stopOpacity="0" />
           </linearGradient>
         </defs>
 
@@ -45,23 +45,23 @@ export function ActivityChart({ data }: { data: Series[] }) {
               x2={W - P.right}
               y1={y(gv)}
               y2={y(gv)}
-              stroke="rgba(255,255,255,0.08)"
+              stroke="var(--chart-grid)"
               strokeWidth={1}
             />
-            <text x={4} y={y(gv) + 4} fill="rgba(255,255,255,0.4)" fontSize={10}>
+            <text x={4} y={y(gv) + 4} fill="var(--chart-label)" fontSize={10}>
               {gv}
             </text>
           </g>
         ))}
 
         <path d={area('views')} fill="url(#gViews)" />
-        <path d={line('views')} fill="none" stroke="#6d8bff" strokeWidth={2.5} />
-        <path d={line('searches')} fill="none" stroke="#a56bff" strokeWidth={2} />
-        <path d={line('checks')} fill="none" stroke="#33e6c4" strokeWidth={2} />
+        <path d={line('views')} fill="none" stroke="var(--chart-primary)" strokeWidth={2.5} />
+        <path d={line('searches')} fill="none" stroke="var(--chart-secondary)" strokeWidth={2} />
+        <path d={line('checks')} fill="none" stroke="var(--chart-tertiary)" strokeWidth={2} />
 
         {data.map((d, i) =>
           i % Math.ceil(data.length / 7) === 0 ? (
-            <text key={i} x={x(i)} y={H - 8} fill="rgba(255,255,255,0.4)" fontSize={9} textAnchor="middle">
+            <text key={i} x={x(i)} y={H - 8} fill="var(--chart-label)" fontSize={9} textAnchor="middle">
               {d.date.slice(5)}
             </text>
           ) : null,
@@ -69,9 +69,9 @@ export function ActivityChart({ data }: { data: Series[] }) {
       </svg>
 
       <div className="mt-2 flex flex-wrap gap-4 text-xs text-slate-400">
-        <Legend color="#6d8bff" label="Page views" />
-        <Legend color="#a56bff" label="Searches" />
-        <Legend color="#33e6c4" label="Title checks" />
+        <Legend color="var(--chart-primary)" label="Page views" />
+        <Legend color="var(--chart-secondary)" label="Searches" />
+        <Legend color="var(--chart-tertiary)" label="Title checks" />
       </div>
     </div>
   );
@@ -107,16 +107,16 @@ export function RevenueChart({ data }: { data: { date: string; amount: number }[
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full min-w-[560px]" role="img" aria-label="Daily revenue chart">
         <defs>
           <linearGradient id="gRev" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#33e6c4" />
-            <stop offset="100%" stopColor="#6d8bff" />
+            <stop offset="0%" stopColor="var(--chart-tertiary)" />
+            <stop offset="100%" stopColor="var(--chart-primary)" />
           </linearGradient>
         </defs>
         {[0, 0.5, 1].map((f, i) => {
           const gv = Math.round(max * f);
           return (
             <g key={i}>
-              <line x1={P.left} x2={W - P.right} y1={y(gv)} y2={y(gv)} stroke="rgba(255,255,255,0.08)" />
-              <text x={4} y={y(gv) + 4} fill="rgba(255,255,255,0.4)" fontSize={10}>
+              <line x1={P.left} x2={W - P.right} y1={y(gv)} y2={y(gv)} stroke="var(--chart-grid)" />
+              <text x={4} y={y(gv) + 4} fill="var(--chart-label)" fontSize={10}>
                 {fmt(gv)}
               </text>
             </g>
@@ -129,7 +129,7 @@ export function RevenueChart({ data }: { data: { date: string; amount: number }[
             <g key={i}>
               <rect x={x} y={P.top + ih - h} width={bw} height={Math.max(0, h)} rx={2} fill="url(#gRev)" />
               {i % Math.ceil(data.length / 7) === 0 && (
-                <text x={x + bw / 2} y={H - 8} fill="rgba(255,255,255,0.4)" fontSize={9} textAnchor="middle">
+                <text x={x + bw / 2} y={H - 8} fill="var(--chart-label)" fontSize={9} textAnchor="middle">
                   {d.date.slice(5)}
                 </text>
               )}
@@ -162,7 +162,7 @@ export function BarList({
           </div>
           <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-brand-500 to-plum-500"
+              className="chart-bar-gradient h-full rounded-full"
               style={{ width: `${(d.value / max) * 100}%` }}
             />
           </div>

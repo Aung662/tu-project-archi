@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getRecentlyViewed, clearRecentlyViewed, type RecentItem } from '@/lib/recentlyViewed';
 import { tr, t } from '@/lib/i18n';
+import { Icon } from '@/components/Icon';
 
 /**
  * A compact strip of the visitor's recently viewed projects. Reads from
@@ -30,7 +31,7 @@ export function RecentlyViewed() {
     <section className="space-y-3">
       <div className="flex items-center justify-between">
         <h2 className="flex items-center gap-1.5 text-sm font-semibold uppercase tracking-wide text-slate-400">
-          <span aria-hidden>🕘</span> {tr(t.recentlyViewed)}
+          <Icon name="clock" className="h-4 w-4 text-slate-400" /> {tr(t.recentlyViewed)}
         </h2>
         <button
           type="button"

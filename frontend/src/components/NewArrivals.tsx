@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { api } from '@/lib/api';
 import type { ProjectCard as Card } from '@/lib/types';
 import { ProjectCard } from '@/components/ProjectCard';
+import { Icon } from '@/components/Icon';
 import { StaggerGrid, StaggerItem, Reveal } from '@/components/motion';
 import { tr, t } from '@/lib/i18n';
 
@@ -30,7 +31,7 @@ export function NewArrivals({ limit = 3 }: { limit?: number }) {
       <Reveal>
         <div className="flex items-end justify-between gap-3">
           <h2 className="flex items-center gap-2 text-xl font-bold text-slate-100">
-            <span aria-hidden>✨</span> {tr(t.newArrivalsTitle)}
+            <Icon name="sparkles" className="h-5 w-5 text-brand-300" /> {tr(t.newArrivalsTitle)}
           </h2>
           <Link
             href="/new"

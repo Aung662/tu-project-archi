@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "node --test",
+    "check:colors": "node scripts/check-color-contrast.mjs",
     "build:wiring": "node scripts/build-verified-wiring-diagrams.mjs && node scripts/check-wiring-quality.mjs",
     "check:wiring": "node scripts/build-verified-wiring-diagrams.mjs --check && node scripts/check-wiring-quality.mjs",
     "sync:wiring-review": "node scripts/sync-wiring-review-status.mjs",

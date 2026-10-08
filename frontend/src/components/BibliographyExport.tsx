@@ -75,7 +75,7 @@ export function BibliographyExport({ bookmarks }: { bookmarks: Bookmark[] }) {
               aria-pressed={style === s}
               className={`rounded-md px-3 py-1 text-xs font-semibold transition ${
                 style === s
-                  ? 'bg-gradient-to-r from-brand-500 to-brand-400 text-white shadow-glow'
+                  ? 'bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-glow'
                   : 'text-slate-300 hover:text-white'
               }`}
             >

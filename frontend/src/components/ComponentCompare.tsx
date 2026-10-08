@@ -74,7 +74,7 @@ export function ComponentCompare({ onOpenComponent }: { onOpenComponent?: (id: s
           <button
             onClick={() => setOpen(true)}
             disabled={items.length < 2}
-            className="ml-1 rounded-lg bg-gradient-to-r from-brand-500 to-brand-400 px-3 py-1.5 text-xs font-semibold text-white transition hover:brightness-110 disabled:opacity-40"
+            className="ml-1 rounded-lg bg-gradient-to-r from-brand-500 to-brand-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:brightness-110 disabled:opacity-40"
           >
             {tr(t.cmpOpen)}
           </button>

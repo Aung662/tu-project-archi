@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import type { ProjectCard as Card } from '@/lib/types';
 import { ProjectCard } from '@/components/ProjectCard';
+import { Icon } from '@/components/Icon';
 import { StaggerGrid, StaggerItem, Reveal } from '@/components/motion';
 import { tr, t } from '@/lib/i18n';
 
@@ -27,7 +28,7 @@ export function TrendingProjects({ limit = 3 }: { limit?: number }) {
     <section className="space-y-4">
       <Reveal>
         <h2 className="flex items-center gap-2 text-xl font-bold text-slate-100">
-          <span aria-hidden>🔥</span> {tr(t.trendingTitle)}
+          <Icon name="trending" className="h-5 w-5 text-accent-text" /> {tr(t.trendingTitle)}
         </h2>
       </Reveal>
       <StaggerGrid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

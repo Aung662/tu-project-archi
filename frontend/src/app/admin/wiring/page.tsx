@@ -38,6 +38,8 @@ interface UploadResult {
   received: number;
   uploaded: number;
   duplicates: number;
+  sourceBytes: number;
+  storedBytes: number;
 }
 
 const CHUNK_SIZE = 8;
@@ -74,6 +76,18 @@ function boardName(boardId: string): string {
   return boardId === 'other' ? 'Other / mixed' : getBoardProfile(boardId).name;
 }
 
+function compressionSummary(sourceBytes: number, storedBytes: number): string {
+  if (sourceBytes <= 0) return '';
+  const source = `${tr(t.wiringSourceSize)} ${formatBytes(sourceBytes)}`;
+  const optimized = `${tr(t.wiringOptimizedSize)} ${formatBytes(storedBytes)}`;
+  const savedBytes = sourceBytes - storedBytes;
+  if (savedBytes > 0) {
+    const percent = Math.round((savedBytes / sourceBytes) * 100);
+    return `${source} → ${optimized} · ${formatBytes(savedBytes)} ${tr(t.wiringSpaceSaved)} (${percent}%)`;
+  }
+  return `${source} → ${optimized} · ${tr(t.wiringNoSpaceSaved)}`;
+}
+
 export default function AdminWiringImagesPage() {
   const { lang } = useLanguage();
   const my = lang === 'my';
@@ -84,7 +98,14 @@ export default function AdminWiringImagesPage() {
   const [boardId, setBoardId] = useState('other');
   const [keywords, setKeywords] = useState('');
   const [uploadBusy, setUploadBusy] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<{ completed: number; total: number; stored: number; duplicates: number } | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<{
+    completed: number;
+    total: number;
+    stored: number;
+    duplicates: number;
+    sourceBytes: number;
+    storedBytes: number;
+  } | null>(null);
   const [uploadMessage, setUploadMessage] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
@@ -189,7 +210,9 @@ export default function AdminWiringImagesPage() {
     let stored = 0;
     let duplicates = 0;
     let completed = 0;
-    setUploadProgress({ completed, total: chunks.length, stored, duplicates });
+    let sourceBytes = 0;
+    let storedBytes = 0;
+    setUploadProgress({ completed, total: chunks.length, stored, duplicates, sourceBytes, storedBytes });
 
     try {
       for (let index = 0; index < chunks.length; index++) {
@@ -207,8 +230,10 @@ export default function AdminWiringImagesPage() {
         const result = await api.postForm<UploadResult>('/images/wiring/bulk', form, 120_000);
         stored += result.uploaded;
         duplicates += result.duplicates;
+        sourceBytes += result.sourceBytes;
+        storedBytes += result.storedBytes;
         completed = index + 1;
-        setUploadProgress({ completed, total: chunks.length, stored, duplicates });
+        setUploadProgress({ completed, total: chunks.length, stored, duplicates, sourceBytes, storedBytes });
       }
 
       if (cancelUpload.current) {
@@ -216,9 +241,9 @@ export default function AdminWiringImagesPage() {
           ? `${completed} အပိုင်းပြီးနောက် ရပ်ထားသည်။ ရွေးချယ်ထားသောပုံများကို မရှင်းဘဲ ထပ်တင်နိုင်သည် — တင်ပြီးသားပုံများကို ထပ်မသိမ်းပါ။`
           : `Upload paused after ${completed} completed chunk(s). Keep the selection and press upload to safely resume; duplicate files are skipped.`);
       } else {
-        setUploadMessage(my
-          ? `${tr(t.wiringUploadComplete)} — စစ်ဆေးရန် ${stored} ပုံ သိမ်းပြီး${duplicates ? ` · ထပ်နေသော ${duplicates} ပုံ ကျော်သွားသည်` : ''}။`
-          : `${tr(t.wiringUploadComplete)}: ${stored} image(s) stored for review${duplicates ? ` · ${duplicates} duplicate(s) skipped` : ''}.`);
+        setUploadMessage(stored > 0
+          ? `${tr(t.wiringUploadComplete)} · ${my ? `စစ်ဆေးရန် ${stored} ပုံ သိမ်းပြီး` : `${stored} new image(s) saved for review`} · ${compressionSummary(sourceBytes, storedBytes)}${duplicates ? ` · ${my ? `ထပ်နေသော ${duplicates} ပုံ ကျော်သွားသည်` : `${duplicates} duplicate(s) skipped`}` : ''}`
+          : `${my ? 'ရွေးထားသောပုံများကို ယခင်က တင်ပြီးသားဖြစ်သည်။ ထပ်နေသောပုံများကို ကျော်ပြီး သိုလှောင်မှုအသစ် မတိုးစေပါ။' : 'All selected images were already uploaded. Duplicates were skipped; no new storage was used.'}`);
         setFiles([]);
         setBatchId(createBatchId());
         setReviewStatus('PENDING');
@@ -323,11 +348,23 @@ export default function AdminWiringImagesPage() {
               </label>
             </div>
             <p className="text-xs leading-relaxed text-slate-400">{tr(t.wiringUploadHint)}</p>
+            <div className="flex items-start gap-3 rounded-xl border border-emerald-400/20 bg-emerald-400/[0.05] p-3">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-emerald-400/10 text-emerald-300" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" stroke="currentColor" strokeWidth="1.8">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 3.75h10A2.25 2.25 0 0 1 19.25 6v12A2.25 2.25 0 0 1 17 20.25H7A2.25 2.25 0 0 1 4.75 18V6A2.25 2.25 0 0 1 7 3.75Z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m8 14 2.3-2.3a1 1 0 0 1 1.4 0l1 1 1.8-1.8a1 1 0 0 1 1.4 0L17 13m-6.5 3.25 1.1 1.1 2.65-2.65M10 7.75h4" />
+                </svg>
+              </span>
+              <div>
+                <p className="text-xs font-semibold text-emerald-100">{tr(t.wiringCompressionTitle)}</p>
+                <p className="mt-1 text-[11px] leading-relaxed text-emerald-100/70">{tr(t.wiringCompressionHint)}</p>
+              </div>
+            </div>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-300">
               <span><strong className="font-latin text-slate-100">{files.length}</strong> {tr(t.wiringSelected)}</span>
-              <span>{formatBytes(selectedFilesSize)}</span>
+              <span>{tr(t.wiringSourceSize)}: {formatBytes(selectedFilesSize)}</span>
               {files.length > 0 && (
-                <button type="button" onClick={() => setFiles([])} disabled={uploadBusy} className="text-rose-300 hover:text-rose-200 disabled:opacity-50">
+                <button type="button" onClick={() => { setFiles([]); setUploadProgress(null); setUploadMessage(''); }} disabled={uploadBusy} className="text-rose-300 hover:text-rose-200 disabled:opacity-50">
                   {my ? 'ရွေးချယ်မှုရှင်းရန်' : 'Clear selection'}
                 </button>
               )}
@@ -383,12 +420,22 @@ export default function AdminWiringImagesPage() {
         {uploadMessage && <Alert kind="success">{uploadMessage}</Alert>}
 
         {uploadProgress && (
-          <div className="space-y-1.5">
-            <div className="flex justify-between gap-3 text-xs text-slate-400">
+          <div className="space-y-2" aria-live="polite">
+            <div className="flex flex-wrap justify-between gap-2 text-xs text-slate-400">
               <span>{my ? `အပိုင်း ${uploadProgress.completed}/${uploadProgress.total}` : `Chunk ${uploadProgress.completed}/${uploadProgress.total}`}</span>
               <span>{my ? `${uploadProgress.stored} သိမ်းပြီး · ထပ်နေသော ${uploadProgress.duplicates} ကျော်သွားသည်` : `${uploadProgress.stored} stored · ${uploadProgress.duplicates} duplicates skipped`}</span>
             </div>
-            <div className="h-2 overflow-hidden rounded-full bg-white/10">
+            {uploadProgress.sourceBytes > 0 && (
+              <p className="text-xs text-emerald-200/90">{compressionSummary(uploadProgress.sourceBytes, uploadProgress.storedBytes)}</p>
+            )}
+            <div
+              role="progressbar"
+              aria-label={my ? 'တင်သွင်းမှု တိုးတက်မှု' : 'Upload progress'}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={uploadProgress.total ? Math.round((uploadProgress.completed / uploadProgress.total) * 100) : 0}
+              className="h-2 overflow-hidden rounded-full bg-white/10"
+            >
               <div className="h-full rounded-full bg-gradient-to-r from-brand-500 to-emerald-400 transition-all" style={{ width: `${uploadProgress.total ? (uploadProgress.completed / uploadProgress.total) * 100 : 0}%` }} />
             </div>
           </div>
@@ -410,9 +457,11 @@ export default function AdminWiringImagesPage() {
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="text-lg font-bold text-slate-100">{tr(t.wiringReviewQueue)}</h2>
-            <p className="mt-1 text-xs text-slate-400">
-              {statusCounts.pending} {tr(t.wiringPending)} · {statusCounts.approved} {tr(t.wiringApproved)} · {statusCounts.rejected} {tr(t.wiringRejected)} · {formatBytes(statusCounts.storageBytes)} {my ? 'သိမ်းထား' : 'stored'}
-            </p>
+            <div className="mt-2 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/[0.05] px-3 py-1.5 text-xs">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" aria-hidden="true" />
+              <span className="text-slate-400">{tr(t.wiringStorageUsage)}</span>
+              <strong className="font-latin text-emerald-200">{formatBytes(statusCounts.storageBytes)}</strong>
+            </div>
           </div>
           <label className="w-full sm:w-72">
             <span className="sr-only">{tr(t.wiringImageSearchAdmin)}</span>

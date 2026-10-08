@@ -1,40 +1,27 @@
+'use client';
+
+import { useId } from 'react';
 import type { ProjectCard as Card } from '@/lib/types';
 
 /**
- * Deterministic, attractive placeholder thumbnail for projects that have no
- * uploaded cover image. Every project therefore always shows a proper tile —
- * a themed gradient + a department/topic icon + the title initials — instead of
- * a bare document glyph. Pure inline SVG/CSS so it renders in the sandboxed
- * preview and needs zero network requests.
+ * Deterministic thumbnail for projects without an uploaded cover image. Deep,
+ * high-contrast gradients keep title initials legible; an academic department
+ * code replaces platform-dependent emoji. Everything is inline SVG/CSS so it
+ * renders without network requests in the sandboxed preview.
  */
 
-// Distinct gradient palettes; chosen deterministically from the project id.
+// Distinct, restrained jewel palettes. The checker samples each gradient with
+// the decorative white overlays and verifies the white title initials at 4.5:1.
 const PALETTES: [string, string][] = [
-  ['#6366f1', '#8b5cf6'], // indigo → violet
-  ['#0ea5e9', '#6366f1'], // sky → indigo
-  ['#10b981', '#0ea5e9'], // emerald → sky
-  ['#f59e0b', '#ef4444'], // amber → red
-  ['#ec4899', '#8b5cf6'], // pink → violet
-  ['#14b8a6', '#22c55e'], // teal → green
-  ['#f43f5e', '#f59e0b'], // rose → amber
-  ['#3b82f6', '#22d3ee'], // blue → cyan
+  ['#1e3a8a', '#4338ca'], // blue → indigo
+  ['#0c4a6e', '#075985'], // deep cyan → blue
+  ['#064e3b', '#065f46'], // emerald → green
+  ['#713f12', '#78350f'], // warm amber → umber
+  ['#831843', '#9d174d'], // plum → rose
+  ['#134e4a', '#115e59'], // teal → deep teal
+  ['#7f1d1d', '#991b1b'], // oxblood → red
+  ['#4c1d95', '#5b21b6'], // violet → purple
 ];
-
-// Emoji icon by department code (falls back to a generic one).
-const DEPT_ICON: Record<string, string> = {
-  IT: '💻',
-  EC: '📡',
-  EP: '⚡',
-  CE: '🏗️',
-  ME: '⚙️',
-  MC: '🤖',
-  ARCH: '📐',
-  CH: '⚗️',
-  MN: '⛏️',
-  PE: '🛢️',
-  BT: '🧬',
-  TC: '📶',
-};
 
 function hashString(s: string): number {
   let h = 0;
@@ -55,8 +42,10 @@ function initials(title: string): string {
 export function ProjectThumb({ p }: { p: Card }) {
   const seed = hashString(p.id || p.title);
   const [c1, c2] = PALETTES[seed % PALETTES.length];
-  const icon = DEPT_ICON[p.department?.code ?? ''] ?? '🎓';
-  const gid = `g-${(p.id || p.title).replace(/[^a-zA-Z0-9]/g, '').slice(0, 12)}`;
+  const deptCode = p.department?.code?.trim().replace(/[^a-z0-9]/gi, '').toUpperCase().slice(0, 5) || 'TU';
+  // A project can appear in multiple homepage sections; useId prevents SVG
+  // gradient-fragment collisions between repeated copies of the same card.
+  const gid = `project-thumb-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
 
   return (
     <div className="relative h-full w-full">
@@ -74,16 +63,14 @@ export function ProjectThumb({ p }: { p: Card }) {
           </linearGradient>
         </defs>
         <rect width="320" height="180" fill={`url(#${gid})`} />
-        {/* soft decorative circles */}
+        {/* restrained surface details sit behind, not on top of, the title */}
         <circle cx="270" cy="30" r="70" fill="#ffffff" opacity="0.08" />
         <circle cx="40" cy="160" r="55" fill="#ffffff" opacity="0.07" />
-        {/* faint grid */}
         <g stroke="#ffffff" strokeOpacity="0.08" strokeWidth="1">
           <line x1="0" y1="45" x2="320" y2="45" />
           <line x1="0" y1="90" x2="320" y2="90" />
           <line x1="0" y1="135" x2="320" y2="135" />
         </g>
-        {/* big title initials */}
         <text
           x="24"
           y="120"
@@ -91,14 +78,15 @@ export function ProjectThumb({ p }: { p: Card }) {
           fontSize="72"
           fontWeight="800"
           fill="#ffffff"
-          fillOpacity="0.92"
         >
           {initials(p.title)}
         </text>
       </svg>
-      {/* department/topic icon badge */}
-      <span className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-xl bg-black/25 text-xl backdrop-blur">
-        {icon}
+      <span
+        aria-hidden="true"
+        className="absolute right-3 top-3 inline-flex min-h-9 min-w-9 items-center justify-center rounded-xl bg-black/55 px-2 text-[10px] font-bold tracking-[0.12em] text-white shadow-sm backdrop-blur-sm"
+      >
+        {deptCode}
       </span>
     </div>
   );

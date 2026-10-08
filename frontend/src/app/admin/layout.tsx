@@ -72,7 +72,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               aria-current={active ? 'page' : undefined}
               className={`rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200 ${
                 active
-                  ? 'bg-gradient-to-r from-brand-500 to-brand-400 text-white shadow-glow'
+                  ? 'bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-glow'
                   : 'text-slate-300 hover:bg-white/10 hover:text-white'
               }`}
             >

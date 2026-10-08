@@ -104,7 +104,7 @@ function Lightbox({
       onClick={onClose}
     >
       <button
-        className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-white/10 text-xl text-white hover:bg-white/20"
+        className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-black/55 text-xl text-white hover:bg-black/80"
         onClick={onClose}
         aria-label="Close"
       >
@@ -114,7 +114,7 @@ function Lightbox({
       {images.length > 1 && (
         <>
           <button
-            className="absolute left-4 grid h-12 w-12 place-items-center rounded-full bg-white/10 text-2xl text-white hover:bg-white/20"
+            className="absolute left-4 grid h-12 w-12 place-items-center rounded-full bg-black/55 text-2xl text-white hover:bg-black/80"
             onClick={(e) => {
               e.stopPropagation();
               onIndex(wrap(index - 1));
@@ -124,7 +124,7 @@ function Lightbox({
             ‹
           </button>
           <button
-            className="absolute right-4 top-1/2 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-2xl text-white hover:bg-white/20"
+            className="absolute right-4 top-1/2 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-black/55 text-2xl text-white hover:bg-black/80"
             onClick={(e) => {
               e.stopPropagation();
               onIndex(wrap(index + 1));
@@ -149,7 +149,7 @@ function Lightbox({
         }`}
       />
 
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-white/10 px-3 py-1 text-sm text-white">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/55 px-3 py-1 text-sm text-white">
         {index + 1} / {images.length}
       </div>
     </div>

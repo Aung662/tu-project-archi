@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 import { COMPONENTS, CATEGORIES, type CategoryKey } from '@/data/components';
 import { guideFor, type PinRow } from '@/data/componentGuide';
 import type { GlyphKey } from '@/data/glyphs';
@@ -17,7 +18,7 @@ import { WIRE_KIND_LABEL } from '@/lib/wiring';
 import { BOARD_ORDER, getBoardProfile } from '@/lib/boardProfiles';
 import { EmptyState } from '@/components/ui';
 import { Reveal } from '@/components/motion';
-import { tr, t, getLang, type Lang } from '@/lib/i18n';
+import { tr, t, type Lang } from '@/lib/i18n';
 import {
   loadWiringManifest,
   wiringPhotoUrl,
@@ -67,10 +68,10 @@ const WIRE_ITEMS: WireItem[] = COMPONENTS.filter(
   .filter((x): x is WireItem => x !== null);
 
 export default function WiringPage() {
+  const { lang } = useLanguage();
   const [query, setQuery] = useState('');
   const [cat, setCat] = useState<'' | CategoryKey>('');
   const [view, setView] = useState<'photo' | 'realistic' | 'diagram' | 'list'>('realistic');
-  const [lang, setLangState] = useState<Lang>('en');
   const [boardId, setBoardId] = useState<string>('arduino-uno');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [manifest, setManifest] = useState<WiringManifest | null>(null);
@@ -90,7 +91,6 @@ export default function WiringPage() {
   const photoMode = boardsWithPhotos.length > 0;
 
   useEffect(() => {
-    setLangState(getLang());
     loadWiringManifest().then(setManifest);
   }, []);
 
@@ -137,14 +137,35 @@ export default function WiringPage() {
   return (
     <div className="space-y-6">
       <Reveal>
-        <h1 className="text-3xl font-bold text-gradient-animated sm:text-4xl">🔌 {tr(t.wiringTitle)}</h1>
-        <p className="mt-2 max-w-3xl text-sm text-slate-400">{tr(t.wiringSubtitle)}</p>
+        <section className="relative isolate overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-brand-500/[0.12] via-white/[0.025] to-emerald-400/[0.07] p-5 shadow-[0_24px_80px_-48px_rgba(109,139,255,0.55)] sm:p-8">
+          <svg aria-hidden="true" viewBox="0 0 300 140" fill="none" className="pointer-events-none absolute -right-5 top-0 h-full w-[48%] opacity-30 sm:right-2 sm:w-[40%]">
+            <path d="M4 25h54v34h43V22h50v47h61V38h88M31 112h70V83h57v32h59V86h43v28h40" stroke="url(#wiring-hero-line)" strokeWidth="1.5" />
+            <path d="M101 59v24m107-14v17m-57-42v-22m70 64v-14" stroke="url(#wiring-hero-line)" strokeWidth="1.5" />
+            <circle cx="58" cy="25" r="4" fill="#7dd3fc" /><circle cx="151" cy="22" r="4" fill="#a78bfa" />
+            <circle cx="212" cy="69" r="4" fill="#6ee7b7" /><circle cx="217" cy="86" r="4" fill="#f0abfc" />
+            <defs><linearGradient id="wiring-hero-line" x1="4" y1="20" x2="295" y2="120" gradientUnits="userSpaceOnUse"><stop stopColor="#818cf8" /><stop offset="1" stopColor="#34d399" /></linearGradient></defs>
+          </svg>
+          <div className="relative flex items-start gap-4 sm:gap-5">
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-brand-300/25 bg-brand-400/10 text-brand-200 shadow-inner shadow-brand-300/10 sm:h-14 sm:w-14">
+              <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6 sm:h-7 sm:w-7" stroke="currentColor" strokeWidth="1.7" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 3.75v4.5m8-4.5v4.5M6.25 8.25h11.5v2.5a5.75 5.75 0 0 1-5.75 5.75h0a5.75 5.75 0 0 1-5.75-5.75v-2.5ZM12 16.5v4m-2.5 0h5" />
+              </svg>
+            </span>
+            <div className="max-w-3xl">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand-200/80 sm:text-[11px]">{lang === 'my' ? 'အီလက်ထရွန်းနစ် ကိုးကားချက်' : 'ELECTRONICS REFERENCE'}</p>
+              <h1 className="mt-1 text-3xl font-bold tracking-tight text-gradient-animated sm:text-4xl">{tr(t.wiringTitle)}</h1>
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-300/80">{tr(t.wiringSubtitle)}</p>
+            </div>
+          </div>
+        </section>
       </Reveal>
 
       <div className="inline-flex rounded-xl border border-white/10 bg-white/[0.03] p-1" role="tablist" aria-label={tr(t.wiringTitle)}>
         <button
+          id="wiring-guides-tab"
           type="button"
           role="tab"
+          aria-controls="wiring-guides-panel"
           aria-selected={section === 'guides'}
           onClick={() => setSection('guides')}
           className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${section === 'guides' ? 'bg-brand-500 text-white' : 'text-slate-300 hover:bg-white/10 hover:text-white'}`}
@@ -152,8 +173,10 @@ export default function WiringPage() {
           {tr(t.wiringGuidesTab)}
         </button>
         <button
+          id="wiring-images-tab"
           type="button"
           role="tab"
+          aria-controls="wiring-images-panel"
           aria-selected={section === 'images'}
           onClick={() => setSection('images')}
           className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${section === 'images' ? 'bg-brand-500 text-white' : 'text-slate-300 hover:bg-white/10 hover:text-white'}`}
@@ -162,8 +185,12 @@ export default function WiringPage() {
         </button>
       </div>
 
-      {section === 'images' ? <WiringImageLibrary lang={lang} /> : (
-        <>
+      {section === 'images' ? (
+        <div id="wiring-images-panel" role="tabpanel" aria-labelledby="wiring-images-tab" tabIndex={0} className="outline-none focus-visible:ring-2 focus-visible:ring-brand-400/50">
+          <WiringImageLibrary lang={lang} />
+        </div>
+      ) : (
+        <div id="wiring-guides-panel" role="tabpanel" aria-labelledby="wiring-guides-tab" tabIndex={0} className="space-y-6 outline-none focus-visible:ring-2 focus-visible:ring-brand-400/50">
       <p className="rounded-xl border border-amber-400/25 bg-amber-400/[0.05] px-4 py-3 text-xs leading-relaxed text-amber-100/85">
         <span className="mr-1.5" aria-hidden="true">⚠</span>
         {lang === 'my'
@@ -193,7 +220,7 @@ export default function WiringPage() {
                 aria-pressed={boardId === id}
                 className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition ${
                   boardId === id
-                    ? 'border-transparent bg-gradient-to-r from-brand-500 to-brand-400 text-white shadow-glow'
+                    ? 'border-transparent bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-glow'
                     : 'border-white/10 bg-white/[0.03] text-slate-300 hover:bg-white/10 hover:text-white'
                 }`}
               >
@@ -263,13 +290,6 @@ export default function WiringPage() {
               📋 {tr(t.wiringViewList)}
             </button>
           </div>
-          <button
-            onClick={() => setLangState((l) => (l === 'my' ? 'en' : 'my'))}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
-            title="Switch language"
-          >
-            🌐 {lang === 'my' ? 'ENG' : 'မြန်မာ'}
-          </button>
         </div>
       </div>
 
@@ -327,7 +347,7 @@ export default function WiringPage() {
           onClose={() => setSelectedId(null)}
         />
       )}
-        </>
+        </div>
       )}
     </div>
   );
@@ -383,7 +403,7 @@ function WiringCard({
               loading="lazy"
               className="h-auto w-full object-contain"
             />
-            <span className="absolute right-2 top-2 rounded-full bg-emerald-500/90 px-2 py-0.5 text-[10px] font-semibold text-white shadow">
+            <span className="absolute right-2 top-2 rounded-full bg-emerald-700 px-2 py-0.5 text-[10px] font-semibold text-white shadow">
               {my ? 'စစ်ဆေးထားသောပုံ' : 'Reviewed image'}
             </span>
           </a>
@@ -518,7 +538,7 @@ function Chip({
       aria-pressed={active}
       className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition ${
         active
-          ? 'border-transparent bg-gradient-to-r from-brand-500 to-brand-400 text-white shadow-glow'
+          ? 'border-transparent bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-glow'
           : 'border-white/10 bg-white/[0.03] text-slate-300 hover:bg-white/10 hover:text-white'
       }`}
     >

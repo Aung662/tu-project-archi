@@ -207,7 +207,7 @@ function VideoSection({
               <button
                 type="button"
                 onClick={() => onRemove(v.id)}
-                className="absolute -right-1.5 -top-1.5 grid h-5 w-5 place-items-center rounded-full bg-red-500 text-xs text-white opacity-0 transition group-hover:opacity-100"
+                className="absolute -right-1.5 -top-1.5 grid h-5 w-5 place-items-center rounded-full bg-red-700 text-xs text-white opacity-0 transition group-hover:opacity-100"
                 aria-label="Delete video"
               >
                 ✕
@@ -282,7 +282,7 @@ function ImageSection({
               <button
                 type="button"
                 onClick={() => onRemove(img.id)}
-                className="absolute -right-1.5 -top-1.5 grid h-5 w-5 place-items-center rounded-full bg-red-500 text-xs text-white opacity-0 transition group-hover:opacity-100"
+                className="absolute -right-1.5 -top-1.5 grid h-5 w-5 place-items-center rounded-full bg-red-700 text-xs text-white opacity-0 transition group-hover:opacity-100"
                 aria-label="Delete image"
               >
                 ✕

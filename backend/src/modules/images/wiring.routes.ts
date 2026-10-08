@@ -269,6 +269,8 @@ wiringImagesRouter.post(
       throw BadRequest('One or more images could not be decoded. Re-save them as JPEG, PNG or WebP and retry.');
     }
 
+    const sourceBytes = fresh.reduce((sum, entry) => sum + entry.file.size, 0);
+    const storedBytes = optimized.reduce((sum, image) => sum + image.sizeBytes, 0);
     const tags = cleanTags(body.tags);
     const created = await prisma.$transaction(
       fresh.map((entry, index) => {
@@ -300,11 +302,18 @@ wiringImagesRouter.post(
       action: 'WIRING_IMAGES_BULK_UPLOADED',
       entityType: 'WiringImageBatch',
       entityId: body.batchId,
-      metadata: { received: files.length, uploaded: created.length, duplicates: duplicateCount },
+      metadata: { received: files.length, uploaded: created.length, duplicates: duplicateCount, sourceBytes, storedBytes },
     });
 
     res.status(201).json(
-      ok({ batchId: body.batchId, received: files.length, uploaded: created.length, duplicates: duplicateCount }),
+      ok({
+        batchId: body.batchId,
+        received: files.length,
+        uploaded: created.length,
+        duplicates: duplicateCount,
+        sourceBytes,
+        storedBytes,
+      }),
     );
   }),
 );
